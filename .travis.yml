@@ -8,3 +8,6 @@ install:
   - go get github.com/onsi/ginkgo
 script:
   - go test -v ./...
+
+notifications:
+  slack: selectpress:80BkOLkmohrgd7bWC7cdA8C5
