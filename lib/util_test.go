@@ -1,8 +1,8 @@
 package ionconnect
 
 import (
-  . "github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/onsi/ginkgo"
-  . "github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/onsi/gomega"
+  . "github.com/onsi/ginkgo"
+  . "github.com/onsi/gomega"
 )
 
 var _ = Describe("Util", func() {
