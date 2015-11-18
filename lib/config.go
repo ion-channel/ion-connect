@@ -7,7 +7,7 @@ import(
     "github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/codegangsta/cli"
     "log"
     "fmt"
-    "syscall"
+    "os"
     "errors"
 )
 
@@ -83,14 +83,14 @@ func (config Config) findSubCommandConfig(commandName string, subcommandName str
 
 
 func HandleConfigure(context* cli.Context) {
-  currentSecretKey := loadCredentials()
+  currentSecretKey := LoadCredential()
   truncatedSecretKey := currentSecretKey
   if len(currentSecretKey) > 4 {
       truncatedSecretKey = currentSecretKey[len(currentSecretKey)-4:len(currentSecretKey)]
   }
 
   fmt.Printf("Ion Channel Api Key [%s]: ", truncatedSecretKey)
-  secretKey, _ := terminal.ReadPassword(syscall.Stdin)
+  secretKey, _ := terminal.ReadPassword(int(os.Stdin.Fd()))
 
   Debugf("All you keys are belong to us! (%s)", secretKey)
 
@@ -99,7 +99,7 @@ func HandleConfigure(context* cli.Context) {
   }
 }
 
-func loadCredentials() string {
+func LoadCredential() string {
   exists, _ := PathExists(ION_HOME)
   if exists {
     bytes, _ := ReadBytesFromFile(CREDENTIALS_FILE)
