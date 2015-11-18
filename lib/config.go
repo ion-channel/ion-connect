@@ -83,7 +83,7 @@ func (config Config) findSubCommandConfig(commandName string, subcommandName str
 
 
 func HandleConfigure(context* cli.Context) {
-  currentSecretKey := loadCredentials()
+  currentSecretKey := LoadCredential()
   truncatedSecretKey := currentSecretKey
   if len(currentSecretKey) > 4 {
       truncatedSecretKey = currentSecretKey[len(currentSecretKey)-4:len(currentSecretKey)]
@@ -99,7 +99,7 @@ func HandleConfigure(context* cli.Context) {
   }
 }
 
-func loadCredentials() string {
+func LoadCredential() string {
   exists, _ := PathExists(ION_HOME)
   if exists {
     bytes, _ := ReadBytesFromFile(CREDENTIALS_FILE)

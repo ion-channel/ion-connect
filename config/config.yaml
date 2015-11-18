@@ -1,7 +1,8 @@
 ---
   version: v1
   endpoint: https://api.ionchannel.io/
-  token: HTTP_ACCESS_TOKEN
+  token: access-token
+  # HTTP_ACCESS_TOKEN
   commands:
     - name: scanner
       usage: set of commands for effecting artifacts or source code
