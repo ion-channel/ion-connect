@@ -4,8 +4,11 @@ go:
 install:
 - go get github.com/onsi/gomega
 - go get github.com/onsi/ginkgo
+- go get github.com/GeertJohan/go.rice
+- go get github.com/GeertJohan/go.rice/rice
 script:
 - go test -v ./...
+- rice embed-go -i ./lib
 - GOOS=windows go build -o target/windows/ion-connect.exe ./
 - GOOS=linux go build -o target/linux/ion-connect ./
 - GOOS=darwin go build -o target/darwin/ion-connect ./
