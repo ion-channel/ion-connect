@@ -6,12 +6,16 @@ install:
 - go get github.com/onsi/ginkgo
 script:
 - go test -v ./...
+- GOOS=windows go build -o target/windows/ion-connect.exe ./
+- GOOS=windows go build -o target/linux/ion-connect ./
+- GOOS=darwin go build -o target/darwin/ion-connect ./
+- tar xfvx target.tar.gz target
 notifications:
   slack: selectpress:80BkOLkmohrgd7bWC7cdA8C5
 deploy:
   provider: releases
   api_key:
     secure: r8yesBzPR5Xbe3i0sidr2ivrVOGv5EV38iW0kU/p6FSBgH6Y5v9ZR98p1vDh87tRoUCYjczTtsT4lWPA9nTqHmBKXTqwwrOkL0jyObhz51P3oOdpRuWacj18IyLKro97xuXllnrNdFqbDqt2wmvz70LQyMVwORPTkhgZcmgD66qE+yWqC0v8QHx17An2lXRoMpAurgnWkrMES7t1kKmkLFn7WL3s1zRk9NguUR7eLWTH4xuDw/FHT/05Tt5He6wlnd6KM1NDkepLtCx4JfJQ865ljvKok+SHLw3RQqAmoHE5aoZg3ZVV0Upv2pQz2XPKZ/xWDCQDnyJyVvAGefXQYWdHtkNLLFwP84LmxTWHv3zM3uwxqy0MyS7J7GrwKDPg0Fx/lytiTR6aN1soc9d2FxvcbFfOJnlqDRhjbBLoo6eOrcImrSwaSHTqFANwnuu6w93KleuSNifqXWVV8Qu9/yVekU2QYRnSf5pxgJrXRGmpHFlnUD33bImEf9ZnvWbbx3c7/Xs7b8qhz7KRa1Dnb5PENsKrTRoTExYWxd6U7nN1YyCZiZwWfHSOSXWV2xH7ePt6kVIPv0DMsq2+xWCTlzhPEXnmRiV2/WbEuni99EQkFozcDHJ2tfNMTArLImXYNL33X4vKqXT4n4DEU2rOdA0Zb8hyAho573ZKcGdxf3o=
-  file: ion-connect
+  file: target.tar.gz
   on:
     repo: ion-channel/ion-connect
