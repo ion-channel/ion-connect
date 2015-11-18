@@ -7,9 +7,9 @@ install:
 script:
 - go test -v ./...
 - GOOS=windows go build -o target/windows/ion-connect.exe ./
-- GOOS=windows go build -o target/linux/ion-connect ./
+- GOOS=linux go build -o target/linux/ion-connect ./
 - GOOS=darwin go build -o target/darwin/ion-connect ./
-- tar xfvx target.tar.gz target
+- tar cfvz target.tar.gz target
 notifications:
   slack: selectpress:80BkOLkmohrgd7bWC7cdA8C5
 deploy:
