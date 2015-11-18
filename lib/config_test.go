@@ -45,16 +45,16 @@ var _ = Describe("Config", func() {
 
   Context("When we need creds", func(){
     It("should create the ION_HOME directory", func() {
-        Expect(loadCredentials()).To(Equal(""))
+        Expect(LoadCredential()).To(Equal(""))
         Expect(PathExists(ION_HOME)).To(BeTrue())
     })
     It("should save credentials to new file", func() {
-        Expect(loadCredentials()).To(Equal(""))
+        Expect(LoadCredential()).To(Equal(""))
         Expect(PathExists(ION_HOME)).To(BeTrue())
         Expect(PathExists(CREDENTIALS_FILE)).To(BeFalse())
         Expect(func(){saveCredentials("notarealkey")}).ShouldNot(Panic())
         Expect(PathExists(CREDENTIALS_FILE)).To(BeTrue())
-        Expect(loadCredentials()).To(Equal("notarealkey"))
+        Expect(LoadCredential()).To(Equal("notarealkey"))
     })
   })
 
