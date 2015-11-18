@@ -7,7 +7,7 @@ import(
     "github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/codegangsta/cli"
     "log"
     "fmt"
-    "syscall"
+    "os"
     "errors"
 )
 
@@ -90,7 +90,7 @@ func HandleConfigure(context* cli.Context) {
   }
 
   fmt.Printf("Ion Channel Api Key [%s]: ", truncatedSecretKey)
-  secretKey, _ := terminal.ReadPassword(syscall.Stdin)
+  secretKey, _ := terminal.ReadPassword(int(os.Stdin.Fd()))
 
   Debugf("All you keys are belong to us! (%s)", secretKey)
 
