@@ -1,0 +1,21 @@
+---
+  version: v1
+  endpoint: https://api.ionchannel.io/
+  token: HTTP_ACCESS_TOKEN
+  commands:
+    - name: scanner
+      usage: set of commands for effecting artifacts or source code
+      subcommands:
+        - name: scan
+          usage: scan an artifact or source code
+          write: True
+          flags:
+            - name: name
+              value:
+              usage: the name of the artifact or source to effect
+            - name: url
+              value:
+              usage: the location of the artifact or source
+            - name: type
+              value:
+              usage: the type of target to effect
