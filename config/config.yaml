@@ -19,4 +19,4 @@
               usage: the location of the artifact or source
             - name: type
               value:
-              usage: the type of target to effect
+              usage: the type of target to effect i.e. [git|svn|artifact]
