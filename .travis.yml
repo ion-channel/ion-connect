@@ -13,10 +13,10 @@ script:
 - rice append --exec target/windows/ion-connect.exe -i ./lib
 
 - GOOS=linux go build -o target/linux/ion-connect ./
-- rice append --exec target/linux/ion-connect.exe -i ./lib
+- rice append --exec target/linux/ion-connect -i ./lib
 
 - GOOS=darwin go build -o target/darwin/ion-connect ./
-- rice append --exec target/darwin/ion-connect.exe -i ./lib
+- rice append --exec target/darwin/ion-connect -i ./lib
 
 - tar cfvz target.tar.gz target
 notifications:
