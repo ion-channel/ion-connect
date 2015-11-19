@@ -32,13 +32,13 @@ var _ = Describe("Config", func() {
         Expect(config.Token).To(Equal("access-token"))
     })
     It("should have commands with subcommands", func() {
-        Expect(len(config.Commands[0].Subcommands)).To(Equal(1))
-        Expect(config.Commands[0].Subcommands[0].Name).To(Equal("scan"))
+        Expect(len(config.Commands[0].Subcommands)).To(Equal(3))
+        Expect(config.Commands[0].Subcommands[0].Name).To(Equal("scan-git"))
         Expect(config.Commands[0].Subcommands[0].Write).To(BeTrue())
     })
     It("should have commands with subcommands and flags", func() {
-        Expect(len(config.Commands[0].Subcommands)).To(Equal(1))
-        Expect(config.Commands[0].Subcommands[0].Name).To(Equal("scan"))
+        Expect(len(config.Commands[0].Subcommands)).To(Equal(3))
+        Expect(config.Commands[0].Subcommands[0].Name).To(Equal("scan-git"))
         Expect(config.Commands[0].Subcommands[0].Flags[0].Name).To(Equal("name"))
     })
   })
@@ -75,8 +75,8 @@ var _ = Describe("Config", func() {
   Context("If we are looking for a subcommand from the config", func() {
     config := GetConfig()
     It("should return the subcommand config if found", func() {
-      command, err := config.findSubCommandConfig("scanner", "scan")
-      Expect(command.Name).To(Equal("scan"))
+      command, err := config.findSubCommandConfig("scanner", "scan-git")
+      Expect(command.Name).To(Equal("scan-git"))
       Expect(err).To(BeNil())
     })
     It("should return an error if subcommand not found", func() {
