@@ -16,7 +16,10 @@ type Api struct {
   Config Config
 }
 
-
+func (api Api) Noop(ctx *cli.Context) {
+  cli.ShowCommandHelp(ctx, ctx.Command.Name)
+  Debugln("Noop")
+}
 
 func (api Api) HandleCommand(ctx *cli.Context) {
   Debugf("Performing command %s", ctx.Command.FullName())
@@ -33,12 +36,12 @@ func (api Api) HandleCommand(ctx *cli.Context) {
     os.Exit(1)
   }
 
-  response, body, errorBody := api.sendRequest(command, subcommand, ctx, subcommandConfig.Write)
+  response, body := api.sendRequest(command, subcommand, ctx, subcommandConfig.Write)
 
-  fmt.Println(api.processResponse(response, body, errorBody))
+  fmt.Println(api.processResponse(response, body))
 }
 
-func (api Api) sendRequest(command string, subcommand string, context *cli.Context, should_post bool) (http.Response, map[string]interface{}, map[string]interface{}) {
+func (api Api) sendRequest(command string, subcommand string, context *cli.Context, should_post bool) (http.Response, map[string]interface{}) {
   client := sling.New()
 
   if should_post {
@@ -54,23 +57,23 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
   client.Add(api.Config.Token, LoadCredential())
 
   body := make(map[string]interface{})
-  errorBody := make(map[string]interface{})
-  response, responseErr := client.Receive(&body, &errorBody)
+  response, responseErr := client.Receive(&body, &body)
   if responseErr != nil {
-    log.Fatalf(responseErr.Error())
+    fmt.Println(responseErr.Error())
+    os.Exit(1)
   }
-  Debugf("Response received with status %s, %v", response.Status, errorBody)
-  return *response, body, errorBody
+  Debugf("Response received with status %s, %v", response.Status, body)
+  return *response, body
 }
 
-func (api Api) processResponse(response http.Response, body map[string]interface{}, errorBody map[string]interface{}) string {
+func (api Api) processResponse(response http.Response, body map[string]interface{}) string {
   if response.StatusCode == 401 {
     fmt.Println("Unauthorized, make sure you run 'ion-connect configure' and set your Api Token")
     os.Exit(1)
   }
 
   if response.StatusCode == 400 {
-    fmt.Println(errorBody["message"])
+    fmt.Println(body["message"])
     os.Exit(1)
   }
 
@@ -81,11 +84,6 @@ func (api Api) processResponse(response http.Response, body map[string]interface
   }
 
   return string(jsonBytes)
-}
-
-func (api Api) Noop(ctx *cli.Context) {
-  cli.ShowCommandHelp(ctx, ctx.Command.Name)
-  Debugln("Noop")
 }
 
 func (api Api) validateFlags(commandConfig Command, ctx *cli.Context) error {
