@@ -2,21 +2,40 @@
   version: v1
   endpoint: https://api.ionchannel.io/
   token: access-token
-  # HTTP_ACCESS_TOKEN
   commands:
     - name: scanner
       usage: set of commands for effecting artifacts or source code
       subcommands:
-        - name: scan
-          usage: scan an artifact or source code
+        - name: scan-git
+          usage: scan a git source code repository
           write: True
           flags:
             - name: name
               value:
-              usage: the name of the artifact or source to effect
+              usage: the name of the source repository to effect
             - name: url
               value:
               usage: the location of the artifact or source
-            - name: type
+        - name: scan-svn
+          usage: scan a subversion source code repository
+          write: True
+          flags:
+            - name: name
               value:
-              usage: the type of target to effect i.e. [git|svn|artifact]
+              usage: the name of the source repository to effect
+            - name: url
+              value:
+              usage: the location of the artifact or source
+        - name: scan-artifact
+          usage: scan an artifact
+          write: True
+          flags:
+            - name: name
+              value:
+              usage: the name of the artifact to effect
+            - name: url
+              value:
+              usage: the location of the artifact or source
+            - name: checksum
+              value:
+              usage: the checksum calculated from the artifact
