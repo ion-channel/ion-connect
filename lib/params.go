@@ -6,11 +6,15 @@ import (
   "reflect"
 )
 
+type Params interface {
+}
+
 type PostParams struct {
     Name      string   `json:"name,omitempty"`
     Url       string   `json:"url,omitempty"`
     Type      string   `json:"type,omitempty"`
     Checksum  string   `json:"checksum,omitempty"`
+    Scanid    string   `json:"-"`
 }
 
 type GetParams struct {
@@ -18,12 +22,12 @@ type GetParams struct {
     Url       string   `url:"url,omitempty"`
     Type      string   `url:"type,omitempty"`
     Checksum  string   `url:"checksum,omitempty"`
+    Scanid    string   `url:"-"`
 }
 
 func (params GetParams) Generate(context *cli.Context) GetParams {
   flags := context.Command.Flags
-  for index := range flags {
-    flag := flags[index]
+  for _, flag := range flags {
     if flag, ok := flag.(cli.StringFlag); ok {
       reflect.ValueOf(&params).Elem().FieldByName(strings.Title(cli.StringFlag(flag).Name)).SetString(context.String(cli.StringFlag(flag).Name))
     }
@@ -33,8 +37,7 @@ func (params GetParams) Generate(context *cli.Context) GetParams {
 
 func (params PostParams) Generate(context *cli.Context) PostParams {
   flags := context.Command.Flags
-  for index := range flags {
-    flag := flags[index]
+  for _, flag := range flags {
     if flag, ok := flag.(cli.StringFlag); ok {
       reflect.ValueOf(&params).Elem().FieldByName(strings.Title(cli.StringFlag(flag).Name)).SetString(context.String(cli.StringFlag(flag).Name))
     }

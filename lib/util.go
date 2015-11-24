@@ -37,9 +37,9 @@ func WriteLinesToFile(filename string, lines []string, mode os.FileMode) {
   Debugf("Writing to file %s", filename)
 
   w := bufio.NewWriter(file)
-  for index := range lines {
-    Debugf("Writing: %s", lines[index])
-    fmt.Fprint(w, lines[index])
+  for _, line := range lines {
+    Debugf("Writing: %s", line)
+    fmt.Fprint(w, line)
   }
 
   w.Flush()

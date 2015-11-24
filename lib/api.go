@@ -25,7 +25,7 @@ func (api Api) HandleCommand(ctx *cli.Context) {
   Debugf("Performing command %s", ctx.Command.FullName())
   command := strings.Split(ctx.Command.FullName(), " ")[0]
   subcommand := strings.Split(ctx.Command.FullName(), " ")[1]
-  subcommandConfig, err := api.Config.findSubCommandConfig(command, subcommand)
+  subcommandConfig, err := api.Config.FindSubCommandConfig(command, subcommand)
   if err != nil {
     log.Fatalf("Command configuration missing for %s %s", command, subcommand)
   }
@@ -36,13 +36,14 @@ func (api Api) HandleCommand(ctx *cli.Context) {
     os.Exit(1)
   }
 
-  response, body := api.sendRequest(command, subcommand, ctx, subcommandConfig.Write)
+  response, body := api.sendRequest(command, subcommand, ctx, subcommandConfig.Post)
 
   fmt.Println(api.processResponse(response, body))
 }
 
 func (api Api) sendRequest(command string, subcommand string, context *cli.Context, should_post bool) (http.Response, map[string]interface{}) {
   client := sling.New()
+  var url string
 
   if should_post {
     params := PostParams{}.Generate(context)
@@ -53,9 +54,14 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
     client.Get(api.Config.Endpoint)
     client.QueryStruct(&params)
   }
-  client.Path(fmt.Sprintf("%s/%s/%s", api.Config.Version, command, subcommand))
-  client.Add(api.Config.Token, LoadCredential())
 
+  url, err := api.Config.ProcessUrlFromConfig(command, subcommand, GetParams{}.Generate(context))
+  if err != nil {
+    log.Fatal(err.Error())
+  }
+
+  client.Path(fmt.Sprintf("%s%s", api.Config.Version, url))
+  client.Add(api.Config.Token, LoadCredential())
   body := make(map[string]interface{})
   response, responseErr := client.Receive(&body, &body)
   if responseErr != nil {
@@ -65,6 +71,8 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
   Debugf("Response received with status %s, %v", response.Status, body)
   return *response, body
 }
+
+
 
 func (api Api) processResponse(response http.Response, body map[string]interface{}) string {
   if response.StatusCode == 401 {
@@ -87,10 +95,10 @@ func (api Api) processResponse(response http.Response, body map[string]interface
 }
 
 func (api Api) validateFlags(commandConfig Command, ctx *cli.Context) error {
-  for index := range commandConfig.Flags {
-    if ctx.String(commandConfig.Flags[index].Name) == "" {
-      Debugf("Missing required option %s", commandConfig.Flags[index].Name)
-      return errors.New(fmt.Sprintf("Missing required option %s", commandConfig.Flags[index].Name))
+  for _, flag := range commandConfig.Flags {
+    if ctx.String(flag.Name) == "" {
+      Debugf("Missing required option %s", flag.Name)
+      return errors.New(fmt.Sprintf("Missing required option %s", flag.Name))
     }
   }
 
