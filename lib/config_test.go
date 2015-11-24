@@ -48,7 +48,7 @@ var _ = Describe("Config", func() {
     It("it should render template code", func() {
         params := GetParams{Scanid:"test"}
         url, err := config.ProcessUrlFromConfig("scanner", "scan-status", params)
-        Expect(url).To(Equal("/scanner/status/test"))
+        Expect(url).To(Equal("/scanner/test"))
         Expect(err).To(BeNil())
     })
     It("it should not fail if it's just a string", func() {
