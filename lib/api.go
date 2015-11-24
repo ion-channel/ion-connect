@@ -95,10 +95,10 @@ func (api Api) processResponse(response http.Response, body map[string]interface
 }
 
 func (api Api) validateFlags(commandConfig Command, ctx *cli.Context) error {
-  for index := range commandConfig.Flags {
-    if ctx.String(commandConfig.Flags[index].Name) == "" {
-      Debugf("Missing required option %s", commandConfig.Flags[index].Name)
-      return errors.New(fmt.Sprintf("Missing required option %s", commandConfig.Flags[index].Name))
+  for _, flag := range commandConfig.Flags {
+    if ctx.String(flag.Name) == "" {
+      Debugf("Missing required option %s", flag.Name)
+      return errors.New(fmt.Sprintf("Missing required option %s", flag.Name))
     }
   }
 

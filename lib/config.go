@@ -60,9 +60,9 @@ func GetConfig() Config {
 
 
 func (config Config) FindCommandConfig(commandName string) (Command, error) {
-  for index := range config.Commands {
-    if config.Commands[index].Name == commandName {
-      return config.Commands[index], nil
+  for _, command := range config.Commands {
+    if command.Name == commandName {
+      return command, nil
     }
   }
 
@@ -93,9 +93,9 @@ func (config Config) FindSubCommandConfig(commandName string, subcommandName str
     return Command{}, err
   }
 
-  for index := range command.Subcommands {
-    if command.Subcommands[index].Name == subcommandName {
-      return command.Subcommands[index], nil
+  for _, subcommand := range command.Subcommands {
+    if subcommand.Name == subcommandName {
+      return subcommand, nil
     }
   }
 
