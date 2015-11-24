@@ -46,7 +46,7 @@
               value:
               usage: the checksum calculated from the artifact
         - name: scan-status
-          url: /scanner/status/{{ .Scanid }}
+          url: /scanner/{{ .Scanid }}
           usage: returns the status data for a given [scan-id]
           post: False
           flags:
