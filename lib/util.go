@@ -1,3 +1,11 @@
+// util.go
+//
+// Copyright (C) 2015 Selection Pressure LLC
+//
+// This software may be modified and distributed under the terms
+// of the MIT license.  See the LICENSE file for details.
+
+
 package ionconnect
 
 import (
@@ -13,6 +21,7 @@ var Debug bool = false
 var ION_HOME string = "~/.ionchannel/"
 var CREDENTIALS_FILE string = "~/.ionchannel/credentials"
 var CREDENTIALS_KEY_FIELD string = "secret_key"
+var CONFIGURE_API_ENDPOINT_FIELD string = "endpoint"
 
 func Debugln(str string) {
   if Debug {
