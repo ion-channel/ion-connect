@@ -6,11 +6,15 @@ import (
   "reflect"
 )
 
+type Params interface {
+}
+
 type PostParams struct {
     Name      string   `json:"name,omitempty"`
     Url       string   `json:"url,omitempty"`
     Type      string   `json:"type,omitempty"`
     Checksum  string   `json:"checksum,omitempty"`
+    Scanid    string   `json:"-"`
 }
 
 type GetParams struct {
@@ -18,6 +22,7 @@ type GetParams struct {
     Url       string   `url:"url,omitempty"`
     Type      string   `url:"type,omitempty"`
     Checksum  string   `url:"checksum,omitempty"`
+    Scanid    string   `url:"-"`
 }
 
 func (params GetParams) Generate(context *cli.Context) GetParams {

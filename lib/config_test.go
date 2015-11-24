@@ -20,7 +20,7 @@ var _ = Describe("Config", func() {
   Context("When the config.yaml file is loaded", func() {
     config := GetConfig()
     It("should contain an 'api' section", func() {
-        Expect(len(config.Commands)).To(Equal(1))
+        Expect(len(config.Commands)).To(Equal(2))
     })
     It("should contain the api version", func() {
         Expect(config.Version).To(Equal("v1"))
@@ -32,14 +32,30 @@ var _ = Describe("Config", func() {
         Expect(config.Token).To(Equal("access-token"))
     })
     It("should have commands with subcommands", func() {
-        Expect(len(config.Commands[0].Subcommands)).To(Equal(3))
+        Expect(len(config.Commands[0].Subcommands)).To(Equal(4))
         Expect(config.Commands[0].Subcommands[0].Name).To(Equal("scan-git"))
-        Expect(config.Commands[0].Subcommands[0].Write).To(BeTrue())
+        Expect(config.Commands[0].Subcommands[0].Post).To(BeTrue())
     })
     It("should have commands with subcommands and flags", func() {
-        Expect(len(config.Commands[0].Subcommands)).To(Equal(3))
+        Expect(len(config.Commands[0].Subcommands)).To(Equal(4))
         Expect(config.Commands[0].Subcommands[0].Name).To(Equal("scan-git"))
         Expect(config.Commands[0].Subcommands[0].Flags[0].Name).To(Equal("name"))
+    })
+  })
+
+  Context("When processing a url", func() {
+    config := GetConfig()
+    It("it should render template code", func() {
+        params := GetParams{Scanid:"test"}
+        url, err := config.ProcessUrlFromConfig("scanner", "scan-status", params)
+        Expect(url).To(Equal("/scanner/status/test"))
+        Expect(err).To(BeNil())
+    })
+    It("it should not fail if it's just a string", func() {
+        params := GetParams{Scanid:"test"}
+        url, err := config.ProcessUrlFromConfig("scanner", "scan-git", params)
+        Expect(url).To(Equal("/scanner/git"))
+        Expect(err).To(BeNil())
     })
   })
 
@@ -61,12 +77,12 @@ var _ = Describe("Config", func() {
   Context("If we are looking for a command from the config", func() {
     config := GetConfig()
     It("should return the command config if found", func() {
-      command, err := config.findCommandConfig("scanner")
+      command, err := config.FindCommandConfig("scanner")
       Expect(command.Name).To(Equal("scanner"))
       Expect(err).To(BeNil())
     })
     It("should return an error if not found", func() {
-      command, err := config.findCommandConfig("not real")
+      command, err := config.FindCommandConfig("not real")
       Expect(string(err.Error())).To(Equal("Command not found"))
       Expect(command.Name).To(Equal(""))
     })
@@ -75,17 +91,17 @@ var _ = Describe("Config", func() {
   Context("If we are looking for a subcommand from the config", func() {
     config := GetConfig()
     It("should return the subcommand config if found", func() {
-      command, err := config.findSubCommandConfig("scanner", "scan-git")
+      command, err := config.FindSubCommandConfig("scanner", "scan-git")
       Expect(command.Name).To(Equal("scan-git"))
       Expect(err).To(BeNil())
     })
     It("should return an error if subcommand not found", func() {
-      command, err := config.findSubCommandConfig("scanner", "not real")
+      command, err := config.FindSubCommandConfig("scanner", "not real")
       Expect(string(err.Error())).To(Equal("Subcommand not found"))
       Expect(command.Name).To(Equal(""))
     })
     It("should return an error if command not found", func() {
-      command, err := config.findSubCommandConfig("not real", "not real")
+      command, err := config.FindSubCommandConfig("not real", "not real")
       Expect(string(err.Error())).To(Equal("Command not found"))
       Expect(command.Name).To(Equal(""))
     })

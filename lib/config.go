@@ -9,12 +9,15 @@ import(
     "fmt"
     "os"
     "errors"
+    "text/template"
+    "bytes"
 )
 
 type Command struct {
   Name string
   Usage string
-  Write bool
+  Post bool
+  Url string
   Flags []Flag
   Subcommands []Command
 }
@@ -56,7 +59,7 @@ func GetConfig() Config {
 }
 
 
-func (config Config) findCommandConfig(commandName string) (Command, error) {
+func (config Config) FindCommandConfig(commandName string) (Command, error) {
   for index := range config.Commands {
     if config.Commands[index].Name == commandName {
       return config.Commands[index], nil
@@ -66,8 +69,26 @@ func (config Config) findCommandConfig(commandName string) (Command, error) {
   return Command{}, errors.New("Command not found")
 }
 
-func (config Config) findSubCommandConfig(commandName string, subcommandName string) (Command, error) {
-  command, err := config.findCommandConfig(commandName)
+func (config Config) ProcessUrlFromConfig(commandName string, subcommandName string, params interface{}) (string, error) {
+  subCommandConfig, err := config.FindSubCommandConfig(commandName, subcommandName)
+  if err != nil {
+    return "", err
+  }
+
+  url := subCommandConfig.Url
+
+  templ := template.Must(template.New("url").Parse(url))
+  buf := bytes.Buffer{}
+  err = templ.Execute(&buf, params)
+  if err != nil {
+    return "", err
+  }
+
+  return string(buf.Bytes()), nil
+}
+
+func (config Config) FindSubCommandConfig(commandName string, subcommandName string) (Command, error) {
+  command, err := config.FindCommandConfig(commandName)
   if err != nil {
     return Command{}, err
   }
@@ -103,7 +124,6 @@ func LoadCredential() string {
   exists, _ := PathExists(ION_HOME)
   if exists {
     bytes, _ := ReadBytesFromFile(CREDENTIALS_FILE)
-    Debugf("Reading credentials file (%s)", bytes)
     credentials := make(map[string]string)
     yaml.Unmarshal([]byte(bytes), &credentials)
     return credentials[CREDENTIALS_KEY_FIELD]
