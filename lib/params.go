@@ -27,8 +27,7 @@ type GetParams struct {
 
 func (params GetParams) Generate(context *cli.Context) GetParams {
   flags := context.Command.Flags
-  for index := range flags {
-    flag := flags[index]
+  for _, flag := range flags {
     if flag, ok := flag.(cli.StringFlag); ok {
       reflect.ValueOf(&params).Elem().FieldByName(strings.Title(cli.StringFlag(flag).Name)).SetString(context.String(cli.StringFlag(flag).Name))
     }
@@ -38,8 +37,7 @@ func (params GetParams) Generate(context *cli.Context) GetParams {
 
 func (params PostParams) Generate(context *cli.Context) PostParams {
   flags := context.Command.Flags
-  for index := range flags {
-    flag := flags[index]
+  for _, flag := range flags {
     if flag, ok := flag.(cli.StringFlag); ok {
       reflect.ValueOf(&params).Elem().FieldByName(strings.Title(cli.StringFlag(flag).Name)).SetString(context.String(cli.StringFlag(flag).Name))
     }

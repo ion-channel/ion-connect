@@ -33,18 +33,16 @@ func main() {
 
   commands := make([]cli.Command,len(api.Config.Commands)+1 )
 
-  for index := range api.Config.Commands  {
-    configCommand := api.Config.Commands[index]
+  for index, configCommand := range api.Config.Commands  {
     subcommands := make([]cli.Command,len(configCommand.Subcommands))
-    for jndex := range configCommand.Subcommands {
-      subcommand := configCommand.Subcommands[jndex]
+    for jndex, subcommand := range configCommand.Subcommands {
 
       flags := make([]cli.Flag,len(subcommand.Flags))
-      for kndex := range subcommand.Flags {
+      for kndex, flag := range subcommand.Flags {
         flags[kndex] = cli.StringFlag {
-          Name:        subcommand.Flags[kndex].Name,
-          Value:       subcommand.Flags[kndex].Value,
-          Usage:       subcommand.Flags[kndex].Usage,
+          Name:        flag.Name,
+          Value:       flag.Value,
+          Usage:       flag.Usage,
         }
       }
 
