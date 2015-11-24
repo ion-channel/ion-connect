@@ -1,3 +1,10 @@
+// config_test.go
+//
+// Copyright (C) 2015 Selection Pressure LLC
+//
+// This software may be modified and distributed under the terms
+// of the MIT license.  See the LICENSE file for details.
+
 package ionconnect
 
 import (
@@ -29,7 +36,7 @@ var _ = Describe("Config", func() {
         Expect(config.Endpoint).To(Equal("https://api.ionchannel.io/"))
     })
     It("should contain the api token header name", func() {
-        Expect(config.Token).To(Equal("access-token"))
+        Expect(config.Token).To(Equal("apikey"))
     })
     It("should have commands with subcommands", func() {
         Expect(len(config.Commands[0].Subcommands)).To(Equal(4))
