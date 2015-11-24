@@ -7,8 +7,9 @@
       usage: set of commands for effecting artifacts or source code
       subcommands:
         - name: scan-git
+          url: /scanner/git
           usage: scan a git source code repository
-          write: True
+          post: True
           flags:
             - name: name
               value:
@@ -16,26 +17,41 @@
             - name: url
               value:
               usage: the location of the artifact or source
-        - name: scan-svn
-          usage: scan a subversion source code repository
-          write: True
+        - name: scan-file-artifact
+          url: /scanner/artifact/file
+          usage: scan an artifact from a local path
+          post: True
           flags:
             - name: name
               value:
               usage: the name of the source repository to effect
-            - name: url
+            - name: path
               value:
-              usage: the location of the artifact or source
-        - name: scan-artifact
-          usage: scan an artifact
-          write: True
+              usage: the location of the artifact
+            - name: checksum
+              value:
+              usage: the checksum calculated from the artifact
+        - name: scan-url-artifact
+          url: /scanner/artifact/url
+          usage: scan an artifact from a remote url
+          post: True
           flags:
             - name: name
               value:
               usage: the name of the artifact to effect
             - name: url
               value:
-              usage: the location of the artifact or source
+              usage: the location of the artifact
             - name: checksum
               value:
               usage: the checksum calculated from the artifact
+        - name: scan-status
+          url: /scanner/status/{{ .Scanid }}
+          usage: returns the status data for a given [scan-id]
+          post: False
+          flags:
+            - name: scanid
+              value:
+              usage: the id of the scan to query
+    - name: airgap
+      usage: set of commands for moving artifacts or source code
