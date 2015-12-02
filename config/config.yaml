@@ -23,21 +23,21 @@
             - name: url
               value:
               usage: the location of the artifact or source
-        - name: scan-file-artifact
-          url: /scanner/artifact/file
-          usage: scan an artifact from a local path
-          post: True
-          flags:
-            - name: name
-              value:
-              usage: the name of the source repository to effect
-            - name: path
-              value:
-              usage: the location of the artifact
-            - name: checksum
-              value:
-              usage: the checksum calculated from the artifact
-        - name: scan-url-artifact
+        # - name: scan-artifact-file
+        #   url: /scanner/artifact/file
+        #   usage: scan an artifact from a local path
+        #   post: True
+        #   flags:
+        #     - name: name
+        #       value:
+        #       usage: the name of the source repository to effect
+        #     - name: path
+        #       value:
+        #       usage: the location of the artifact
+        #     - name: checksum
+        #       value:
+        #       usage: the checksum calculated from the artifact
+        - name: scan-artifact-url
           url: /scanner/artifact/url
           usage: scan an artifact from a remote url
           post: True
@@ -53,7 +53,7 @@
               usage: the checksum calculated from the artifact
         - name: scan-status
           url: /scanner/{{ .Scanid }}
-          usage: returns the status data for a given [scan-id]
+          usage: returns the status data for a given [scanid]
           post: False
           flags:
             - name: scanid
@@ -61,3 +61,26 @@
               usage: the id of the scan to query
     - name: airgap
       usage: set of commands for moving artifacts or source code
+      subcommands:
+        - name: airgap-push-url
+          url: /airgap/push/url
+          usage: scan an artifact from a remote url
+          post: True
+          flags:
+            - name: name
+              value:
+              usage: the name of the artifact to effect
+            - name: url
+              value:
+              usage: the location of the artifact
+            - name: checksum
+              value:
+              usage: the checksum calculated from the artifact
+        - name: airgap-push-status
+          url: /airgap/{{ .Airgapid }}
+          usage: returns the status data for a given [airgapid]
+          post: False
+          flags:
+            - name: airgapid
+              value:
+              usage: the id of the artifact push across the airgap
