@@ -39,12 +39,12 @@ var _ = Describe("Config", func() {
         Expect(config.Token).To(Equal("apikey"))
     })
     It("should have commands with subcommands", func() {
-        Expect(len(config.Commands[0].Subcommands)).To(Equal(4))
+        Expect(len(config.Commands[0].Subcommands)).To(Equal(3))
         Expect(config.Commands[0].Subcommands[0].Name).To(Equal("scan-git"))
         Expect(config.Commands[0].Subcommands[0].Post).To(BeTrue())
     })
     It("should have commands with subcommands and flags", func() {
-        Expect(len(config.Commands[0].Subcommands)).To(Equal(4))
+        Expect(len(config.Commands[0].Subcommands)).To(Equal(3))
         Expect(config.Commands[0].Subcommands[0].Name).To(Equal("scan-git"))
         Expect(config.Commands[0].Subcommands[0].Flags[0].Name).To(Equal("name"))
     })
