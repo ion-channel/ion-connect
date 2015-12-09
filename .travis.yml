@@ -16,21 +16,24 @@ install:
 - go get github.com/GeertJohan/go.rice
 - go get github.com/GeertJohan/go.rice/rice
 - gem install fpm
+- apt-get install rpm
 script:
 - go test -v ./...
 
-- GOOS=windows go build -o ion-connect/windows/ion-connect.exe ./
-- rice append --exec ion-connect/windows/ion-connect.exe -i ./lib
+- GOOS=windows go build -o ion-connect/windows/bin/ion-connect.exe ./
+- rice append --exec ion-connect/windows/bin/ion-connect.exe -i ./lib
 
-- GOOS=linux go build -o ion-connect/linux/ion-connect ./
-- rice append --exec ion-connect/linux/ion-connect -i ./lib
+- GOOS=linux go build -o ion-connect/linux/bin/ion-connect ./
+- rice append --exec ion-connect/linux/bin/ion-connect -i ./lib
 
-- GOOS=darwin go build -o ion-connect/darwin/ion-connect ./
-- rice append --exec ion-connect/darwin/ion-connect -i ./lib
+- GOOS=darwin go build -o ion-connect/darwin/bin/ion-connect ./
+- rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
 
 - tar cfvz ion-connect-$TRAVIS_TAG.tar.gz ion-connect
 
-- fpm --version
+- fpm -s dir -t rpm -n ion-connect -v $TRAVIS_TAG -C ion-connect/linux
+- fpm -s dir -t deb -n ion-connect -v $TRAVIS_TAG -C ion-connect/linux
+
 notifications:
   slack: selectpress:80BkOLkmohrgd7bWC7cdA8C5
 deploy:
