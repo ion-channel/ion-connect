@@ -35,8 +35,8 @@ script:
 
 - tar cfvz ion-connect-$TRAVIS_TAG.tar.gz ion-connect
 
-- fpm -s dir -t rpm -n ion-connect -v $TRAVIS_TAG -C ion-connect/linux
-- fpm -s dir -t deb -n ion-connect -v $TRAVIS_TAG -C ion-connect/linux
+- fpm -s dir -t rpm -n ion-connect -v `if [$TRAVIS_TAG -z]; then echo 'master'; else echo $TRAVIS_TAG; fi` -C ion-connect/linux
+- fpm -s dir -t deb -n ion-connect -v `if [$TRAVIS_TAG -z]; then echo 'master'; else echo $TRAVIS_TAG; fi` -C ion-connect/linux
 
 notifications:
   slack: selectpress:80BkOLkmohrgd7bWC7cdA8C5
