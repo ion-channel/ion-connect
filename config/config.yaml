@@ -13,7 +13,7 @@
       usage: set of commands for effecting artifacts or source code
       subcommands:
         - name: scan-git
-          url: /scanner/git
+          url: /scanner/scan-git
           usage: scan a git source code repository
           post: True
           flags:
@@ -38,7 +38,7 @@
         #       value:
         #       usage: the checksum calculated from the artifact
         - name: scan-artifact-url
-          url: /scanner/artifact/url
+          url: /scanner/scan-artifact-url
           usage: scan an artifact from a remote url
           post: True
           flags:
@@ -51,8 +51,8 @@
             - name: checksum
               value:
               usage: the checksum calculated from the artifact
-        - name: scan-status
-          url: /scanner/{{ .Scanid }}
+        - name: get-scan
+          url: /scanner/get-scan/{{ .Scanid }}
           usage: returns the status data for a given [scanid]
           post: False
           flags:
@@ -62,8 +62,8 @@
     - name: airgap
       usage: set of commands for moving artifacts or source code
       subcommands:
-        - name: airgap-push-url
-          url: /airgap/push/url
+        - name: push-artifact-url
+          url: /airgap/push-artifact-url
           usage: scan an artifact from a remote url
           post: True
           flags:
@@ -76,8 +76,8 @@
             - name: checksum
               value:
               usage: the checksum calculated from the artifact
-        - name: airgap-push-status
-          url: /airgap/{{ .Airgapid }}
+        - name: get-push
+          url: /airgap/get-push/{{ .Airgapid }}
           usage: returns the status data for a given [airgapid]
           post: False
           flags:

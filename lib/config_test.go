@@ -54,14 +54,14 @@ var _ = Describe("Config", func() {
     config := GetConfig()
     It("it should render template code", func() {
         params := GetParams{Scanid:"test"}
-        url, err := config.ProcessUrlFromConfig("scanner", "scan-status", params)
-        Expect(url).To(Equal("/scanner/test"))
+        url, err := config.ProcessUrlFromConfig("scanner", "get-scan", params)
+        Expect(url).To(Equal("/scanner/get-scan/test"))
         Expect(err).To(BeNil())
     })
     It("it should not fail if it's just a string", func() {
         params := GetParams{Scanid:"test"}
         url, err := config.ProcessUrlFromConfig("scanner", "scan-git", params)
-        Expect(url).To(Equal("/scanner/git"))
+        Expect(url).To(Equal("/scanner/scan-git"))
         Expect(err).To(BeNil())
     })
   })
