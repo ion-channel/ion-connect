@@ -37,10 +37,14 @@ script:
 - GOOS=darwin go build -o ion-connect/darwin/bin/ion-connect ./
 - rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
 
-- tar cfvz ion-connect-`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi`.tar.gz ion-connect
+- VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi`
+- FILE_NAME=ion-connect-$VERSION
+- tar cfvz $FILE_NAME.tar.gz ion-connect
 
-- fpm -s dir -t rpm -n ion-connect -v `if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi` -C ion-connect/linux
-- fpm -s dir -t deb -n ion-connect -v `if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi` -C ion-connect/linux
+- fpm -s dir -t rpm -n ion-connect -v $VERSION -C ion-connect/linux
+- fpm -s dir -t deb -n ion-connect -v $VERSION -C ion-connect/linux
+
+- #curl -v -F r=releases -F hasPom=false -F e=jar -F g=com.test -F a=project -F v=1.0 -F p=jar -F file=@ -u admin:admin123 http://localhost:8081/nexus/service/local/artifact/maven/content
 
 notifications:
   slack: selectpress:80BkOLkmohrgd7bWC7cdA8C5
