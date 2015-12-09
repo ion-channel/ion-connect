@@ -11,6 +11,10 @@ addons:
   apt:
     packages:
     - rpm
+    - alien
+    - dpkg-dev
+    - debhelper
+    - build-essential
 
 language: go
 go:
@@ -33,7 +37,7 @@ script:
 - GOOS=darwin go build -o ion-connect/darwin/bin/ion-connect ./
 - rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
 
-- tar cfvz ion-connect-$TRAVIS_TAG.tar.gz ion-connect
+- tar cfvz ion-connect-`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi`.tar.gz ion-connect
 
 - fpm -s dir -t rpm -n ion-connect -v `if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi` -C ion-connect/linux
 - fpm -s dir -t deb -n ion-connect -v `if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi` -C ion-connect/linux
