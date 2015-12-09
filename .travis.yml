@@ -7,6 +7,11 @@
 
 sudo: false
 
+addons:
+  apt:
+    packages:
+    - rpm
+
 language: go
 go:
 - 1.5.1
@@ -16,7 +21,6 @@ install:
 - go get github.com/GeertJohan/go.rice
 - go get github.com/GeertJohan/go.rice/rice
 - gem install fpm
-- apt-get install rpm
 script:
 - go test -v ./...
 
