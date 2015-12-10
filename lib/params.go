@@ -22,6 +22,7 @@ type PostParams struct {
     Type      string   `json:"type,omitempty"`
     Checksum  string   `json:"checksum,omitempty"`
     Scanid    string   `json:"-"`
+    Airgapid  string   `json:"-"`
 }
 
 type GetParams struct {
@@ -30,6 +31,7 @@ type GetParams struct {
     Type      string   `url:"type,omitempty"`
     Checksum  string   `url:"checksum,omitempty"`
     Scanid    string   `url:"-"`
+    Airgapid  string   `url:"-"`
 }
 
 func (params GetParams) Generate(context *cli.Context) GetParams {
