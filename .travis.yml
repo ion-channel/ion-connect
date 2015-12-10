@@ -44,8 +44,6 @@ script:
 - fpm -s dir -t rpm -n ion-connect -v $VERSION -C ion-connect/linux
 - fpm -s dir -t deb -n ion-connect -v $VERSION -C ion-connect/linux
 
-- #curl -v -F r=releases -F hasPom=false -F e=jar -F g=com.test -F a=project -F v=1.0 -F p=jar -F file=@ -u admin:admin123 http://localhost:8081/nexus/service/local/artifact/maven/content
-
 notifications:
   slack: selectpress:80BkOLkmohrgd7bWC7cdA8C5
 deploy:
@@ -55,3 +53,5 @@ deploy:
   file: ion-connect-$TRAVIS_TAG.tar.gz
   on:
     tags: true
+after_deploy:
+  - curl -v -F r=Ion -F hasPom=false -F g=io.ionchannel -F a=ion-connect -F v=$VERSION -F p=rpm -F file=@ion-connect-$VERSION.x86_64.rpm -u $NUser:$NPass https://nexus.devops.geointservices.io/service/local/artifact/maven/content
