@@ -93,7 +93,7 @@ func (api Api) processResponse(response http.Response, body map[string]interface
   }
 
   delete(body, "links")
-  jsonBytes, err := json.Marshal(body)
+  jsonBytes, err := json.MarshalIndent(body, "", "  ")
   if err != nil {
     log.Fatalf(err.Error())
   }
