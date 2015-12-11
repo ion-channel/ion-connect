@@ -14,7 +14,7 @@ $ brew install go
 $ export $GOPATH=$HOME/go
 ```
 
-Go provides a command for retrieving dependecies called `go get`.  Since ion-connect is currently private it may be helpful (and more generally helpful) to force git to use ssh by default with  `git config --global url."git@github.com:".insteadOf "https://github.com/"`
+Go provides a command for retrieving dependencies called `go get`.  Since ion-connect is currently private it may be helpful (and more generally helpful) to force git to use ssh by default with  `git config --global url."git@github.com:".insteadOf "https://github.com/"`
 
 ```sh
 $ go get github.com/ion-channel/ion-connect
@@ -28,7 +28,7 @@ $ go build github.com/ion-channel/ion-connect
 
 ## Don't forget the tests
 
-Running the tests requires the install of a couple of test environment dependecies. You can use go to install these as well.
+Running the tests requires the install of a couple of test environment dependencies. You can use go to install these as well.
 
 ```sh
 $ go get github.com/onsi/gomega
