@@ -64,12 +64,12 @@
       subcommands:
         - name: push-artifact-url
           url: /airgap/push-artifact-url
-          usage: scan an artifact from a remote url
+          usage: push an artifact from a remote url
           post: True
           flags:
             - name: name
               value:
-              usage: the name of the artifact to effect
+              usage: the name of the artifact to push
             - name: url
               value:
               usage: the location of the artifact
@@ -83,4 +83,4 @@
           flags:
             - name: airgapid
               value:
-              usage: the id of the artifact push across the airgap
+              usage: the id of the pushed artifact
