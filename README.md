@@ -65,16 +65,17 @@ You can then run various commands to query the Ion Channel system.  The best nex
 ```sh
 $ ion-connect help
 NAME:
-   ionconnect - Control AWS profiles
+   ionconnect - Interact with Ion Channel
 
 USAGE:
-   ion-connect [global options] command [command options] [arguments...]
+   ./ion-connect [global options] command [command options] [arguments...]
 
 VERSION:
-   0.1
+   0.1.1
 
 COMMANDS:
    scanner	set of commands for effecting artifacts or source code
+   airgap	set of commands for moving artifacts or source code
    configure	setup the Ion Channel secret key for later use
    help, h	Shows a list of commands or help for one command
 

@@ -39,6 +39,10 @@ script:
 
 - VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi`
 - FILE_NAME=ion-connect-$VERSION
+
+- cp bin/process-ion-job.sh ion-connect/linux/bin/
+- cp bin/process-ion-job.sh ion-connect/darwin/bin/
+
 - tar cfvz $FILE_NAME.tar.gz ion-connect
 
 - fpm -s dir -t rpm -n ion-connect --iteration 1 -v $VERSION -C ion-connect/linux
