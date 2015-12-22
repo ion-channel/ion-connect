@@ -42,7 +42,15 @@ else
   TIMEOUT=$4
 fi
 
-airgap_id=`ion-connect airgap push-artifact-url --checksum $2 --name $1 --url $3 | jq -r '.airgap_id'`
+POSTRESULT=`ion-connect airgap push-artifact-url --checksum $2 --name $1 --url $3` 
+
+ID=`echo $POSTRESULT | jq -r '.airgap_id'`
+
+if [ "$ID" = "null" ]; then
+  echo "ERROR: Failed to post to Ion"
+  echo $POSTRESULT
+  exit 1
+fi
 
 STATUS="started"
 while [[ $STATUS != "finished" ]]; do
