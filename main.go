@@ -16,7 +16,7 @@ import (
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "ionconnect"
+	app.Name = "ion-connect"
 	app.Usage = "Interact with Ion Channel"
 	app.Version = "0.2.0"
 
