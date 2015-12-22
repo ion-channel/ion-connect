@@ -1,6 +1,6 @@
 #!/bin/bash
 ## process-ion-job.sh
-## usage: process-ion-job.sh name hash url
+## usage: process-ion-job.sh name hash url timeout(optional, default: 120s)
 ##
 ## Copyright (C) 2015 Selection Pressure LLC
 ##
@@ -8,7 +8,7 @@
 ## of the MIT license.  See the LICENSE file for details.
 
 function error {
-  echo "Error: process-ion-job.sh name hash url"
+  echo "Error: process-ion-job.sh name hash url timeout(optional, default: 120s)"
 }
 
 if ! [ -x "$(command -v ion-connect)" ]; then
@@ -36,12 +36,24 @@ if [ -z "$3" ]; then
   exit
 fi
 
+if [ -z $4 ]; then
+  TIMEOUT=120
+else
+  TIMEOUT=$4
+fi
+
 airgap_id=`ion-connect airgap push-artifact-url --checksum $2 --name $1 --url $3 | jq -r '.airgap_id'`
 
 STATUS="started"
 while [[ $STATUS != "finished" ]]; do
-  sleep 2
-  RESULT=`ion-connect airgap get-push --airgapid $airgap_id`
-  STATUS=`echo $RESULT | jq -r '.scan_status'`
+  COUNTER=1
+  if [[ $COUNTER -lt $TIMEOUT ]]; then
+    sleep 1
+    RESULT=`ion-connect airgap get-push --airgapid $airgap_id`
+    STATUS=`echo $RESULT | jq -r '.scan_status'`
+  else
+    exit 1
+  fi
+  COUNTER=COUNTER+1
 done
 echo "$RESULT"
