@@ -17,7 +17,7 @@ import (
 func main() {
 	app := cli.NewApp()
 	app.Name = "ionconnect"
-	app.Usage = "Control AWS profiles"
+	app.Usage = "Interact with Ion Channel"
 	app.Version = "0.1.1"
 
 	var api = ionconnect.Api{ionconnect.GetConfig()}
