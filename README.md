@@ -1,6 +1,6 @@
 # Ion Connect
 
-CLI tool for interacting with the Ion Channel API
+CLI tool for interacting with the Ion Channel Service/API
 
 [![Build Status](https://magnum.travis-ci.com/ion-channel/ion-connect.svg?token=AGRFpUr1LzvrKJ1SmsR3)](https://magnum.travis-ci.com/ion-channel/ion-connect)
 
@@ -51,6 +51,19 @@ $ go install github.com/ion-channel/ion-connect
 
 If you've added the $GOHOME/bin to you path you should now be able to get ion-connect action going.
 
+### To get stuff 'cross-compiled':
+
+```sh
+$ GOOS=windows go build -o ion-connect/windows/bin/ion-connect.exe ./
+$ rice append --exec ion-connect/windows/bin/ion-connect.exe -i ./lib
+
+$ GOOS=linux go build -o ion-connect/linux/bin/ion-connect ./
+$ rice append --exec ion-connect/linux/bin/ion-connect -i ./lib
+
+$ GOOS=darwin go build -o ion-connect/darwin/bin/ion-connect ./
+$ rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
+```
+
 ## Your wish
 
 Ion Connect provides a setup command called *configure*.  This should probably be the first command you run.  You will be prompted for your Ion Channel Secret Key which will be provided by an Ion Channel staff member.
@@ -71,10 +84,10 @@ USAGE:
    ./ion-connect [global options] command [command options] [arguments...]
 
 VERSION:
-   0.1.1
+   0.2.3
 
 COMMANDS:
-   scanner	set of commands for effecting artifacts or source code
+   scanner set of commands for affecting artifacts or source code
    airgap	set of commands for moving artifacts or source code
    configure	setup the Ion Channel secret key for later use
    help, h	Shows a list of commands or help for one command
