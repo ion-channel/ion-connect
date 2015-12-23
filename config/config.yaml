@@ -13,38 +13,24 @@
       usage: set of commands for effecting artifacts or source code
       subcommands:
         - name: scan-git
-          url: /scanner/scan-git
+          url: /scanner/scanGit
           usage: scan a git source code repository
           post: True
           flags:
-            - name: name
+            - name: project
               value:
-              usage: the name of the source repository to effect
+              usage: the name of the project source repository to effect
             - name: url
               value:
               usage: the location of the artifact or source
-        # - name: scan-artifact-file
-        #   url: /scanner/artifact/file
-        #   usage: scan an artifact from a local path
-        #   post: True
-        #   flags:
-        #     - name: name
-        #       value:
-        #       usage: the name of the source repository to effect
-        #     - name: path
-        #       value:
-        #       usage: the location of the artifact
-        #     - name: checksum
-        #       value:
-        #       usage: the checksum calculated from the artifact
         - name: scan-artifact-url
-          url: /scanner/scan-artifact-url
+          url: /scanner/scanArtifactUrl
           usage: scan an artifact from a remote url
           post: True
           flags:
-            - name: name
+            - name: project
               value:
-              usage: the name of the artifact to effect
+              usage: the name of the project for the artifact to effect
             - name: url
               value:
               usage: the location of the artifact
@@ -52,24 +38,24 @@
               value:
               usage: the checksum calculated from the artifact
         - name: get-scan
-          url: /scanner/get-scan/{{ .Scanid }}
-          usage: returns the status data for a given [scanid]
+          url: /scanner/getScan
+          usage: returns the status data for a given [id]
           post: False
           flags:
-            - name: scanid
+            - name: id
               value:
               usage: the id of the scan to query
     - name: airgap
       usage: set of commands for moving artifacts or source code
       subcommands:
         - name: push-artifact-url
-          url: /airgap/push-artifact-url
+          url: /airgap/pushArtifactUrl
           usage: push an artifact from a remote url
           post: True
           flags:
-            - name: name
+            - name: project
               value:
-              usage: the name of the artifact to push
+              usage: the name of the project for the artifact to push
             - name: url
               value:
               usage: the location of the artifact
@@ -77,10 +63,10 @@
               value:
               usage: the checksum calculated from the artifact
         - name: get-push
-          url: /airgap/get-push/{{ .Airgapid }}
-          usage: returns the status data for a given [airgapid]
+          url: /airgap/getPush
+          usage: returns the status data for a given [id]
           post: False
           flags:
-            - name: airgapid
+            - name: id
               value:
               usage: the id of the pushed artifact
