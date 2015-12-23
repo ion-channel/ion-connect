@@ -38,15 +38,16 @@ script:
 - rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
 
 - VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi`
-- FILE_NAME=ion-connect-$VERSION
+- FILE_NAME=ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER
 
 - cp bin/process-ion-job.sh ion-connect/linux/bin/
 - cp bin/process-ion-job.sh ion-connect/darwin/bin/
 
 - tar cfvz $FILE_NAME.tar.gz ion-connect
+- ls -l
 
-- fpm -s dir -t rpm -n ion-connect --iteration 1 -v $VERSION -C ion-connect/linux
-- fpm -s dir -t deb -n ion-connect --iteration 1 -v $VERSION -C ion-connect/linux
+- fpm -s dir -t rpm -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C ion-connect/linux
+- fpm -s dir -t deb -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C ion-connect/linux
 
 notifications:
   slack: selectpress:80BkOLkmohrgd7bWC7cdA8C5
@@ -58,4 +59,4 @@ deploy:
   on:
     tags: true
 after_deploy:
-  - curl -v -F r=Ion -F hasPom=false -F g=io.ionchannel -F a=ion-connect -F v=$VERSION-1 -F p=rpm -F file=@ion-connect-$VERSION-1.x86_64.rpm -u $NUser:$NPass https://nexus.devops.geointservices.io/service/local/artifact/maven/content
+  - curl -v -F r=Ion -F hasPom=false -F g=io.ionchannel -F a=ion-connect -F v=$VERSION-$TRAVIS_BUILD_NUMBER -F p=rpm -F file=@ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER.x86_64.rpm -u $NUser:$NPass https://nexus.devops.geointservices.io/service/local/artifact/maven/content
