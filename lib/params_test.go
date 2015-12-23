@@ -24,10 +24,10 @@ var _ = Describe("Params", func() {
   BeforeEach(func() {
     Debug = true
     set = flag.NewFlagSet("set", 0)
-		set.String("Name", "p", "the name")
-    set.Set("Name", "ernie")
+		set.String("Project", "p", "the name")
+    set.Set("Project", "ernie")
     command := cli.Command{Name: "scan-git"}
-    command.Flags = []cli.Flag{cli.StringFlag{Name:"Name"}}
+    command.Flags = []cli.Flag{cli.StringFlag{Name:"Project"}}
 		context = cli.NewContext(nil, set, nil)
 		context.Command = command
 
@@ -36,13 +36,13 @@ var _ = Describe("Params", func() {
 
   Context("When generating Post Params", func() {
     It("should populate the fields from the context flags", func() {
-      Expect(PostParams{}.Generate(context)).To(Equal(PostParams{Name:"ernie"}))
+      Expect(PostParams{}.Generate(context)).To(Equal(PostParams{Project:"ernie"}))
     })
   })
 
   Context("When generating Get Params", func() {
     It("should populate the fields from the context flags", func() {
-        Expect(GetParams{}.Generate(context)).To(Equal(GetParams{Name:"ernie"}))
+        Expect(GetParams{}.Generate(context)).To(Equal(GetParams{Project:"ernie"}))
     })
   })
 
