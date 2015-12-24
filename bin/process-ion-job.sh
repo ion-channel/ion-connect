@@ -1,6 +1,9 @@
 #!/bin/bash
 ## process-ion-job.sh
 ## usage: process-ion-job.sh name hash url timeout(optional, default: 120s)
+## desc: This script puts together a basic workflow of scan, then transfer
+## and artifact of interest.  The scan runs, and if 'finished' with no negative
+## scan results, it will proceed and transfer (pushing the artifact in/up).
 ##
 ## Copyright (C) 2015 Selection Pressure LLC
 ##
@@ -42,12 +45,42 @@ else
   TIMEOUT=$4
 fi
 
-POSTRESULT=`ion-connect airgap push-artifact-url --checksum $2 --name $1 --url $3` 
-ID=`echo $POSTRESULT | jq -r '.airgap_id'`
+SCANRESULT=`ion-connect scanner scan-artifact-url --checksum $2 --project $1 --url $3`
+SCANSTATUS=`echo $SCANRESULT | jq -r '.status'`
 
-if [ "$ID" = "null" ]; then
+if [ "$SCANSTATUS" = "accepted" ]; then
+  SCANID=`echo $SCANRESULT | jq -r '.id'`
+else
+  echo "ERROR: Failed to scan in Ion"
+  echo $SCANRESULT
+  exit 1
+fi
+
+## TODO: What is the status if it finds something, or what is the indicator
+## that we need to fail this loop?
+
+while [[ $SCANSTATUS != "finished" ]]; do
+  COUNTER=1
+  if [[ $COUNTER -lt $TIMEOUT ]]; then
+    sleep 1
+    RESULT=`ion-connect scanner get-scan --id $SCANID`
+    SCANSTATUS=`echo $RESULT | jq -r '.status'`
+  else
+    echo "ERROR: ion-connect has timed out"
+    exit 1
+  fi
+done
+
+## We have completed the scan portion, now push the artifact
+
+PUSHRESULT=`ion-connect airgap push-artifact-url --checksum $2 --project $1 --url $3`
+PUSHSTATUS=`echo $PUSHRESULT | jq -r '.status'`
+
+if [ "$PUSHSTATUS" = "accepted" ]; then
+  PUSHID=`echo $PUSHSTATUS | jq -r '.id'`
+else
   echo "ERROR: Failed to post to Ion"
-  echo $POSTRESULT
+  echo $PUSHRESULT
   exit 1
 fi
 
@@ -56,9 +89,10 @@ while [[ $STATUS != "finished" ]]; do
   COUNTER=1
   if [[ $COUNTER -lt $TIMEOUT ]]; then
     sleep 1
-    RESULT=`ion-connect airgap get-push --airgapid $ID`
+    RESULT=`ion-connect airgap get-push --id $ID`
     STATUS=`echo $RESULT | jq -r '.scan_status'`
   else
+    echo "ERROR: ion-connect has timed out"
     exit 1
   fi
   COUNTER=COUNTER+1
