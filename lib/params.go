@@ -17,21 +17,19 @@ type Params interface {
 }
 
 type PostParams struct {
-    Name      string   `json:"name,omitempty"`
+    Project   string   `json:"project,omitempty"`
     Url       string   `json:"url,omitempty"`
     Type      string   `json:"type,omitempty"`
     Checksum  string   `json:"checksum,omitempty"`
-    Scanid    string   `json:"-"`
-    Airgapid  string   `json:"-"`
+    Id        string   `json:"id,omitempty"`
 }
 
 type GetParams struct {
-    Name      string   `url:"name,omitempty"`
+    Project   string   `url:"project,omitempty"`
     Url       string   `url:"url,omitempty"`
     Type      string   `url:"type,omitempty"`
     Checksum  string   `url:"checksum,omitempty"`
-    Scanid    string   `url:"-"`
-    Airgapid  string   `url:"-"`
+    Id        string   `url:"id,omitempty"`
 }
 
 func (params GetParams) Generate(context *cli.Context) GetParams {
