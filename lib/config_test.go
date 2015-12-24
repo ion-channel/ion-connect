@@ -46,22 +46,22 @@ var _ = Describe("Config", func() {
     It("should have commands with subcommands and flags", func() {
         Expect(len(config.Commands[0].Subcommands)).To(Equal(3))
         Expect(config.Commands[0].Subcommands[0].Name).To(Equal("scan-git"))
-        Expect(config.Commands[0].Subcommands[0].Flags[0].Name).To(Equal("name"))
+        Expect(config.Commands[0].Subcommands[0].Flags[0].Name).To(Equal("project"))
     })
   })
 
   Context("When processing a url", func() {
     config := GetConfig()
     It("it should render template code", func() {
-        params := GetParams{Scanid:"test"}
+        params := GetParams{Id:"test"}
         url, err := config.ProcessUrlFromConfig("scanner", "get-scan", params)
-        Expect(url).To(Equal("/scanner/get-scan/test"))
+        Expect(url).To(Equal("/scanner/getScan"))
         Expect(err).To(BeNil())
     })
     It("it should not fail if it's just a string", func() {
-        params := GetParams{Scanid:"test"}
+        params := GetParams{Id:"test"}
         url, err := config.ProcessUrlFromConfig("scanner", "scan-git", params)
-        Expect(url).To(Equal("/scanner/scan-git"))
+        Expect(url).To(Equal("/scanner/scanGit"))
         Expect(err).To(BeNil())
     })
   })
