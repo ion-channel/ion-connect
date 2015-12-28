@@ -56,6 +56,7 @@ else
   exit 1
 fi
 
+#echo "SS: $SCANSTATUS - SR: $SCANRESULT"
 ## TODO: What is the status if it finds something, or what is the indicator
 ## that we need to fail this loop?
 
@@ -63,8 +64,8 @@ while [[ $SCANSTATUS != "finished" ]]; do
   COUNTER=1
   if [[ $COUNTER -lt $TIMEOUT ]]; then
     sleep 1
-    RESULT=`ion-connect scanner get-scan --id $SCANID`
-    SCANSTATUS=`echo $RESULT | jq -r '.status'`
+    GETSCANRESULT=`ion-connect scanner get-scan --id $SCANID`
+    SCANSTATUS=`echo $GETSCANRESULT | jq -r '.status'`
   else
     echo "ERROR: ion-connect has timed out"
     exit 1
@@ -74,27 +75,27 @@ done
 ## We have completed the scan portion, now push the artifact
 
 PUSHRESULT=`ion-connect airgap push-artifact-url --checksum $2 --project $1 --url $3`
+#echo "PR: $PUSHRESULT"
 PUSHSTATUS=`echo $PUSHRESULT | jq -r '.status'`
-
+#echo "PS: $PUSHSTATUS"
 if [ "$PUSHSTATUS" = "accepted" ]; then
-  PUSHID=`echo $PUSHSTATUS | jq -r '.id'`
+  PUSHID=`echo $PUSHRESULT | jq -r '.id'`
 else
   echo "ERROR: Failed to post to Ion"
   echo $PUSHRESULT
   exit 1
 fi
 
-STATUS="started"
-while [[ $STATUS != "finished" ]]; do
+while [[ $PUSHSTATUS != "finished" ]]; do
   COUNTER=1
   if [[ $COUNTER -lt $TIMEOUT ]]; then
     sleep 1
-    RESULT=`ion-connect airgap get-push --id $ID`
-    STATUS=`echo $RESULT | jq -r '.scan_status'`
+    GETPUSHRESULT=`ion-connect airgap get-push --id $PUSHID`
+    PUSHSTATUS=`echo $GETPUSHRESULT | jq -r '.status'`
   else
     echo "ERROR: ion-connect has timed out"
     exit 1
   fi
   COUNTER=COUNTER+1
 done
-echo "$RESULT"
+printf "{\"scanner\":$GETSCANRESULT\n,\"airgap\":$GETPUSHRESULT\n}"
