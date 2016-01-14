@@ -37,7 +37,7 @@ script:
 - GOOS=darwin go build -o ion-connect/darwin/bin/ion-connect ./
 - rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
 
-- VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi`
+- VERSION=`if [ -z $TRAVIS_TAG ]; then echo 'master'; else echo $TRAVIS_TAG; fi`
 - FILE_NAME=ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER
 
 - cp bin/process-ion-job.sh ion-connect/linux/bin/
