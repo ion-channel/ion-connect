@@ -1,12 +1,4 @@
- # .travis.yml
- #
- # Copyright (C) 2015 Selection Pressure LLC
- #
- # This software may be modified and distributed under the terms
- # of the MIT license.  See the LICENSE file for details.
-
 sudo: false
-
 addons:
   apt:
     packages:
@@ -15,7 +7,6 @@ addons:
     - dpkg-dev
     - debhelper
     - build-essential
-
 language: go
 go:
 - 1.5.1
@@ -27,36 +18,35 @@ install:
 - gem install fpm
 script:
 - go test -v ./...
-
 - GOOS=windows go build -o ion-connect/windows/bin/ion-connect.exe ./
 - rice append --exec ion-connect/windows/bin/ion-connect.exe -i ./lib
-
 - GOOS=linux go build -o ion-connect/linux/bin/ion-connect ./
 - rice append --exec ion-connect/linux/bin/ion-connect -i ./lib
-
 - GOOS=darwin go build -o ion-connect/darwin/bin/ion-connect ./
 - rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
-
 - VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi`
 - FILE_NAME=ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER
-
 - cp bin/process-ion-job.sh ion-connect/linux/bin/
 - cp bin/process-ion-job.sh ion-connect/darwin/bin/
-
 - tar cfvz $FILE_NAME.tar.gz ion-connect
 - ls -l
-
-- fpm -s dir -t rpm -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C ion-connect/linux
-- fpm -s dir -t deb -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C ion-connect/linux
-
+- fpm -s dir -t rpm -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C
+  ion-connect/linux
+- fpm -s dir -t deb -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C
+  ion-connect/linux
 notifications:
   slack: selectpress:80BkOLkmohrgd7bWC7cdA8C5
 deploy:
   provider: releases
   api_key:
     secure: r8yesBzPR5Xbe3i0sidr2ivrVOGv5EV38iW0kU/p6FSBgH6Y5v9ZR98p1vDh87tRoUCYjczTtsT4lWPA9nTqHmBKXTqwwrOkL0jyObhz51P3oOdpRuWacj18IyLKro97xuXllnrNdFqbDqt2wmvz70LQyMVwORPTkhgZcmgD66qE+yWqC0v8QHx17An2lXRoMpAurgnWkrMES7t1kKmkLFn7WL3s1zRk9NguUR7eLWTH4xuDw/FHT/05Tt5He6wlnd6KM1NDkepLtCx4JfJQ865ljvKok+SHLw3RQqAmoHE5aoZg3ZVV0Upv2pQz2XPKZ/xWDCQDnyJyVvAGefXQYWdHtkNLLFwP84LmxTWHv3zM3uwxqy0MyS7J7GrwKDPg0Fx/lytiTR6aN1soc9d2FxvcbFfOJnlqDRhjbBLoo6eOrcImrSwaSHTqFANwnuu6w93KleuSNifqXWVV8Qu9/yVekU2QYRnSf5pxgJrXRGmpHFlnUD33bImEf9ZnvWbbx3c7/Xs7b8qhz7KRa1Dnb5PENsKrTRoTExYWxd6U7nN1YyCZiZwWfHSOSXWV2xH7ePt6kVIPv0DMsq2+xWCTlzhPEXnmRiV2/WbEuni99EQkFozcDHJ2tfNMTArLImXYNL33X4vKqXT4n4DEU2rOdA0Zb8hyAho573ZKcGdxf3o=
-  file: $FILE_NAME.tar.gz
+  file: "$FILE_NAME.tar.gz"
   on:
     tags: true
 after_deploy:
-  - curl -v -F r=Ion -F hasPom=false -F g=io.ionchannel -F a=ion-connect -F v=$VERSION-$TRAVIS_BUILD_NUMBER -F p=rpm -F file=@ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER.x86_64.rpm -u $NUser:$NPass https://nexus.devops.geointservices.io/service/local/artifact/maven/content
+- curl -v -F r=Ion -F hasPom=false -F g=io.ionchannel -F a=ion-connect -F v=$VERSION-$TRAVIS_BUILD_NUMBER
+  -F p=rpm -F file=@ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER.x86_64.rpm -u $NUser:$NPass
+  https://nexus.devops.geointservices.io/service/local/artifact/maven/content
+env:
+  global:
+    secure: wrza/4Zgx94qbzHOXalcPP27+DLUJyEgIVgXkoS6p8eZtGUMpG2Cuc7KiXDS1YOuFBFD5xul7xvZ8sUclb3gOVAPPiEdUH5K575+r4ls7JumOwW/InAc7jMM2FDLMAklb78Ktu024/saz8no64LtAHod8Kb6X57qRPBoYphN868iYj7TuuSkRwLD8KUFIUPTQMhbBMvQQbQxSBS5Hq92Pxu2+UbVi4neeb1XSfZtR0XvKHQIYqNs/d1M2Djj5dfPEPgn9S7SY8ZAgwfkyId4fwhrccPzsvnmoDPMKshFx4rMAcjAm5GSnoJnk8P5m0G18yJX6e+CcCelRc2R8qHO4/jnJssDcMZYlRXeDDacs2/MPjBnzGqN93vaqQzIj+u2b89vogeSL5uj6vJlTYHsdr/VqkGvZYwYZHJaDdWVkimEXH0Y7WN9EpRz3vXbCpzsJH928iGWeN97vn4nlGatApUMImthtyxYfJ31fdnbmphvXtvZQuPPhQz0epkkVPwijDBHMV4Rmm7DZP+eQ75MhYSbi+KwGaAUK4/Kc5yjFljbTeBgB5pfo24I5MNBKGOOytL+NDmGJ+xJBmqy3A19wtiLtFrIGi6lQ0wT3gZPqGQXC+wd2gi19gPpWN3Di1k1Fy8TiC8+4OLAAM7J9ST3AzIRPS3ONOarVmOLDst8zZg=
