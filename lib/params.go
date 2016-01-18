@@ -22,6 +22,7 @@ type PostParams struct {
     Type      string   `json:"type,omitempty"`
     Checksum  string   `json:"checksum,omitempty"`
     Id        string   `json:"id,omitempty"`
+    Text      string   `json:"text,omitempty"`
 }
 
 type GetParams struct {
@@ -30,6 +31,7 @@ type GetParams struct {
     Type      string   `url:"type,omitempty"`
     Checksum  string   `url:"checksum,omitempty"`
     Id        string   `url:"id,omitempty"`
+    Text      string   `url:"text,omitempty"`
 }
 
 func (params GetParams) Generate(context *cli.Context) GetParams {

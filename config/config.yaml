@@ -70,3 +70,22 @@
             - name: id
               value:
               usage: the id of the pushed artifact
+    - name: metadata
+      usage: set of commands for parsing metadata from text
+      subcommands:
+        - name: get-locations
+          url: /metadata/getLocations
+          usage: returns the locations parsed from the [text] input
+          post: True
+          flags:
+            - name: text
+              value:
+              usage: some text to look for locations
+        - name: get-languages
+          url: /metadata/getLanguages
+          usage: returns the languages parsed from the [text] input
+          post: True
+          flags:
+            - name: text
+              value:
+              usage: some text to look for languages
