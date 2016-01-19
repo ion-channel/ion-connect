@@ -9,7 +9,7 @@ addons:
     - build-essential
 language: go
 go:
-- 1.5.1
+- 1.5.3
 install:
 - go get github.com/onsi/gomega
 - go get github.com/onsi/ginkgo
