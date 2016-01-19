@@ -6,7 +6,8 @@
  # of the MIT license.  See the LICENSE file for details.
 ---
   version: v1
-  endpoint: https://api.ionchannel.io/
+  endpoint: http://localhost:9292/
+    #https://api.ionchannel.io/
   token: apikey
   commands:
     - name: scanner
@@ -89,3 +90,11 @@
             - name: text
               value:
               usage: some text to look for languages
+        - name: get-licenses
+          url: /metadata/getLicenses
+          usage: returns the licenses parsed from the [text] input
+          post: True
+          flags:
+            - name: text
+              value:
+              usage: some text to look for licenses
