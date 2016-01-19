@@ -69,6 +69,7 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
 
   client.Path(fmt.Sprintf("%s%s", api.Config.Version, url))
   client.Add(api.Config.Token, LoadCredential())
+
   body := make(map[string]interface{})
   response, responseErr := client.Receive(&body, &body)
   if responseErr != nil {
