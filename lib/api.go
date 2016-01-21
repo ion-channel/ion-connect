@@ -36,39 +36,41 @@ func (api Api) HandleCommand(ctx *cli.Context) {
   if err != nil {
     log.Fatalf("Command configuration missing for %s %s", command, subcommand)
   }
-  err = api.validateFlags(subcommandConfig, ctx)
+  args, err := api.validateFlags(subcommandConfig, ctx)
   if err != nil {
     fmt.Println(err.Error())
     cli.ShowCommandHelp(ctx, ctx.Command.Name)
     os.Exit(1)
   }
 
-  err = api.validateArgs(subcommandConfig, ctx)
+  err = api.validateArgs(args, ctx)
   if err != nil {
     fmt.Println(err.Error())
     cli.ShowCommandHelp(ctx, ctx.Command.Name)
     os.Exit(1)
   }
-  response, body := api.sendRequest(command, subcommand, ctx, subcommandConfig)
+  response, body := api.sendRequest(command, subcommand, ctx, args, subcommandConfig.Post)
 
   fmt.Println(api.processResponse(response, body))
 }
 
-func (api Api) sendRequest(command string, subcommand string, context *cli.Context, subcommandConfig Command) (http.Response, map[string]interface{}) {
+func (api Api) sendRequest(command string, subcommand string, context *cli.Context, args Args, shouldPost bool) (http.Response, map[string]interface{}) {
   client := sling.New()
   var url string
 
-  if subcommandConfig.Post {
-    params := PostParams{}.Generate(context.Args(), subcommandConfig.Args)
+  if shouldPost {
+    params := PostParams{}.Generate(context.Args(), args)
     client.Post(api.Config.Endpoint)
     client.BodyJSON(&params)
+    Debugf("Sending body %v", params)
   } else {
-    params := GetParams{}.Generate(context.Args(), subcommandConfig.Args)
+    params := GetParams{}.Generate(context.Args(), args)
     client.Get(api.Config.Endpoint)
     client.QueryStruct(&params)
+    Debugf("Sending params %v", params)
   }
 
-  url, err := api.Config.ProcessUrlFromConfig(command, subcommand, GetParams{}.Generate(context.Args(), subcommandConfig.Args))
+  url, err := api.Config.ProcessUrlFromConfig(command, subcommand, GetParams{}.Generate(context.Args(), args))
   if err != nil {
     log.Fatal(err.Error())
   }
@@ -108,8 +110,8 @@ func (api Api) processResponse(response http.Response, body map[string]interface
   return string(jsonBytes)
 }
 
-func (api Api) validateArgs(commandConfig Command, ctx *cli.Context) error {
-  if commandConfig.GetRequiredArgsCount() > len(ctx.Args()) {
+func (api Api) validateArgs(args Args, ctx *cli.Context) error {
+  if args.GetRequiredArgsCount() > len(ctx.Args()) {
     Debugf("Missing required argument ")
     return errors.New(fmt.Sprintf("Missing required argument"))
   }
@@ -117,13 +119,22 @@ func (api Api) validateArgs(commandConfig Command, ctx *cli.Context) error {
   return nil
 }
 
-func (api Api) validateFlags(commandConfig Command, ctx *cli.Context) error {
+func (api Api) validateFlags(commandConfig Command, ctx *cli.Context) ([]Arg, error) {
+  args := []Arg{}
   for _, flag := range commandConfig.Flags {
-    if ctx.String(flag.Name) == "" {
+    if !ctx.IsSet(flag.Name) && flag.Required {
       Debugf("Missing required option %s", flag.Name)
-      return errors.New(fmt.Sprintf("Missing required option %s", flag.Name))
+      return args, errors.New(fmt.Sprintf("Missing required option %s", flag.Name))
+    } else if ctx.IsSet(flag.Name) && len(flag.Args) > 0 {
+      Debugf("Getting args for flag %s", flag)
+      args = flag.Args
     }
   }
 
-  return nil
+  if len(args) == 0 {
+    args = commandConfig.Args
+  }
+
+  Debugf("Found args %v", args)
+  return args, nil
 }
