@@ -18,6 +18,7 @@ import (
 )
 
 var Debug bool = false
+var Run   bool = true
 var ION_HOME string = "~/.ionchannel/"
 var CREDENTIALS_FILE string = "~/.ionchannel/credentials"
 var CREDENTIALS_KEY_FIELD string = "secret_key"

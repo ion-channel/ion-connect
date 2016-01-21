@@ -43,10 +43,10 @@ var _ = Describe("Config", func() {
         Expect(config.Commands[0].Subcommands[0].Name).To(Equal("scan-git"))
         Expect(config.Commands[0].Subcommands[0].Post).To(BeTrue())
     })
-    It("should have commands with subcommands and flags", func() {
+    It("should have commands with subcommands and args", func() {
         Expect(len(config.Commands[0].Subcommands)).To(Equal(3))
         Expect(config.Commands[0].Subcommands[0].Name).To(Equal("scan-git"))
-        Expect(config.Commands[0].Subcommands[0].Flags[0].Name).To(Equal("project"))
+        Expect(config.Commands[0].Subcommands[0].Args[0].Name).To(Equal("project"))
     })
   })
 
@@ -54,14 +54,14 @@ var _ = Describe("Config", func() {
     config := GetConfig()
     It("it should render template code", func() {
         params := GetParams{Id:"test"}
-        url, err := config.ProcessUrlFromConfig("scanner", "get-scan", params)
-        Expect(url).To(Equal("/scanner/getScan"))
+        url, err := config.ProcessUrlFromConfig("metadata", "get-locations", params)
+        Expect(url).To(Equal("/metadata/getLocations"))
         Expect(err).To(BeNil())
     })
     It("it should not fail if it's just a string", func() {
         params := GetParams{Id:"test"}
-        url, err := config.ProcessUrlFromConfig("scanner", "scan-git", params)
-        Expect(url).To(Equal("/scanner/scanGit"))
+        url, err := config.ProcessUrlFromConfig("metadata", "get-locations", params)
+        Expect(url).To(Equal("/metadata/getLocations"))
         Expect(err).To(BeNil())
     })
   })
@@ -84,8 +84,8 @@ var _ = Describe("Config", func() {
   Context("If we are looking for a command from the config", func() {
     config := GetConfig()
     It("should return the command config if found", func() {
-      command, err := config.FindCommandConfig("scanner")
-      Expect(command.Name).To(Equal("scanner"))
+      command, err := config.FindCommandConfig("metadata")
+      Expect(command.Name).To(Equal("metadata"))
       Expect(err).To(BeNil())
     })
     It("should return an error if not found", func() {
@@ -98,12 +98,12 @@ var _ = Describe("Config", func() {
   Context("If we are looking for a subcommand from the config", func() {
     config := GetConfig()
     It("should return the subcommand config if found", func() {
-      command, err := config.FindSubCommandConfig("scanner", "scan-git")
-      Expect(command.Name).To(Equal("scan-git"))
+      command, err := config.FindSubCommandConfig("metadata", "get-locations")
+      Expect(command.Name).To(Equal("get-locations"))
       Expect(err).To(BeNil())
     })
     It("should return an error if subcommand not found", func() {
-      command, err := config.FindSubCommandConfig("scanner", "not real")
+      command, err := config.FindSubCommandConfig("metadata", "not real")
       Expect(string(err.Error())).To(Equal("Subcommand not found"))
       Expect(command.Name).To(Equal(""))
     })
@@ -114,6 +114,29 @@ var _ = Describe("Config", func() {
     })
   })
 
+  Context("If we need to generate an argument string", func() {
+    Run = false
+    config := GetConfig()
+    It("should include all required args", func() {
+      command, err := config.FindSubCommandConfig("test", "test1")
+      Expect(err).To(BeNil())
+      Expect(len(command.Args)).To(Equal(2))
+      Expect(command.GetArgsUsage()).To(Equal("TEXT TEXT2 "))
+    })
+    It("should include optional args", func() {
+      command, err := config.FindSubCommandConfig("test", "test2")
+      Expect(err).To(BeNil())
+      Expect(len(command.Args)).To(Equal(3))
+      // probably not a good example, testing for order
+      Expect(command.GetArgsUsage()).To(Equal("TEXT [OTHERTEXT] TEXT2 "))
+    })
+    It("should be empty if no args", func() {
+      command, err := config.FindSubCommandConfig("test", "test3")
+      Expect(err).To(BeNil())
+      Expect(len(command.Args)).To(Equal(0))
+      Expect(command.GetArgsUsage()).To(Equal(""))
+    })
+  })
 
   AfterEach(func() {
     Debug = false
