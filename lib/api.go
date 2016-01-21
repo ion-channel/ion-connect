@@ -43,26 +43,32 @@ func (api Api) HandleCommand(ctx *cli.Context) {
     os.Exit(1)
   }
 
-  response, body := api.sendRequest(command, subcommand, ctx, subcommandConfig.Post)
+  err = api.validateArgs(subcommandConfig, ctx)
+  if err != nil {
+    fmt.Println(err.Error())
+    cli.ShowCommandHelp(ctx, ctx.Command.Name)
+    os.Exit(1)
+  }
+  response, body := api.sendRequest(command, subcommand, ctx, subcommandConfig)
 
   fmt.Println(api.processResponse(response, body))
 }
 
-func (api Api) sendRequest(command string, subcommand string, context *cli.Context, should_post bool) (http.Response, map[string]interface{}) {
+func (api Api) sendRequest(command string, subcommand string, context *cli.Context, subcommandConfig Command) (http.Response, map[string]interface{}) {
   client := sling.New()
   var url string
 
-  if should_post {
-    params := PostParams{}.Generate(context)
+  if subcommandConfig.Post {
+    params := PostParams{}.Generate(context.Args(), subcommandConfig.Args)
     client.Post(api.Config.Endpoint)
     client.BodyJSON(&params)
   } else {
-    params := GetParams{}.Generate(context)
+    params := GetParams{}.Generate(context.Args(), subcommandConfig.Args)
     client.Get(api.Config.Endpoint)
     client.QueryStruct(&params)
   }
 
-  url, err := api.Config.ProcessUrlFromConfig(command, subcommand, GetParams{}.Generate(context))
+  url, err := api.Config.ProcessUrlFromConfig(command, subcommand, GetParams{}.Generate(context.Args(), subcommandConfig.Args))
   if err != nil {
     log.Fatal(err.Error())
   }
@@ -100,6 +106,15 @@ func (api Api) processResponse(response http.Response, body map[string]interface
   }
 
   return string(jsonBytes)
+}
+
+func (api Api) validateArgs(commandConfig Command, ctx *cli.Context) error {
+  if commandConfig.GetRequiredArgsCount() > len(ctx.Args()) {
+    Debugf("Missing required argument ")
+    return errors.New(fmt.Sprintf("Missing required argument"))
+  }
+
+  return nil
 }
 
 func (api Api) validateFlags(commandConfig Command, ctx *cli.Context) error {

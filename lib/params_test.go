@@ -18,31 +18,31 @@ import (
 var _ = Describe("Params", func() {
   var (
 		context *cli.Context
-		set *flag.FlagSet
+    config Command
+    set *flag.FlagSet
 	)
 
   BeforeEach(func() {
     Debug = true
     set = flag.NewFlagSet("set", 0)
-		set.String("Project", "p", "the name")
-    set.Set("Project", "ernie")
     command := cli.Command{Name: "scan-git"}
-    command.Flags = []cli.Flag{cli.StringFlag{Name:"Project"}}
-		context = cli.NewContext(nil, set, nil)
-		context.Command = command
+    context = cli.NewContext(nil, set, nil)
+    context.Command = command
 
-
+    config,_ = GetConfig().FindSubCommandConfig("scanner", "scan-git")
   })
 
   Context("When generating Post Params", func() {
     It("should populate the fields from the context flags", func() {
-      Expect(PostParams{}.Generate(context)).To(Equal(PostParams{Project:"ernie"}))
+      args := []string{"ernie"}
+      Expect(PostParams{}.Generate(args, config.Args)).To(Equal(PostParams{Project:"ernie"}))
     })
   })
 
   Context("When generating Get Params", func() {
     It("should populate the fields from the context flags", func() {
-        Expect(GetParams{}.Generate(context)).To(Equal(GetParams{Project:"ernie"}))
+      args := []string{"ernie"}
+      Expect(GetParams{}.Generate(args, config.Args)).To(Equal(GetParams{Project:"ernie"}))
     })
   })
 
