@@ -56,6 +56,7 @@ func main() {
 				Name:   subcommand.Name,
 				Usage:  subcommand.Usage,
 				Action: api.HandleCommand,
+        ArgsUsage: subcommand.GetArgsUsage(),
 				Flags:  flags,
 			}
 		}
