@@ -8,7 +8,7 @@
 package ionconnect
 
 import (
-  "github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/codegangsta/cli"
+  // "github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/codegangsta/cli"
   "strings"
   "reflect"
 )
@@ -34,22 +34,16 @@ type GetParams struct {
     Text      string   `url:"text,omitempty"`
 }
 
-func (params GetParams) Generate(context *cli.Context) GetParams {
-  flags := context.Command.Flags
-  for _, flag := range flags {
-    if flag, ok := flag.(cli.StringFlag); ok {
-      reflect.ValueOf(&params).Elem().FieldByName(strings.Title(cli.StringFlag(flag).Name)).SetString(context.String(cli.StringFlag(flag).Name))
-    }
+func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
+  for index, arg := range args {
+    reflect.ValueOf(&params).Elem().FieldByName(strings.Title(argConfigs[index].Name)).SetString(arg)
   }
   return params
 }
 
-func (params PostParams) Generate(context *cli.Context) PostParams {
-  flags := context.Command.Flags
-  for _, flag := range flags {
-    if flag, ok := flag.(cli.StringFlag); ok {
-      reflect.ValueOf(&params).Elem().FieldByName(strings.Title(cli.StringFlag(flag).Name)).SetString(context.String(cli.StringFlag(flag).Name))
-    }
+func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
+  for index, arg := range args {
+    reflect.ValueOf(&params).Elem().FieldByName(strings.Title(argConfigs[index].Name)).SetString(arg)
   }
   return params
 }

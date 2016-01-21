@@ -16,35 +16,41 @@
           url: /scanner/scanGit
           usage: scan a git source code repository
           post: True
-          flags:
+          args:
             - name: project
               value:
-              usage: the name of the project source repository to effect
+              usage: PROJECT
+              required: True
             - name: url
               value:
-              usage: the location of the artifact or source
+              usage: URL
+              required: True
         - name: scan-artifact-url
           url: /scanner/scanArtifactUrl
           usage: scan an artifact from a remote url
           post: True
-          flags:
+          args:
             - name: project
               value:
-              usage: the name of the project for the artifact to effect
+              usage: PROJECT
+              required: True
             - name: url
               value:
-              usage: the location of the artifact
+              usage: URL
+              required: True
             - name: checksum
               value:
-              usage: the checksum calculated from the artifact
+              usage: CHECKSUM
+              required: True
         - name: get-scan
           url: /scanner/getScan
           usage: returns the status data for a given [id]
           post: False
-          flags:
+          args:
             - name: id
               value:
-              usage: the id of the scan to query
+              usage: ID
+              required: True
     - name: airgap
       usage: set of commands for moving artifacts or source code
       subcommands:
@@ -52,24 +58,28 @@
           url: /airgap/pushArtifactUrl
           usage: push an artifact from a remote url
           post: True
-          flags:
+          args:
             - name: project
               value:
-              usage: the name of the project for the artifact to push
+              usage: PROJECT
+              required: True
             - name: url
               value:
-              usage: the location of the artifact
+              usage: URL
+              required: True
             - name: checksum
               value:
-              usage: the checksum calculated from the artifact
+              usage: CHECKSUM
+              required: True
         - name: get-push
           url: /airgap/getPush
           usage: returns the status data for a given [id]
           post: False
-          flags:
+          args:
             - name: id
               value:
-              usage: the id of the pushed artifact
+              usage: ID
+              required: True
     - name: metadata
       usage: set of commands for parsing metadata from text
       subcommands:
@@ -77,23 +87,65 @@
           url: /metadata/getLocations
           usage: returns the locations parsed from the [text] input
           post: True
-          flags:
+          args:
             - name: text
               value:
-              usage: some text to look for locations
+              usage: TEXT
+              required: True
         - name: get-languages
           url: /metadata/getLanguages
           usage: returns the languages parsed from the [text] input
           post: True
-          flags:
+          args:
             - name: text
               value:
-              usage: some text to look for languages
+              usage: TEXT
+              required: True
         - name: get-licenses
           url: /metadata/getLicenses
           usage: returns the licenses parsed from the [text] input
           post: True
-          flags:
+          args:
             - name: text
               value:
-              usage: some text to look for licenses
+              usage: TEXT
+              required: True
+# only for test
+    - name: test
+      usage: set of commands testing
+      subcommands:
+        - name: test1
+          url: /test/getTest
+          usage: tests only
+          post: True
+          args:
+            - name: text
+              value:
+              usage: TEXT
+              required: True
+            - name: text2
+              value:
+              usage: TEXT2
+              required: True
+        - name: test2
+          url: /test/getTest
+          usage: tests only
+          post: True
+          args:
+            - name: text
+              value:
+              usage: TEXT
+              required: True
+            - name: othertext
+              value:
+              usage: OTHERTEXT
+              required: False
+            - name: text2
+              value:
+              usage: TEXT2
+              required: True
+        - name: test3
+          url: /test/getTest
+          usage: tests only
+          post: True
+          args:

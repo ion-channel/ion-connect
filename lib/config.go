@@ -26,7 +26,45 @@ type Command struct {
   Post bool
   Url string
   Flags []Flag
+  Args  []Arg
   Subcommands []Command
+}
+
+type Arg struct {
+  Name string
+  Value string
+  Usage string
+  Required bool
+}
+
+func (command Command) GetArgsUsage() string {
+  var buffer bytes.Buffer
+  for _, arg := range command.Args {
+    if len(arg.Usage) > 0 {
+       if !arg.Required {
+          buffer.WriteString("[")
+       }
+       buffer.WriteString(arg.Usage)
+       if !arg.Required {
+          buffer.WriteString("]")
+       }
+       buffer.WriteString(" ")
+
+    }
+  }
+
+  return buffer.String()
+}
+
+func (command Command) GetRequiredArgsCount() int {
+  var count int
+  for _, arg := range command.Args {
+    if len(arg.Usage) > 0 && arg.Required {
+      count++
+    }
+  }
+
+  return count
 }
 
 type Flag struct {
@@ -60,8 +98,10 @@ func GetConfig() Config {
   if err != nil {
     log.Fatalf("error: %v", err)
   }
-  Debugf("Config map:\n%v\n\n", config)
 
+  if Run {
+    config.Commands = config.Commands[:len(config.Commands)-1]
+  }
   return config
 }
 
