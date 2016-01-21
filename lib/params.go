@@ -11,6 +11,7 @@ import (
   // "github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/codegangsta/cli"
   "strings"
   "reflect"
+  "fmt"
 )
 
 type Params interface {
@@ -23,6 +24,7 @@ type PostParams struct {
     Checksum  string   `json:"checksum,omitempty"`
     Id        string   `json:"id,omitempty"`
     Text      string   `json:"text,omitempty"`
+    Version   string   `json:"version,omitempty"`
 }
 
 type GetParams struct {
@@ -31,7 +33,12 @@ type GetParams struct {
     Type      string   `url:"type,omitempty"`
     Checksum  string   `url:"checksum,omitempty"`
     Id        string   `url:"id,omitempty"`
-    Text      string   `url:"text,omitempty"`
+    Text      string   `json:"text,omitempty"`
+    Version   string   `url:"version,omitempty"`
+}
+
+func (params GetParams) String() string {
+  return fmt.Sprintf("Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s", params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version)
 }
 
 func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
@@ -39,6 +46,10 @@ func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
     reflect.ValueOf(&params).Elem().FieldByName(strings.Title(argConfigs[index].Name)).SetString(arg)
   }
   return params
+}
+
+func (params PostParams) String() string {
+  return fmt.Sprintf("Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s", params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version)
 }
 
 func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {

@@ -27,7 +27,7 @@ var _ = Describe("Config", func() {
   Context("When the config.yaml file is loaded", func() {
     config := GetConfig()
     It("should contain an 'api' section", func() {
-        Expect(len(config.Commands)).To(Equal(3))
+        Expect(len(config.Commands)).To(Equal(4))
     })
     It("should contain the api version", func() {
         Expect(config.Version).To(Equal("v1"))
@@ -135,6 +135,35 @@ var _ = Describe("Config", func() {
       Expect(err).To(BeNil())
       Expect(len(command.Args)).To(Equal(0))
       Expect(command.GetArgsUsage()).To(Equal(""))
+    })
+  })
+
+  Context("If a flag is supplied check for new args and apply", func() {
+    Run = false
+    config := GetConfig()
+    It("should include all required args", func() {
+      command, err := config.FindSubCommandConfig("test", "test1")
+      Expect(err).To(BeNil())
+      Expect(len(command.Flags)).To(Equal(2))
+      Expect(command.GetArgsUsage()).To(Equal("TEXT TEXT2 "))
+
+      Expect(command.GetArgsUsageWithFlags("project")).To(Equal("PROJECT "))
+    })
+
+    It("should include all required args", func() {
+      command, err := config.FindSubCommandConfig("test", "test1")
+      Expect(err).To(BeNil())
+      Expect(len(command.Args)).To(Equal(2))
+      Expect(len(command.GetArgsForFlags("project"))).To(Equal(1))
+      Expect(command.GetArgsForFlags("project").GetRequiredArgsCount()).To(Equal(1))
+    })
+
+    It("should include all flags with args", func() {
+      command, err := config.FindSubCommandConfig("test", "test1")
+      Expect(err).To(BeNil())
+      Expect(len(command.Args)).To(Equal(2))
+      Expect(len(command.GetFlagsWithArgs())).To(Equal(2))
+      Expect(command.Args.GetRequiredArgsCount()).To(Equal(2))
     })
   })
 
