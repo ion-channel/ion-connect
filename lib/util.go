@@ -18,7 +18,7 @@ import (
 )
 
 var Debug bool = false
-var Run   bool = true
+var Test  bool = false
 var ION_HOME string = "~/.ionchannel/"
 var CREDENTIALS_FILE string = "~/.ionchannel/credentials"
 var CREDENTIALS_KEY_FIELD string = "secret_key"
@@ -72,4 +72,11 @@ func PathExists(path string) (bool, error) {
 func MkdirAll(path string, perm os.FileMode) error{
   path, _ = tilde.Expand(path)
   return os.MkdirAll(path, perm)
+}
+
+func Exit(code int) string {
+  if(!Test){
+    os.Exit(code)
+  }
+  return fmt.Sprintf("Exit(%i)", code)
 }

@@ -152,7 +152,7 @@ func GetConfig() Config {
     log.Fatalf("error: %v", err)
   }
 
-  if Run {
+  if !Test {
     config.Commands = config.Commands[:len(config.Commands)-1]
   }
   return config
