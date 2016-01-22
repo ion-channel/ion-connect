@@ -221,15 +221,22 @@ func HandleConfigure(context* cli.Context) {
 }
 
 func LoadCredential() string {
-  exists, _ := PathExists(ION_HOME)
-  if exists {
-    bytes, _ := ReadBytesFromFile(CREDENTIALS_FILE)
-    credentials := make(map[string]string)
-    yaml.Unmarshal([]byte(bytes), &credentials)
-    return credentials[CREDENTIALS_KEY_FIELD]
+  credential := os.Getenv(CREDENTIALS_ENVIRONMENT_VARIABLE)
+  if credential == "" {
+    Debugln("Credential env var not found looking in file")
+    exists, _ := PathExists(ION_HOME)
+    if exists {
+      bytes, _ := ReadBytesFromFile(CREDENTIALS_FILE)
+      credentials := make(map[string]string)
+      yaml.Unmarshal([]byte(bytes), &credentials)
+      return credentials[CREDENTIALS_KEY_FIELD]
+    } else {
+      MkdirAll(ION_HOME, 0775)
+      return ""
+    }
   } else {
-    MkdirAll(ION_HOME, 0775)
-    return ""
+    Debugln("Credential env var found")
+    return credential
   }
 }
 
