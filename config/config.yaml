@@ -110,6 +110,15 @@
               value:
               usage: TEXT
               required: True
+        - name: get-sentiment
+          url: /metadata/getSentiment
+          usage: returns the sentiment parsed from the [text] input
+          post: True
+          args:
+            - name: text
+              value:
+              usage: TEXT
+              required: True
     - name: vulnerabilities
       usage: set of commands for querying vulnerabilities
       subcommands:
