@@ -110,14 +110,69 @@
               value:
               usage: TEXT
               required: True
+    - name: vulnerabilities
+      usage: set of commands for querying vulnerabilities
+      subcommands:
+        - name: get-vulnerabilities
+          url: /vulnerabilities/getVulnerabilities
+          usage: returns a list of vulnerabilities for a given query
+          post: False
+          flags:
+            - name: text
+              usage: query vulnerabilities using [TEXT]
+              required: False
+              type: bool
+              args:
+                - name: text
+                  value:
+                  usage: TEXT
+                  required: True
+            - name: id
+              usage: query vulnerabilities using a vulnerability [ID]
+              required: False
+              type:
+              args:
+                - name: id
+                  value:
+                  usage: ID
+                  required: True
+          args:
+            - name: project
+              value:
+              usage: PROJECT
+              required: True
+            - name: version
+              value:
+              usage: VERSION
+              required: False
+
 # only for test
     - name: test
       usage: set of commands testing
       subcommands:
         - name: test1
-          url: /test/getTest
+          url: /
           usage: tests only
-          post: True
+          post: False
+          flags:
+          - name: project
+            usage: query vulnerabilities using [PROJECT]
+            required: False
+            type: bool
+            args:
+              - name: project
+                value:
+                usage: PROJECT
+                required: True
+          - name: id
+            usage: query vulnerabilities using a vulnerability [ID]
+            required: True
+            type:
+            args:
+              - name: id
+                value:
+                usage: ID
+                required: True
           args:
             - name: text
               value:
