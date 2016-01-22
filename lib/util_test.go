@@ -40,6 +40,17 @@ var _ = Describe("Util", func() {
     })
   })
 
+  Context("When Running a test", func() {
+    It("should not exit", func() {
+      Test = true
+      Expect(PathExists("/aint/real")).To(BeFalse())
+    })
+    It("return true if it exists", func() {
+        path, _ := tilde.Expand("~")
+        Expect(PathExists(path)).To(BeTrue())
+    })
+  })
+
   AfterEach(func() {
     Debug = false
   })

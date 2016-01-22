@@ -26,15 +26,8 @@ type Command struct {
   Post bool
   Url string
   Flags []Flag
-  Args  []Arg
+  Args  Args
   Subcommands []Command
-}
-
-type Arg struct {
-  Name string
-  Value string
-  Usage string
-  Required bool
 }
 
 func (command Command) GetArgsUsage() string {
@@ -56,9 +49,53 @@ func (command Command) GetArgsUsage() string {
   return buffer.String()
 }
 
-func (command Command) GetRequiredArgsCount() int {
+func (command Command) GetArgsForFlags(flagName string) Args {
+  for _, flag := range command.Flags {
+    if flag.Name == flagName {
+      return flag.Args
+    }
+  }
+
+  return []Arg{}
+}
+
+func (command Command) GetFlagsWithArgs() []Flag {
+  flags := []Flag{}
+  for _, flag := range command.Flags {
+    if len(flag.Args) > 0 {
+      flags = append(flags, flag)
+    }
+  }
+
+  return flags
+}
+
+func (command Command) GetArgsUsageWithFlags(flagName string) string {
+  var buffer bytes.Buffer
+
+  for _, flag := range command.Flags {
+    if flag.Name == flagName {
+      for _, arg := range flag.Args {
+        if len(arg.Usage) > 0 {
+           if !arg.Required {
+              buffer.WriteString("[")
+           }
+           buffer.WriteString(arg.Usage)
+           if !arg.Required {
+              buffer.WriteString("]")
+           }
+           buffer.WriteString(" ")
+        }
+      }
+    }
+  }
+
+  return buffer.String()
+}
+
+func (args Args) GetRequiredArgsCount() int {
   var count int
-  for _, arg := range command.Args {
+  for _, arg := range args {
     if len(arg.Usage) > 0 && arg.Required {
       count++
     }
@@ -67,10 +104,26 @@ func (command Command) GetRequiredArgsCount() int {
   return count
 }
 
-type Flag struct {
+func (command Command) GetDefaultRequiredArgsCount() int {
+  return command.Args.GetRequiredArgsCount()
+}
+
+type Arg struct {
   Name string
   Value string
   Usage string
+  Required bool
+}
+
+type Args []Arg
+
+type Flag struct {
+  Name  string
+  Value string
+  Usage string
+  Type  string
+  Required bool
+  Args Args
 }
 
 type Config struct {
@@ -99,7 +152,7 @@ func GetConfig() Config {
     log.Fatalf("error: %v", err)
   }
 
-  if Run {
+  if !Test {
     config.Commands = config.Commands[:len(config.Commands)-1]
   }
   return config

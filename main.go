@@ -45,9 +45,8 @@ func main() {
 
 			flags := make([]cli.Flag, len(subcommand.Flags))
 			for kndex, flag := range subcommand.Flags {
-				flags[kndex] = cli.StringFlag{
+				flags[kndex] = cli.BoolFlag{
 					Name:  flag.Name,
-					Value: flag.Value,
 					Usage: flag.Usage,
 				}
 			}
