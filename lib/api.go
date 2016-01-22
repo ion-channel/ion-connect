@@ -16,6 +16,7 @@ import (
   "log"
   "errors"
   "fmt"
+  "strings"
 )
 
 type Api struct {
@@ -28,9 +29,8 @@ func (api Api) Noop(ctx *cli.Context) {
 }
 
 func (api Api) HandleCommand(ctx *cli.Context) {
-  c := ctx.Command
-  command := c.Name //strings.Split(ctx.Command.FullName(), " ")[0]
-  subcommand := c.Subcommands[0].Name //strings.Split(ctx.Command.FullName(), " ")[1]
+  command := strings.Split(ctx.Command.FullName(), " ")[0]
+  subcommand := strings.Split(ctx.Command.FullName(), " ")[1]
   Debugf("Performing command %s %s", command, subcommand)
   subcommandConfig, err := api.Config.FindSubCommandConfig(command, subcommand)
   if err != nil {
