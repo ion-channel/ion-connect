@@ -115,7 +115,7 @@ var _ = Describe("Config", func() {
   })
 
   Context("If we need to generate an argument string", func() {
-    Run = false
+    Test = true
     config := GetConfig()
     It("should include all required args", func() {
       command, err := config.FindSubCommandConfig("test", "test1")
@@ -139,7 +139,7 @@ var _ = Describe("Config", func() {
   })
 
   Context("If a flag is supplied check for new args and apply", func() {
-    Run = false
+    Test = true
     config := GetConfig()
     It("should include all required args", func() {
       command, err := config.FindSubCommandConfig("test", "test1")

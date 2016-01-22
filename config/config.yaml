@@ -151,9 +151,9 @@
       usage: set of commands testing
       subcommands:
         - name: test1
-          url: /test/getTest
+          url: /
           usage: tests only
-          post: True
+          post: False
           flags:
           - name: project
             usage: query vulnerabilities using [PROJECT]
@@ -166,7 +166,7 @@
                 required: True
           - name: id
             usage: query vulnerabilities using a vulnerability [ID]
-            required: False
+            required: True
             type:
             args:
               - name: id

@@ -12,11 +12,10 @@ import (
   "github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/dghubble/sling"
   "encoding/json"
   "net/http"
-  "strings"
+  // "strings"
   "log"
   "errors"
   "fmt"
-  "os"
 )
 
 type Api struct {
@@ -29,9 +28,10 @@ func (api Api) Noop(ctx *cli.Context) {
 }
 
 func (api Api) HandleCommand(ctx *cli.Context) {
-  Debugf("Performing command %s", ctx.Command.FullName())
-  command := strings.Split(ctx.Command.FullName(), " ")[0]
-  subcommand := strings.Split(ctx.Command.FullName(), " ")[1]
+  c := ctx.Command
+  command := c.Name //strings.Split(ctx.Command.FullName(), " ")[0]
+  subcommand := c.Subcommands[0].Name //strings.Split(ctx.Command.FullName(), " ")[1]
+  Debugf("Performing command %s %s", command, subcommand)
   subcommandConfig, err := api.Config.FindSubCommandConfig(command, subcommand)
   if err != nil {
     log.Fatalf("Command configuration missing for %s %s", command, subcommand)
@@ -40,14 +40,14 @@ func (api Api) HandleCommand(ctx *cli.Context) {
   if err != nil {
     fmt.Println(err.Error())
     cli.ShowCommandHelp(ctx, ctx.Command.Name)
-    os.Exit(1)
+    Exit(1)
   }
 
   err = api.validateArgs(args, ctx)
   if err != nil {
     fmt.Println(err.Error())
     cli.ShowCommandHelp(ctx, ctx.Command.Name)
-    os.Exit(1)
+    panic(Exit(1))
   }
   response, body := api.sendRequest(command, subcommand, ctx, args, subcommandConfig.Post)
 
@@ -82,7 +82,7 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
   response, responseErr := client.Receive(&body, &body)
   if responseErr != nil {
     fmt.Println(responseErr.Error())
-    os.Exit(1)
+    Exit(1)
   }
   Debugf("Response received with status %s, %v", response.Status, body)
   return *response, body
@@ -93,12 +93,12 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
 func (api Api) processResponse(response http.Response, body map[string]interface{}) string {
   if response.StatusCode == 401 {
     fmt.Println("Unauthorized, make sure you run 'ion-connect configure' and set your Api Token")
-    os.Exit(1)
+    Exit(1)
   }
 
   if response.StatusCode == 400 {
     fmt.Println(body["message"])
-    os.Exit(1)
+    Exit(1)
   }
 
   delete(body, "links")

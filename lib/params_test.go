@@ -35,14 +35,18 @@ var _ = Describe("Params", func() {
   Context("When generating Post Params", func() {
     It("should populate the fields from the context flags", func() {
       args := []string{"ernie"}
-      Expect(PostParams{}.Generate(args, config.Args)).To(Equal(PostParams{Project:"ernie"}))
+      params := PostParams{}.Generate(args, config.Args)
+      Expect(params).To(Equal(PostParams{Project:"ernie"}))
+      Expect(params.String()).To(Equal("Project=ernie, Url=, Type=, Checksum=, Id=, Text=, Version="))
     })
   })
 
   Context("When generating Get Params", func() {
     It("should populate the fields from the context flags", func() {
       args := []string{"ernie"}
-      Expect(GetParams{}.Generate(args, config.Args)).To(Equal(GetParams{Project:"ernie"}))
+      params := GetParams{}.Generate(args, config.Args)
+      Expect(params).To(Equal(GetParams{Project:"ernie"}))
+      Expect(params.String()).To(Equal("Project=ernie, Url=, Type=, Checksum=, Id=, Text=, Version="))
     })
   })
 
