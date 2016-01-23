@@ -23,6 +23,7 @@ script:
 - ion-connect metadata get-locations "portland"
 - ion-connect vulnerabilities get-vulnerabilities "solr"
 - ion-connect vulnerabilities get-vulnerabilities --text "testing"
+- ion-connect metadata get-sentiment "I love Ion Channel"
 - ./bin/process-ion-job.sh ion-channel/ion-connect c88d59be7c087bd379af09953693ecf7 "https://github.com/ion-channel/agmockapp/archive/agmockapp-0.0.1.tar.gz"
 - GOOS=windows go build -o ion-connect/windows/bin/ion-connect.exe ./
 - rice append --exec ion-connect/windows/bin/ion-connect.exe -i ./lib
