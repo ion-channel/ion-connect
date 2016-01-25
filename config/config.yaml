@@ -127,6 +127,18 @@
           usage: returns a list of vulnerabilities for a given query
           post: False
           flags:
+            - name: limit
+              value: 10
+              usage: limit the amount of vulnerabilities returned, defaults to 10
+              required: False
+              type: string
+
+            - name: offset
+              value: 0
+              usage: set the start index of the vulnerabilities returned, defaults to 0
+              required: False
+              type: string
+
             - name: text
               usage: query vulnerabilities using [TEXT]
               required: False
@@ -136,10 +148,11 @@
                   value:
                   usage: TEXT
                   required: True
+
             - name: id
               usage: query vulnerabilities using a vulnerability [ID]
               required: False
-              type:
+              type: bool
               args:
                 - name: id
                   value:

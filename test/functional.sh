@@ -36,7 +36,7 @@ if [ "$?" != "0" ]; then
 fi
 
 echo "It should get vulnerabilities for text"
-OUTPUT=$(ion-connect vulnerabilities get-vulnerabilities --text "testing")
+OUTPUT=$(ion-connect --debug vulnerabilities get-vulnerabilities --text --limit 12 --offset 10 "testing")
 if [ "$?" != "0" ]; then
   echo "Failed"
   exit 1

@@ -17,10 +17,10 @@ import (
 
 var _ = Describe("Params", func() {
   var (
-		context *cli.Context
+    context *cli.Context
     config Command
     set *flag.FlagSet
-	)
+  )
 
   BeforeEach(func() {
     Debug = true
@@ -44,9 +44,13 @@ var _ = Describe("Params", func() {
   Context("When generating Get Params", func() {
     It("should populate the fields from the context flags", func() {
       args := []string{"ernie"}
-      params := GetParams{}.Generate(args, config.Args)
-      Expect(params).To(Equal(GetParams{Project:"ernie"}))
-      Expect(params.String()).To(Equal("Project=ernie, Url=, Type=, Checksum=, Id=, Text=, Version="))
+      options := map[string]string {
+        "limit": "22",
+        "offset": "105",
+      }
+      params := GetParams{}.Generate(args, config.Args).UpdateFromMap(options)
+      Expect(params).To(Equal(GetParams{Project:"ernie", Limit: "22", Offset: "105"}))
+      Expect(params.String()).To(Equal("Project=ernie, Url=, Type=, Checksum=, Id=, Text=, Version=, Limit=22, Offset=105"))
     })
   })
 
