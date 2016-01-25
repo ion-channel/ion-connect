@@ -60,7 +60,7 @@ fi
 ## TODO: What is the status if it finds something, or what is the indicator
 ## that we need to fail this loop?
 
-while [[ $SCANSTATUS != "finished" ]]; do
+while [[ $SCANSTATUS = "accepted" ]]; do
   COUNTER=1
   if [[ $COUNTER -lt $TIMEOUT ]]; then
     sleep 1
@@ -86,7 +86,7 @@ else
   exit 1
 fi
 
-while [[ $PUSHSTATUS != "finished" ]]; do
+while [[ $PUSHSTATUS = "accepted" ]]; do
   COUNTER=1
   if [[ $COUNTER -lt $TIMEOUT ]]; then
     sleep 1

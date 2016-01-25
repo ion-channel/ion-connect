@@ -29,14 +29,15 @@ func (api Api) Noop(ctx *cli.Context) {
 }
 
 func (api Api) HandleCommand(ctx *cli.Context) {
+  Debugf("Performing command %s", ctx.Command.FullName())
   command := strings.Split(ctx.Command.FullName(), " ")[0]
   subcommand := strings.Split(ctx.Command.FullName(), " ")[1]
-  Debugf("Performing command %s %s", command, subcommand)
+
   subcommandConfig, err := api.Config.FindSubCommandConfig(command, subcommand)
   if err != nil {
     log.Fatalf("Command configuration missing for %s %s", command, subcommand)
   }
-  args, err := api.validateFlags(subcommandConfig, ctx)
+  args, options, err := api.validateFlags(subcommandConfig, ctx)
   if err != nil {
     fmt.Println(err.Error())
     cli.ShowCommandHelp(ctx, ctx.Command.Name)
@@ -49,22 +50,24 @@ func (api Api) HandleCommand(ctx *cli.Context) {
     cli.ShowCommandHelp(ctx, ctx.Command.Name)
     panic(Exit(1))
   }
-  response, body := api.sendRequest(command, subcommand, ctx, args, subcommandConfig.Post)
+  response, body := api.sendRequest(command, subcommand, ctx, args, options, subcommandConfig.Post)
 
   fmt.Println(api.processResponse(response, body))
 }
 
-func (api Api) sendRequest(command string, subcommand string, context *cli.Context, args Args, shouldPost bool) (http.Response, map[string]interface{}) {
+func (api Api) sendRequest(command string, subcommand string, context *cli.Context, args Args, options map[string]string, shouldPost bool) (http.Response, map[string]interface{}) {
   client := sling.New()
   var url string
 
   if shouldPost {
-    params := PostParams{}.Generate(context.Args(), args)
+    body := PostParams{}.Generate(context.Args(), args)
     client.Post(api.Config.Endpoint)
-    client.BodyJSON(&params)
-    Debugf("Sending body %v", params)
+    params := GetParams{}.UpdateFromMap(options)
+    client.QueryStruct(&params)
+    client.BodyJSON(&body)
+    Debugf("Sending body %v", body)
   } else {
-    params := GetParams{}.Generate(context.Args(), args)
+    params := GetParams{}.Generate(context.Args(), args).UpdateFromMap(options)
     client.Get(api.Config.Endpoint)
     client.QueryStruct(&params)
     Debugf("Sending params %v", params)
@@ -119,15 +122,19 @@ func (api Api) validateArgs(args Args, ctx *cli.Context) error {
   return nil
 }
 
-func (api Api) validateFlags(commandConfig Command, ctx *cli.Context) ([]Arg, error) {
+func (api Api) validateFlags(commandConfig Command, ctx *cli.Context) ([]Arg, map[string]string, error) {
   args := []Arg{}
+  params := make(map[string]string)
   for _, flag := range commandConfig.Flags {
     if !ctx.IsSet(flag.Name) && flag.Required {
       Debugf("Missing required option %s", flag.Name)
-      return args, errors.New(fmt.Sprintf("Missing required option %s", flag.Name))
-    } else if ctx.IsSet(flag.Name) && len(flag.Args) > 0 {
-      Debugf("Getting args for flag %s", flag)
+      return args, params, errors.New(fmt.Sprintf("Missing required option %s", flag.Name))
+    } else if len(flag.Args) > 0 && ctx.IsSet(flag.Name) {
+      Debugf("Getting args for flag %s", flag.Name)
       args = flag.Args
+    } else if ctx.IsSet(flag.Name) {
+      Debugf("Getting values for flag %s: %s", flag.Name, ctx.String(flag.Name))
+      params[flag.Name] = ctx.String(flag.Name)
     }
   }
 
@@ -136,5 +143,5 @@ func (api Api) validateFlags(commandConfig Command, ctx *cli.Context) ([]Arg, er
   }
 
   Debugf("Found args %v", args)
-  return args, nil
+  return args, params, nil
 }

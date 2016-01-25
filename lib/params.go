@@ -35,15 +35,24 @@ type GetParams struct {
     Id        string   `url:"id,omitempty"`
     Text      string   `json:"text,omitempty"`
     Version   string   `url:"version,omitempty"`
+    Limit     string   `url:"limit,omitempty"`
+    Offset     string   `url:"offset,omitempty"`
 }
 
 func (params GetParams) String() string {
-  return fmt.Sprintf("Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s", params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version)
+  return fmt.Sprintf("Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, Limit=%s, Offset=%s", params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version, params.Limit, params.Offset)
 }
 
 func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
   for index, arg := range args {
     reflect.ValueOf(&params).Elem().FieldByName(strings.Title(argConfigs[index].Name)).SetString(arg)
+  }
+  return params
+}
+
+func (params GetParams) UpdateFromMap(paramMap map[string]string) GetParams {
+  for param, value := range paramMap {
+    reflect.ValueOf(&params).Elem().FieldByName(strings.Title(param)).SetString(value)
   }
   return params
 }
