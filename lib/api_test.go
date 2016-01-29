@@ -75,14 +75,7 @@ var _ = Describe("Api", func() {
 
       config, _ := GetConfig().FindSubCommandConfig("test", "test1")
       response, body := api.sendRequest("test", "test1", context, config.Args, make(map[string]string), false)
-      Expect(api.processResponse(response, body)).To(Equal(
-`{
-  "message": "API not found with these values",
-  "request_host": [
-    "api.ionchannel.io"
-  ],
-  "request_path": "/v1/"
-}`))
+      Expect(api.processResponse(response, body)).To(Equal("API not found with these values"))
     })
   })
 
