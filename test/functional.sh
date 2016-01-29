@@ -49,6 +49,17 @@ if [ "$?" != "0" ]; then
   exit 1
 fi
 
+echo "It should handle not finding data"
+OUTPUT=$(ion-connect scanner get-scan notreallyascan)
+if [ "$?" != "1" ]; then
+  echo "Failed"
+  exit 1
+fi
+if [ "$OUTPUT" != "Item with id (notreallyascan) not found" ]; then
+  echo "Failed"
+  exit 1
+fi
+
 echo "It should scan and push an artifact"
 OUTPUT=$(./bin/process-ion-job.sh ion-channel/ion-connect c88d59be7c087bd379af09953693ecf7 "https://github.com/ion-channel/agmockapp/archive/agmockapp-0.0.1.tar.gz")
 if [ "$?" != "0" ]; then
