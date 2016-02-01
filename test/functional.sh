@@ -29,14 +29,14 @@ if [ "$?" != "0" ]; then
 fi
 
 echo "It should get vulnerabilities for a project"
-OUTPUT=$(ion-connect vulnerabilities get-vulnerabilities "solr")
+OUTPUT=$(ion-connect vulnerabilities get-vulnerabilities --limit 1 --offset 0 "solr")
 if [ "$?" != "0" ]; then
   echo "Failed"
   exit 1
 fi
 
 echo "It should get vulnerabilities for text"
-OUTPUT=$(ion-connect --debug vulnerabilities get-vulnerabilities --text --limit 12 --offset 10 "testing")
+OUTPUT=$(ion-connect vulnerabilities get-vulnerabilities --text --limit 12 --offset 10 "testing")
 if [ "$?" != "0" ]; then
   echo "Failed"
   exit 1
@@ -45,6 +45,17 @@ fi
 echo "It should get sentiment for some text"
 OUTPUT=$(ion-connect metadata get-sentiment "I love Ion Channel")
 if [ "$?" != "0" ]; then
+  echo "Failed"
+  exit 1
+fi
+
+echo "It should handle not finding data"
+OUTPUT=$(ion-connect scanner get-scan notreallyascan)
+if [ "$?" != "1" ]; then
+  echo "Failed"
+  exit 1
+fi
+if [ "$OUTPUT" != "Item with id (notreallyascan) not found" ]; then
   echo "Failed"
   exit 1
 fi
