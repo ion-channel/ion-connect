@@ -33,10 +33,10 @@ type GetParams struct {
     Type      string   `url:"type,omitempty"`
     Checksum  string   `url:"checksum,omitempty"`
     Id        string   `url:"id,omitempty"`
-    Text      string   `json:"text,omitempty"`
+    Text      string   `url:"text,omitempty"`
     Version   string   `url:"version,omitempty"`
     Limit     string   `url:"limit,omitempty"`
-    Offset     string   `url:"offset,omitempty"`
+    Offset    string   `url:"offset,omitempty"`
 }
 
 func (params GetParams) String() string {

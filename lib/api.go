@@ -78,7 +78,9 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
     log.Fatal(err.Error())
   }
 
+
   client.Path(fmt.Sprintf("%s%s", api.Config.Version, url))
+  Debugf("Sending request to %s", fmt.Sprintf("%s%s", api.Config.Version, url))
   client.Add(api.Config.Token, LoadCredential())
 
   body := make(map[string]interface{})
@@ -97,15 +99,14 @@ func (api Api) processResponse(response http.Response, body map[string]interface
   if response.StatusCode == 401 || response.StatusCode == 403 {
     fmt.Println("Unauthorized, make sure you run 'ion-connect configure' and set your Api Token")
     Exit(1)
-  }
-
-  if response.StatusCode == 400 {
+    return body["message"].(string)
+  } else if response.StatusCode == 400 || response.StatusCode == 404 || response.StatusCode == 422{
     fmt.Println(body["message"])
     Exit(1)
+    return body["message"].(string)
   }
 
-  delete(body, "links")
-  jsonBytes, err := json.MarshalIndent(body, "", "  ")
+  jsonBytes, err := json.MarshalIndent(body["data"], "", "  ")
   if err != nil {
     log.Fatalf(err.Error())
   }
