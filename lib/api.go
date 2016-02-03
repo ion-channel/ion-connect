@@ -111,7 +111,7 @@ func (api Api) processResponse(response http.Response, body map[string]interface
     log.Fatalf(err.Error())
   }
 
-  return string(jsonBytes)
+  return strings.Replace(strings.Replace(strings.Replace(string(jsonBytes), "\\u003e", ">", -1), "\\u003c", "<", -1), "\\u0026", "&", -1)
 }
 
 func (api Api) validateArgs(args Args, ctx *cli.Context) error {
