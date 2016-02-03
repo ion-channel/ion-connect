@@ -42,6 +42,13 @@ if [ "$?" != "0" ]; then
   exit 1
 fi
 
+echo "It should get dependencies for some text"
+OUTPUT=$(ion-connect metadata get-dependencies --type gemfile "$(cat test/Gemfile)")
+if [ "$?" != "0" ]; then
+  echo "Failed"
+  exit 1
+fi
+
 echo "It should get sentiment for some text"
 OUTPUT=$(ion-connect metadata get-sentiment "I love Ion Channel")
 if [ "$?" != "0" ]; then
