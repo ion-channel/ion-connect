@@ -119,6 +119,21 @@
               value:
               usage: TEXT
               required: True
+        - name: get-dependencies
+          url: /metadata/getDependencies
+          usage: returns the list of dependencies parsed from the [text] input
+          post: True
+          flags:
+            - name: type
+              value:
+              usage: The type of dependency file the text represents
+              required: True
+              type: string
+          args:
+            - name: text
+              value:
+              usage: TEXT
+              required: True
     - name: vulnerabilities
       usage: set of commands for querying vulnerabilities
       subcommands:
