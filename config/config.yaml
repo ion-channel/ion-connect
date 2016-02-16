@@ -51,6 +51,31 @@
               value:
               usage: ID
               required: True
+        - name: scan-dependencies
+          url: /scanner/scanDependencies
+          usage: scan a file for a list of dependencies
+          post: True
+          flags:
+            - name: type
+              value:
+              usage: The type of dependency file the file contents represents
+              required: True
+              type: string
+          args:
+            - name: file
+              type: file
+              value:
+              usage: path/to/dependency/file
+              required: True
+        - name: get-dependencies
+          url: /scanner/getDependencies
+          usage: returns the dependencies data for a given [id]
+          post: False
+          args:
+            - name: id
+              value:
+              usage: ID
+              required: True
     - name: airgap
       usage: set of commands for moving artifacts or source code
       subcommands:
@@ -114,21 +139,6 @@
           url: /metadata/getSentiment
           usage: returns the sentiment parsed from the [text] input
           post: True
-          args:
-            - name: text
-              value:
-              usage: TEXT
-              required: True
-        - name: get-dependencies
-          url: /metadata/getDependencies
-          usage: returns the list of dependencies parsed from the [text] input
-          post: True
-          flags:
-            - name: type
-              value:
-              usage: The type of dependency file the text represents
-              required: True
-              type: string
           args:
             - name: text
               value:
