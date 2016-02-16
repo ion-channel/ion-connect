@@ -42,13 +42,6 @@ if [ "$?" != "0" ]; then
   exit 1
 fi
 
-echo "It should get dependencies for some text"
-OUTPUT=$(ion-connect metadata get-dependencies --type gemfile "$(cat test/Gemfile)")
-if [ "$?" != "0" ]; then
-  echo "Failed"
-  exit 1
-fi
-
 echo "It should get sentiment for some text"
 OUTPUT=$(ion-connect metadata get-sentiment "I love Ion Channel")
 if [ "$?" != "0" ]; then
@@ -86,7 +79,17 @@ if [ "$STATUS" != "finished" ]; then
   exit 1
 fi
 
+echo "It should scan for dependencies"
+OUTPUT=$(./bin/dependency-scan-job.sh ./test/Gemfile gemfile)
+if [ "$?" != "0" ]; then
+  echo "Failed"
+  exit 1
+fi
 
-
+STATUS=$(echo $OUTPUT | jq -r .status)
+if [ "$STATUS" != "finished" ]; then
+  echo "Failed"
+  exit 1
+fi
 
 echo "function test suite completed"

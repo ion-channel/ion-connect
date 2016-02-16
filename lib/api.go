@@ -66,6 +66,7 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
     client.QueryStruct(&params)
     client.BodyJSON(&body)
     Debugf("Sending body %v", body)
+    Debugf("Sending params %v", params)
   } else {
     params := GetParams{}.Generate(context.Args(), args).UpdateFromMap(options)
     client.Get(api.Config.Endpoint)
@@ -73,11 +74,13 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
     Debugf("Sending params %v", params)
   }
 
+  Debugf("Processing url")
   url, err := api.Config.ProcessUrlFromConfig(command, subcommand, GetParams{}.Generate(context.Args(), args))
   if err != nil {
     log.Fatal(err.Error())
   }
 
+  Debugf("Done")
 
   client.Path(fmt.Sprintf("%s%s", api.Config.Version, url))
   Debugf("Sending request to %s", fmt.Sprintf("%s%s", api.Config.Version, url))
