@@ -58,7 +58,7 @@
           flags:
             - name: type
               value:
-              usage: The type of dependency file the file contents represents
+              usage: The type of dependency file the file contents represents [gemfile|gemspec|package]
               required: True
               type: string
           args:
