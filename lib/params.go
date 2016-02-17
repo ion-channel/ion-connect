@@ -12,6 +12,7 @@ import (
   "strings"
   "reflect"
   "fmt"
+  "io/ioutil"
 )
 
 type Params interface {
@@ -25,6 +26,7 @@ type PostParams struct {
     Id        string   `json:"id,omitempty"`
     Text      string   `json:"text,omitempty"`
     Version   string   `json:"version,omitempty"`
+    File      string   `json:"file,omitempty"`
 }
 
 type GetParams struct {
@@ -37,6 +39,7 @@ type GetParams struct {
     Version   string   `url:"version,omitempty"`
     Limit     string   `url:"limit,omitempty"`
     Offset    string   `url:"offset,omitempty"`
+    File      string   `url:"file,omitempty"`
 }
 
 func (params GetParams) String() string {
@@ -52,17 +55,27 @@ func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
 
 func (params GetParams) UpdateFromMap(paramMap map[string]string) GetParams {
   for param, value := range paramMap {
+    Debugf("Setting %s to %s", param, value )
     reflect.ValueOf(&params).Elem().FieldByName(strings.Title(param)).SetString(value)
   }
   return params
 }
 
 func (params PostParams) String() string {
-  return fmt.Sprintf("Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s", params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version)
+  return fmt.Sprintf("Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, File=%s", params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version, params.File)
 }
 
 func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
   for index, arg := range args {
+    Debugf("Setting %s to %s", argConfigs[index].Name, arg )
+    if argConfigs[index].Type == "file" {
+      Debugf("Reading file %s", arg)
+      bytes, err := ioutil.ReadFile(arg)
+      if err != nil {
+        panic(err.Error())
+      }
+      arg = string(bytes)
+    }
     reflect.ValueOf(&params).Elem().FieldByName(strings.Title(argConfigs[index].Name)).SetString(arg)
   }
   return params
