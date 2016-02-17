@@ -37,7 +37,46 @@ var _ = Describe("Params", func() {
       args := []string{"ernie"}
       params := PostParams{}.Generate(args, config.Args)
       Expect(params).To(Equal(PostParams{Project:"ernie"}))
-      Expect(params.String()).To(Equal("Project=ernie, Url=, Type=, Checksum=, Id=, Text=, Version="))
+      Expect(params.String()).To(Equal("Project=ernie, Url=, Type=, Checksum=, Id=, Text=, Version=, File="))
+    })
+
+    It("should populate the fields with file contents if type is file ", func() {
+      config,_ = GetConfig().FindSubCommandConfig("scanner", "scan-dependencies")
+      args := []string{"../test/Gemfile"}
+      params := PostParams{}.Generate(args, config.Args)
+      Expect(params).To(Equal(PostParams{File:"source 'https://rubygems.org'\nruby '2.2.4'\n\ngem 'sinatra', '1.4.6', require: 'sinatra/base'\ngem 'sinatra-contrib', '1.4.6'\ngem 'rack-standards', '0.0.1'\ngem 'i18n', '0.7.0'\ngem 'rake', '10.4.2'\ngem 'json', '1.8.3'\ngem 'httpclient', '2.7.0.1'\ngem 'patron', '0.5.0'\ngem 'foreman', '0.78.0'\ngem 'thin', '1.6.4'\n\n# geocoding\ngem 'geocoder', '1.2.14'\n# languge\ngem 'cld2', '1.0.3', require: 'cld'\n# sentiment\ngem 'sentimental', '1.0.4'\n# dependencies\ngem 'lowendinsight', github: 'ion-channel/lowendinsight', :branch => 'master'\n\n# aws\ngem 'aws-sdk', '2.2.9'\n\ngem 'bundler', '>1.10.6'\n\ngroup :test do\n  gem 'minitest'\nend\n"}))
+      Expect(params.String()).To(Equal(`Project=, Url=, Type=, Checksum=, Id=, Text=, Version=, File=source 'https://rubygems.org'
+ruby '2.2.4'
+
+gem 'sinatra', '1.4.6', require: 'sinatra/base'
+gem 'sinatra-contrib', '1.4.6'
+gem 'rack-standards', '0.0.1'
+gem 'i18n', '0.7.0'
+gem 'rake', '10.4.2'
+gem 'json', '1.8.3'
+gem 'httpclient', '2.7.0.1'
+gem 'patron', '0.5.0'
+gem 'foreman', '0.78.0'
+gem 'thin', '1.6.4'
+
+# geocoding
+gem 'geocoder', '1.2.14'
+# languge
+gem 'cld2', '1.0.3', require: 'cld'
+# sentiment
+gem 'sentimental', '1.0.4'
+# dependencies
+gem 'lowendinsight', github: 'ion-channel/lowendinsight', :branch => 'master'
+
+# aws
+gem 'aws-sdk', '2.2.9'
+
+gem 'bundler', '>1.10.6'
+
+group :test do
+  gem 'minitest'
+end
+`))
     })
   })
 

@@ -113,6 +113,7 @@ type Arg struct {
   Value string
   Usage string
   Required bool
+  Type string
 }
 
 type Args []Arg
