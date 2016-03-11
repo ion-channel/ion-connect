@@ -66,6 +66,21 @@ var _ = Describe("Config", func() {
     })
   })
 
+  Context("When we need the endpoint", func(){
+    config := GetConfig()
+    It("should read the endpoint from the config", func() {
+        Expect(config.LoadEndpoint()).To(Equal(config.Endpoint))
+    })
+    It("should read the endpoint from the config", func() {
+        Expect(config.LoadEndpoint()).To(Equal(config.Endpoint))
+        os.Setenv(ENDPOINT_ENVIRONMENT_VARIABLE, "numbersandletters")
+        Expect(config.LoadEndpoint()).To(Equal("numbersandletters"))
+        os.Unsetenv(ENDPOINT_ENVIRONMENT_VARIABLE)
+    })
+
+  })
+
+
   Context("When we need creds", func(){
     It("should create the ION_HOME directory", func() {
         Expect(LoadCredential()).To(Equal(""))
@@ -78,6 +93,11 @@ var _ = Describe("Config", func() {
         Expect(func(){saveCredentials("notarealkey")}).ShouldNot(Panic())
         Expect(PathExists(CREDENTIALS_FILE)).To(BeTrue())
         Expect(LoadCredential()).To(Equal("notarealkey"))
+    })
+    It("should read credentials from and environment variable", func() {
+      os.Setenv(CREDENTIALS_ENVIRONMENT_VARIABLE, "numbersandletters")
+      Expect(LoadCredential()).To(Equal("numbersandletters"))
+      os.Unsetenv(CREDENTIALS_ENVIRONMENT_VARIABLE)
     })
   })
 

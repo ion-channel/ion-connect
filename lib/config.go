@@ -203,6 +203,17 @@ func (config Config) FindSubCommandConfig(commandName string, subcommandName str
   return Command{}, errors.New("Subcommand not found")
 }
 
+func (config Config) LoadEndpoint() string {
+  endpoint := os.Getenv(ENDPOINT_ENVIRONMENT_VARIABLE)
+  if endpoint == "" {
+    Debugf("Endpoint env var not found returning from config file (%s)", config.Endpoint)
+
+    return config.Endpoint
+  } else {
+    Debugf("Credential env var found (%s)", endpoint)
+    return endpoint
+  }
+}
 
 func HandleConfigure(context* cli.Context) {
   currentSecretKey := LoadCredential()

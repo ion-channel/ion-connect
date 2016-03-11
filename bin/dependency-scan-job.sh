@@ -41,7 +41,7 @@ else
   TIMEOUT=$4
 fi
 
-SCANRESULT=`ion-connect scanner scan-dependencies --type $2 $1`
+SCANRESULT=`ion-connect --insecure scanner scan-dependencies --type $2 $1`
 if [ "$?" != "0" ]; then
   echo $SCANRESULT
   exit 1
@@ -61,7 +61,7 @@ while [[ $SCANSTATUS = "accepted" ]]; do
   COUNTER=1
   if [[ $COUNTER -lt $TIMEOUT ]]; then
     sleep 1
-    GETSCANRESULT=`ion-connect scanner get-dependencies $SCANID`
+    GETSCANRESULT=`ion-connect --insecure scanner get-dependencies $SCANID`
     SCANSTATUS=`echo $GETSCANRESULT | jq -r '.status'`
   else
     echo "ERROR: ion-connect has timed out"
