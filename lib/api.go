@@ -17,6 +17,8 @@ import (
   "errors"
   "fmt"
   "strings"
+
+  "crypto/tls"
 )
 
 type Api struct {
@@ -57,11 +59,18 @@ func (api Api) HandleCommand(ctx *cli.Context) {
 
 func (api Api) sendRequest(command string, subcommand string, context *cli.Context, args Args, options map[string]string, shouldPost bool) (http.Response, map[string]interface{}) {
   client := sling.New()
+  if Insecure {
+    transport := &http.Transport{
+      TLSClientConfig: &tls.Config{InsecureSkipVerify : true},
+    }
+    httpClient := &http.Client{Transport: transport}
+    client.Client(httpClient)
+  }
   var url string
 
   if shouldPost {
     body := PostParams{}.Generate(context.Args(), args)
-    client.Post(api.Config.Endpoint)
+    client.Post(api.Config.LoadEndpoint())
     params := GetParams{}.UpdateFromMap(options)
     client.QueryStruct(&params)
     client.BodyJSON(&body)
@@ -69,7 +78,7 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
     Debugf("Sending params %v", params)
   } else {
     params := GetParams{}.Generate(context.Args(), args).UpdateFromMap(options)
-    client.Get(api.Config.Endpoint)
+    client.Get(api.Config.LoadEndpoint())
     client.QueryStruct(&params)
     Debugf("Sending params %v", params)
   }
@@ -83,7 +92,7 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
   Debugf("Done")
 
   client.Path(fmt.Sprintf("%s%s", api.Config.Version, url))
-  Debugf("Sending request to %s", fmt.Sprintf("%s%s", api.Config.Version, url))
+  Debugf("Sending request to %s%s", api.Config.LoadEndpoint(),fmt.Sprintf("%s%s", api.Config.Version, url))
   client.Add(api.Config.Token, LoadCredential())
 
   body := make(map[string]interface{})

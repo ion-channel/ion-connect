@@ -27,11 +27,20 @@ func main() {
       Name:  "debug",
       Usage: "display debug logging",
     },
+    cli.BoolFlag{
+      Name:  "insecure",
+      Usage: "allow for insecure https connections",
+    },
   }
   app.Before = func(c *cli.Context) error {
     if c.Bool("debug") {
       ionconnect.Debug = true
       ionconnect.Debugln("Turning debug on.")
+    }
+
+    if c.Bool("insecure") {
+      ionconnect.Insecure = true
+      ionconnect.Debugln("Turning insecure on.")
     }
 
     return nil
