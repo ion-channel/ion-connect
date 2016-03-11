@@ -19,7 +19,7 @@ install:
 - gem install fpm
 script:
 - IONCHANNEL_SECRET_KEY="" go test -v ./...
-- test/functional.sh
+- IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ test/functional.sh
 - GOOS=windows go build -o ion-connect/windows/bin/ion-connect.exe ./
 - rice append --exec ion-connect/windows/bin/ion-connect.exe -i ./lib
 - GOOS=linux go build -o ion-connect/linux/bin/ion-connect ./

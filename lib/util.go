@@ -18,12 +18,14 @@ import (
 )
 
 var Debug bool = false
+var Insecure bool = false
 var Test  bool = false
 var ION_HOME string = "~/.ionchannel/"
 var CREDENTIALS_FILE string = "~/.ionchannel/credentials"
 var CREDENTIALS_KEY_FIELD string = "secret_key"
 var CONFIGURE_API_ENDPOINT_FIELD string = "endpoint"
 var CREDENTIALS_ENVIRONMENT_VARIABLE string = "IONCHANNEL_SECRET_KEY"
+var ENDPOINT_ENVIRONMENT_VARIABLE string = "IONCHANNEL_ENDPOINT_URL"
 
 func Debugln(str string) {
   if Debug {

@@ -45,7 +45,7 @@ else
   TIMEOUT=$4
 fi
 
-SCANRESULT=`ion-connect scanner scan-artifact-url $1 $3 $2`
+SCANRESULT=`ion-connect --insecure scanner scan-artifact-url $1 $3 $2`
 SCANSTATUS=`echo $SCANRESULT | jq -r '.status'`
 
 if [ "$SCANSTATUS" = "accepted" ]; then
@@ -64,7 +64,7 @@ while [[ $SCANSTATUS = "accepted" ]]; do
   COUNTER=1
   if [[ $COUNTER -lt $TIMEOUT ]]; then
     sleep 1
-    GETSCANRESULT=`ion-connect scanner get-scan $SCANID`
+    GETSCANRESULT=`ion-connect --insecure scanner get-scan $SCANID`
     SCANSTATUS=`echo $GETSCANRESULT | jq -r '.status'`
   else
     echo "ERROR: ion-connect has timed out"
@@ -74,7 +74,7 @@ done
 
 ## We have completed the scan portion, now push the artifact
 
-PUSHRESULT=`ion-connect airgap push-artifact-url $1 $3 $2`
+PUSHRESULT=`ion-connect --insecure airgap push-artifact-url $1 $3 $2`
 #echo "PR: $PUSHRESULT"
 PUSHSTATUS=`echo $PUSHRESULT | jq -r '.status'`
 #echo "PS: $PUSHSTATUS"
@@ -90,7 +90,7 @@ while [[ $PUSHSTATUS = "accepted" ]]; do
   COUNTER=1
   if [[ $COUNTER -lt $TIMEOUT ]]; then
     sleep 1
-    GETPUSHRESULT=`ion-connect airgap get-push $PUSHID`
+    GETPUSHRESULT=`ion-connect --insecure airgap get-push $PUSHID`
     PUSHSTATUS=`echo $GETPUSHRESULT | jq -r '.status'`
   else
     echo "ERROR: ion-connect has timed out"
