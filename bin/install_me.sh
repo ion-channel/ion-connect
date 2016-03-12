@@ -9,7 +9,7 @@ echo "Downloading ion-connect-$RELEASE.tar.gz"
 curl -sS -L -H "Accept:application/octet-stream" https://api.github.com/repos/ion-channel/ion-connect/releases/assets/1413222\?access_token\=$TOKEN -o $TMPDIR/ion-connect-$RELEASE.tar.gz
 
 echo "Untaring $TMPDIR/ion-connect-$RELEASE.tar.gz"
-tar -xfvz -C $TMPDIR $TMPDIR/ion-connect-$RELEASE.tar.gz
+tar xfz -C $TMPDIR $TMPDIR/ion-connect-$RELEASE.tar.gz
 
 echo "Copying linux binaries"
 cp $TMPDIR/ion-connect/linux/bin/ion-connect /usr/local/bin
