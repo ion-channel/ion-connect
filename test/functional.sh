@@ -1,5 +1,9 @@
 #! /bin/bash
 
+export IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/
+
+echo "Using $IONCHANNEL_ENDPOINT_URL for testing"
+
 if ! type "jq" &> /dev/null; then
   echo "Missing required command 'jq' please install before continuing"
   exit 2
