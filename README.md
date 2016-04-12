@@ -51,6 +51,19 @@ $ go install github.com/ion-channel/ion-connect
 
 If you've added the $GOHOME/bin to you path you should now be able to get ion-connect action going.
 
+### Install from apt
+
+Add the following file /etc/apt/sources.list.d/fury.list:
+```sh
+deb [trusted=yes] https://lywwDM0pBrN3qB9xqynb@apt.fury.io/kitplummer/ /
+```
+
+Then run:
+```sh
+$ apt-get update
+$ apt-get install ion-connect
+```
+
 ### To get stuff 'cross-compiled':
 
 ```sh
