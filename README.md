@@ -77,6 +77,13 @@ $ GOOS=darwin go build -o ion-connect/darwin/bin/ion-connect ./
 $ rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
 ```
 
+## Release a new version
+
+Create a git tag, of the version number to release.  Push the tag to Github.  travis-ci
+will create the new artifacts and push them to GemFury.
+
+Then, create a branch, update the app version in the main.go file, commit and push/PR.
+
 ## Your wish
 
 Ion Connect provides a setup command called *configure*.  This should probably be the first command you run.  You will be prompted for your Ion Channel Secret Key which will be provided by an Ion Channel staff member.
