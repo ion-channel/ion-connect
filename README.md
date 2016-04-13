@@ -118,4 +118,17 @@ GLOBAL OPTIONS:
    --version, -v	print the version
 ```
 
+Commands that are only supported in test by supplying the Ion Channel API endpoint url using an environment variable, similar to the following:
+
+```
+$ IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ ion-connect metadata get-languages "hello, how are you"
+[
+  {
+    "code": "en",
+    "name": "English",
+    "reliable": true
+  }
+]
+```
+
 That's it! You are well on your way to world domination.
