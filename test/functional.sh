@@ -73,13 +73,13 @@ fi
 
 STATUS=$(echo $OUTPUT | jq -r .scanner.status)
 if [ "$STATUS" != "finished" ]; then
-  echo "Failed - $STATUS"
+  echo "Failed - $STATUS - $OUTPUT"
   exit 1
 fi
 
 STATUS=$(echo $OUTPUT | jq -r .airgap.status)
 if [ "$STATUS" != "finished" ]; then
-  echo "Failed - $STATUS"
+  echo "Failed - $STATUS - $OUTPUT"
   exit 1
 fi
 
