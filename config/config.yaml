@@ -9,6 +9,7 @@
   endpoint: https://api.ionchannel.io/
   token: apikey
   commands:
+    # scanner
     - name: scanner
       usage: set of commands for effecting artifacts or source code
       subcommands:
@@ -94,7 +95,7 @@
               value:
               usage: RESULTS
               required: True
-              type: json
+              type: object
             - name: scan-type
               value:
               usage: SCAN_TYPE
@@ -150,6 +151,8 @@
               value:
               usage: ID
               required: True
+
+    # airgap
     - name: airgap
       usage: set of commands for moving artifacts or source code
       subcommands:
@@ -179,6 +182,8 @@
               value:
               usage: ID
               required: True
+
+    # metadata
     - name: metadata
       usage: set of commands for parsing metadata from text
       subcommands:
@@ -218,6 +223,89 @@
               value:
               usage: TEXT
               required: True
+    # ruleset
+    - name: ruleset
+      usage: set of commands for managing rulesets
+      subcommands:
+        - name: apply-ruleset
+          url: /ruleset/applyRuleset
+          usage: apply a rulset defined by [id] to a provided analysis' scan set
+          post: true
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the analysis and project reside
+              required: True
+              type: string
+          args:
+            - name: id
+              value:
+              usage: ID
+              required: True
+          args:
+            - name: scan-set
+              value:
+              usage: SCANSET
+              type: object
+
+        - name: create-ruleset
+          url: /ruleset/createRuleset
+          usage: create a rulset with the data provided
+          post: true
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the analysis and project reside
+              required: True
+              type: string
+          args:
+            - name: id
+              value:
+              usage: ID
+              required: True
+            - name: name
+              value:
+              usage: NAME
+              required: True
+            - name: description
+              value:
+              usage: DESCRIPTION
+              required: True
+            - name: rules
+              value:
+              usage: RULES
+              required: True
+              type: array
+
+        - name: get-ruleset
+          url: /ruleset/getRuleset
+          usage: get the values for a given ruleset id
+          post: false
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the ruleset is in
+              required: True
+              type: string
+          args:
+            - name: id
+              value:
+              usage: ID
+              required: True
+
+        - name: get-rulesets
+          url: /ruleset/getRulesets
+          usage: get all rulsets for an account
+          post: false
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account for the rulesets
+              required: True
+              type: string
+
+
+    # vulnerability
     - name: vulnerability
       usage: set of commands for querying vulnerabilities
       subcommands:
@@ -332,6 +420,11 @@
           args:
             - name: results
               value:
-              usage: Results
-              type: json
+              usage: RESULTS
+              type: object
+              required: True
+            - name: rules
+              value:
+              usage: RULES
+              type: array
               required: True

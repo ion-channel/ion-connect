@@ -42,11 +42,16 @@ var _ = Describe("Params", func() {
 
     It("should populate the fields from json data", func() {
       config,_ = GetConfig().FindSubCommandConfig("test", "test-json")
-      args := []string{"{\"key\":\"value\"}"}
+      args := []string{ "{\"key\":\"value\"}", "[\"key\",\"value\"]" }
       params := PostParams{}.Generate(args, config.Args)
       m := make(map[string]interface{})
       m["key"] = "value"
-      Expect(params).To(Equal(PostParams{Results:m}))
+
+      a := make([]interface{}, 2)
+      a[0] = "key"
+      a[1] = "value"
+
+      Expect(params).To(Equal(PostParams{Results:m, Rules:a}))
     })
 
     It("should populate the fields with file contents if type is file ", func() {
