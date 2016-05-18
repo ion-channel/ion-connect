@@ -304,6 +304,71 @@
               required: True
               type: string
 
+    # animal
+    - name: animal
+      usage: set of commands for querying raw analysis and scan data
+      subcommands:
+        - name: get-analysis
+          url: /animal/getAnalysis
+          usage: get an analysis for the provided account, project and analysis ids
+          post: false
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the analysis and project reside
+              required: True
+              type: string
+            - name: project-id
+              value:
+              usage: The id of the project the analysis resides
+              required: True
+              type: string
+          args:
+            - name: id
+              value:
+              usage: ID
+              required: True
+
+        - name: get-scan
+          url: /animal/getScan
+          usage: get a scan for the provided account, project, analysis and scan ids
+          post: false
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the analysis and project reside
+              required: True
+              type: string
+            - name: project-id
+              value:
+              usage: The id of the project the analysis resides
+              required: True
+              type: string
+          args:
+            - name: analysis-id
+              value:
+              usage: ANALYSISID
+              required: True
+            - name: id
+              value:
+              usage: ID
+              required: True
+
+        - name: get-analyses
+          url: /animal/getAnalyses
+          usage: get analyses for the provided account and project ids
+          post: false
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the analysis and project reside
+              required: True
+              type: string
+            - name: project-id
+              value:
+              usage: The id of the project the analysis resides
+              required: True
+              type: string
 
     # vulnerability
     - name: vulnerability
