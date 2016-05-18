@@ -25,6 +25,80 @@
               value:
               usage: URL
               required: True
+        - name: analyze-project
+          url: /scanner/analyzeProject
+          usage: run an analysis on an Ion Channel project
+          post: True
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the analysis and project reside
+              required: True
+              type: string
+            - name: project-id
+              value:
+              usage: The id of the project the analysis resides
+              required: True
+              type: string
+          args:
+            - name: build-number
+              value:
+              usage: BUILDNUMBER
+              required: True
+        - name: get-analysis-status
+          url: /scanner/getAnalysisStatus
+          usage: returns the status data for a given analysis [id]
+          post: False
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the analysis and project reside
+              required: True
+              type: string
+            - name: project-id
+              value:
+              usage: The id of the project the analysis resides
+              required: True
+              type: string
+          args:
+            - name: id
+              value:
+              usage: ID
+              required: True
+        - name: add-scan-result
+          url: /scanner/addScanResult
+          usage: add the result of an external scan to an existing or new analysis
+          post: True
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the analysis and project reside
+              required: True
+              type: string
+            - name: project-id
+              value:
+              usage: The id of the project the analysis resides
+              required: True
+              type: string
+            - name: analysis-id
+              value:
+              usage: The id of the analysis that the result will be added to
+              required: True
+              type: string
+          args:
+            - name: status
+              value:
+              usage: STATUS
+              required: True
+            - name: results
+              value:
+              usage: RESULTS
+              required: True
+              type: json
+            - name: scan-type
+              value:
+              usage: SCAN_TYPE
+              required: True
         - name: scan-artifact-url
           url: /scanner/scanArtifactUrl
           usage: scan an artifact from a remote url
@@ -144,11 +218,11 @@
               value:
               usage: TEXT
               required: True
-    - name: vulnerabilities
+    - name: vulnerability
       usage: set of commands for querying vulnerabilities
       subcommands:
         - name: get-vulnerabilities
-          url: /vulnerabilities/getVulnerabilities
+          url: /vulnerability/getVulnerabilities
           usage: returns a list of vulnerabilities for a given query
           post: False
           flags:
@@ -251,3 +325,13 @@
           usage: tests only
           post: True
           args:
+        - name: test-json
+          url: /test/getTest
+          usage: tests only
+          post: True
+          args:
+            - name: results
+              value:
+              usage: Results
+              type: json
+              required: True

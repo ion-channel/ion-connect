@@ -40,6 +40,15 @@ var _ = Describe("Params", func() {
       Expect(params.String()).To(Equal("Project=ernie, Url=, Type=, Checksum=, Id=, Text=, Version=, File="))
     })
 
+    It("should populate the fields from json data", func() {
+      config,_ = GetConfig().FindSubCommandConfig("test", "test-json")
+      args := []string{"{\"key\":\"value\"}"}
+      params := PostParams{}.Generate(args, config.Args)
+      m := make(map[string]interface{})
+      m["key"] = "value"
+      Expect(params).To(Equal(PostParams{Results:m}))
+    })
+
     It("should populate the fields with file contents if type is file ", func() {
       config,_ = GetConfig().FindSubCommandConfig("scanner", "scan-dependencies")
       args := []string{"../test/Gemfile"}
