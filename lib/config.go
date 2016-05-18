@@ -7,254 +7,253 @@
 
 package ionconnect
 
-import(
-    "github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/GeertJohan/go.rice"
-    "github.com/ion-channel/ion-connect/Godeps/_workspace/src/gopkg.in/yaml.v2"
-    "github.com/ion-channel/ion-connect/Godeps/_workspace/src/golang.org/x/crypto/ssh/terminal"
-    "github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/codegangsta/cli"
-    "log"
-    "fmt"
-    "os"
-    "errors"
-    "text/template"
-    "bytes"
+import (
+	"bytes"
+	"errors"
+	"fmt"
+	"github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/GeertJohan/go.rice"
+	"github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/codegangsta/cli"
+	"github.com/ion-channel/ion-connect/Godeps/_workspace/src/golang.org/x/crypto/ssh/terminal"
+	"github.com/ion-channel/ion-connect/Godeps/_workspace/src/gopkg.in/yaml.v2"
+	"log"
+	"os"
+	"text/template"
 )
 
 type Command struct {
-  Name string
-  Usage string
-  Post bool
-  Url string
-  Flags []Flag
-  Args  Args
-  Subcommands []Command
+	Name        string
+	Usage       string
+	Post        bool
+	Url         string
+	Flags       []Flag
+	Args        Args
+	Subcommands []Command
 }
 
 func (command Command) GetArgsUsage() string {
-  var buffer bytes.Buffer
-  for _, arg := range command.Args {
-    if len(arg.Usage) > 0 {
-       if !arg.Required {
-          buffer.WriteString("[")
-       }
-       buffer.WriteString(arg.Usage)
-       if !arg.Required {
-          buffer.WriteString("]")
-       }
-       buffer.WriteString(" ")
+	var buffer bytes.Buffer
+	for _, arg := range command.Args {
+		if len(arg.Usage) > 0 {
+			if !arg.Required {
+				buffer.WriteString("[")
+			}
+			buffer.WriteString(arg.Usage)
+			if !arg.Required {
+				buffer.WriteString("]")
+			}
+			buffer.WriteString(" ")
 
-    }
-  }
+		}
+	}
 
-  return buffer.String()
+	return buffer.String()
 }
 
 func (command Command) GetArgsForFlags(flagName string) Args {
-  for _, flag := range command.Flags {
-    if flag.Name == flagName {
-      return flag.Args
-    }
-  }
+	for _, flag := range command.Flags {
+		if flag.Name == flagName {
+			return flag.Args
+		}
+	}
 
-  return []Arg{}
+	return []Arg{}
 }
 
 func (command Command) GetFlagsWithArgs() []Flag {
-  flags := []Flag{}
-  for _, flag := range command.Flags {
-    if len(flag.Args) > 0 {
-      flags = append(flags, flag)
-    }
-  }
+	flags := []Flag{}
+	for _, flag := range command.Flags {
+		if len(flag.Args) > 0 {
+			flags = append(flags, flag)
+		}
+	}
 
-  return flags
+	return flags
 }
 
 func (command Command) GetArgsUsageWithFlags(flagName string) string {
-  var buffer bytes.Buffer
+	var buffer bytes.Buffer
 
-  for _, flag := range command.Flags {
-    if flag.Name == flagName {
-      for _, arg := range flag.Args {
-        if len(arg.Usage) > 0 {
-           if !arg.Required {
-              buffer.WriteString("[")
-           }
-           buffer.WriteString(arg.Usage)
-           if !arg.Required {
-              buffer.WriteString("]")
-           }
-           buffer.WriteString(" ")
-        }
-      }
-    }
-  }
+	for _, flag := range command.Flags {
+		if flag.Name == flagName {
+			for _, arg := range flag.Args {
+				if len(arg.Usage) > 0 {
+					if !arg.Required {
+						buffer.WriteString("[")
+					}
+					buffer.WriteString(arg.Usage)
+					if !arg.Required {
+						buffer.WriteString("]")
+					}
+					buffer.WriteString(" ")
+				}
+			}
+		}
+	}
 
-  return buffer.String()
+	return buffer.String()
 }
 
 func (args Args) GetRequiredArgsCount() int {
-  var count int
-  for _, arg := range args {
-    if len(arg.Usage) > 0 && arg.Required {
-      count++
-    }
-  }
+	var count int
+	for _, arg := range args {
+		if len(arg.Usage) > 0 && arg.Required {
+			count++
+		}
+	}
 
-  return count
+	return count
 }
 
 func (command Command) GetDefaultRequiredArgsCount() int {
-  return command.Args.GetRequiredArgsCount()
+	return command.Args.GetRequiredArgsCount()
 }
 
 type Arg struct {
-  Name string
-  Value string
-  Usage string
-  Required bool
-  Type string
+	Name     string
+	Value    string
+	Usage    string
+	Required bool
+	Type     string
 }
 
 type Args []Arg
 
 type Flag struct {
-  Name  string
-  Value string
-  Usage string
-  Type  string
-  Required bool
-  Args Args
+	Name     string
+	Value    string
+	Usage    string
+	Type     string
+	Required bool
+	Args     Args
 }
 
 type Config struct {
-  Version string
-  Endpoint string
-  Token string
-  Commands []Command
+	Version  string
+	Endpoint string
+	Token    string
+	Commands []Command
 }
 
 func GetConfig() Config {
-  configBox, err := rice.FindBox("../config")
-  if err != nil {
-    log.Fatal(err)
-  }
+	configBox, err := rice.FindBox("../config")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-  // get file contents as string
-  configString, err := configBox.String("config.yaml")
-  if err != nil {
-    log.Fatal(err)
-  }
+	// get file contents as string
+	configString, err := configBox.String("config.yaml")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-  config := Config{}
+	config := Config{}
 
-  err = yaml.Unmarshal([]byte(configString), &config)
-  if err != nil {
-    log.Fatalf("error: %v", err)
-  }
+	err = yaml.Unmarshal([]byte(configString), &config)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
 
-  if !Test {
-    config.Commands = config.Commands[:len(config.Commands)-1]
-  }
-  return config
+	if !Test {
+		config.Commands = config.Commands[:len(config.Commands)-1]
+	}
+	return config
 }
 
-
 func (config Config) FindCommandConfig(commandName string) (Command, error) {
-  for _, command := range config.Commands {
-    if command.Name == commandName {
-      return command, nil
-    }
-  }
+	for _, command := range config.Commands {
+		if command.Name == commandName {
+			return command, nil
+		}
+	}
 
-  return Command{}, errors.New("Command not found")
+	return Command{}, errors.New("Command not found")
 }
 
 func (config Config) ProcessUrlFromConfig(commandName string, subcommandName string, params interface{}) (string, error) {
-  subCommandConfig, err := config.FindSubCommandConfig(commandName, subcommandName)
-  if err != nil {
-    return "", err
-  }
+	subCommandConfig, err := config.FindSubCommandConfig(commandName, subcommandName)
+	if err != nil {
+		return "", err
+	}
 
-  url := subCommandConfig.Url
+	url := subCommandConfig.Url
 
-  templ := template.Must(template.New("url").Parse(url))
-  buf := bytes.Buffer{}
-  err = templ.Execute(&buf, params)
-  if err != nil {
-    return "", err
-  }
+	templ := template.Must(template.New("url").Parse(url))
+	buf := bytes.Buffer{}
+	err = templ.Execute(&buf, params)
+	if err != nil {
+		return "", err
+	}
 
-  return string(buf.Bytes()), nil
+	return string(buf.Bytes()), nil
 }
 
 func (config Config) FindSubCommandConfig(commandName string, subcommandName string) (Command, error) {
-  command, err := config.FindCommandConfig(commandName)
-  if err != nil {
-    return Command{}, err
-  }
+	command, err := config.FindCommandConfig(commandName)
+	if err != nil {
+		return Command{}, err
+	}
 
-  for _, subcommand := range command.Subcommands {
-    if subcommand.Name == subcommandName {
-      return subcommand, nil
-    }
-  }
+	for _, subcommand := range command.Subcommands {
+		if subcommand.Name == subcommandName {
+			return subcommand, nil
+		}
+	}
 
-  return Command{}, errors.New("Subcommand not found")
+	return Command{}, errors.New("Subcommand not found")
 }
 
 func (config Config) LoadEndpoint() string {
-  endpoint := os.Getenv(ENDPOINT_ENVIRONMENT_VARIABLE)
-  if endpoint == "" {
-    Debugf("Endpoint env var not found returning from config file (%s)", config.Endpoint)
+	endpoint := os.Getenv(ENDPOINT_ENVIRONMENT_VARIABLE)
+	if endpoint == "" {
+		Debugf("Endpoint env var not found returning from config file (%s)", config.Endpoint)
 
-    return config.Endpoint
-  } else {
-    Debugf("Credential env var found (%s)", endpoint)
-    return endpoint
-  }
+		return config.Endpoint
+	} else {
+		Debugf("Credential env var found (%s)", endpoint)
+		return endpoint
+	}
 }
 
-func HandleConfigure(context* cli.Context) {
-  currentSecretKey := LoadCredential()
-  truncatedSecretKey := currentSecretKey
-  if len(currentSecretKey) > 4 {
-      truncatedSecretKey = currentSecretKey[len(currentSecretKey)-4:len(currentSecretKey)]
-  }
+func HandleConfigure(context *cli.Context) {
+	currentSecretKey := LoadCredential()
+	truncatedSecretKey := currentSecretKey
+	if len(currentSecretKey) > 4 {
+		truncatedSecretKey = currentSecretKey[len(currentSecretKey)-4 : len(currentSecretKey)]
+	}
 
-  fmt.Printf("Ion Channel Api Key [%s]: ", truncatedSecretKey)
-  secretKey, _ := terminal.ReadPassword(int(os.Stdin.Fd()))
+	fmt.Printf("Ion Channel Api Key [%s]: ", truncatedSecretKey)
+	secretKey, _ := terminal.ReadPassword(int(os.Stdin.Fd()))
 
-  Debugf("All you keys are belong to us! (%s)", secretKey)
+	Debugf("All you keys are belong to us! (%s)", secretKey)
 
-  if len(secretKey) != 0 {
-    saveCredentials(string(secretKey))
-  }
+	if len(secretKey) != 0 {
+		saveCredentials(string(secretKey))
+	}
 }
 
 func LoadCredential() string {
-  credential := os.Getenv(CREDENTIALS_ENVIRONMENT_VARIABLE)
-  if credential == "" {
-    Debugln("Credential env var not found looking in file")
-    exists, _ := PathExists(ION_HOME)
-    if exists {
-      bytes, _ := ReadBytesFromFile(CREDENTIALS_FILE)
-      credentials := make(map[string]string)
-      yaml.Unmarshal([]byte(bytes), &credentials)
-      return credentials[CREDENTIALS_KEY_FIELD]
-    } else {
-      MkdirAll(ION_HOME, 0775)
-      return ""
-    }
-  } else {
-    Debugln("Credential env var found")
-    return credential
-  }
+	credential := os.Getenv(CREDENTIALS_ENVIRONMENT_VARIABLE)
+	if credential == "" {
+		Debugln("Credential env var not found looking in file")
+		exists, _ := PathExists(ION_HOME)
+		if exists {
+			bytes, _ := ReadBytesFromFile(CREDENTIALS_FILE)
+			credentials := make(map[string]string)
+			yaml.Unmarshal([]byte(bytes), &credentials)
+			return credentials[CREDENTIALS_KEY_FIELD]
+		} else {
+			MkdirAll(ION_HOME, 0775)
+			return ""
+		}
+	} else {
+		Debugln("Credential env var found")
+		return credential
+	}
 }
 
 func saveCredentials(secretKey string) {
-  credentials := make(map[string]string)
-  credentials[CREDENTIALS_KEY_FIELD] = secretKey
-  yamlCredentials, _ := yaml.Marshal(&credentials)
-  WriteLinesToFile(CREDENTIALS_FILE, []string{string(yamlCredentials)}, 0600)
+	credentials := make(map[string]string)
+	credentials[CREDENTIALS_KEY_FIELD] = secretKey
+	yamlCredentials, _ := yaml.Marshal(&credentials)
+	WriteLinesToFile(CREDENTIALS_FILE, []string{string(yamlCredentials)}, 0600)
 }

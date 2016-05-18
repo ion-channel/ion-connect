@@ -8,78 +8,77 @@
 package ionconnect
 
 import (
-  . "github.com/onsi/ginkgo"
-  . "github.com/onsi/gomega"
-  "github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/codegangsta/cli"
-  "flag"
+	"flag"
+	"github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/codegangsta/cli"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Api", func() {
-  var (
-  )
+	var ()
 
-  BeforeEach(func() {
-    Debug = true
-  })
+	BeforeEach(func() {
+		Debug = true
+	})
 
-  Context("If we have a command request", func(){
-    It("should fail if a required argument is missing", func() {
-      Test=true
-      api := Api{Config: GetConfig()}
-      subCommand := cli.Command{Name: "get-languages"}
-      command := cli.Command{Name: "metadata", Subcommands: []cli.Command{subCommand}}
-      context := cli.NewContext(nil, nil, nil)
-      context.Command = command
-      Expect(func () {api.HandleCommand(context)}).To(Panic())
-    })
+	Context("If we have a command request", func() {
+		It("should fail if a required argument is missing", func() {
+			Test = true
+			api := Api{Config: GetConfig()}
+			subCommand := cli.Command{Name: "get-languages"}
+			command := cli.Command{Name: "metadata", Subcommands: []cli.Command{subCommand}}
+			context := cli.NewContext(nil, nil, nil)
+			context.Command = command
+			Expect(func() { api.HandleCommand(context) }).To(Panic())
+		})
 
-    It("should fail if an required flag is missing", func() {
-      Test=true
-      api := Api{Config: GetConfig()}
-      set := flag.NewFlagSet("set", 0)
-      set.Parse([]string{"test", "test1"})
-      Expect(set.Args()).To(Equal([]string{"test", "test1"}))
+		It("should fail if an required flag is missing", func() {
+			Test = true
+			api := Api{Config: GetConfig()}
+			set := flag.NewFlagSet("set", 0)
+			set.Parse([]string{"test", "test1"})
+			Expect(set.Args()).To(Equal([]string{"test", "test1"}))
 
-      subCommand := cli.Command{Name: "test1"}
-      command := cli.Command{Name: "test", Subcommands: []cli.Command{subCommand}}
-      context := cli.NewContext(nil, set, nil)
-      context.Command = command
-      Expect(func () {api.HandleCommand(context)}).To(Panic())
-    })
+			subCommand := cli.Command{Name: "test1"}
+			command := cli.Command{Name: "test", Subcommands: []cli.Command{subCommand}}
+			context := cli.NewContext(nil, set, nil)
+			context.Command = command
+			Expect(func() { api.HandleCommand(context) }).To(Panic())
+		})
 
-    It("should send the request if everything is there", func() {
-      Test=true
-      api := Api{Config: GetConfig()}
-      set := flag.NewFlagSet("set", 0)
+		It("should send the request if everything is there", func() {
+			Test = true
+			api := Api{Config: GetConfig()}
+			set := flag.NewFlagSet("set", 0)
 
-      subCommand := cli.Command{Name: "test1"}
-      command := cli.Command{Name: "test", Subcommands: []cli.Command{subCommand}}
-      context := cli.NewContext(nil, set, nil)
-      context.Command = command
+			subCommand := cli.Command{Name: "test1"}
+			command := cli.Command{Name: "test", Subcommands: []cli.Command{subCommand}}
+			context := cli.NewContext(nil, set, nil)
+			context.Command = command
 
-      config, _ := GetConfig().FindSubCommandConfig("test", "test1")
-      response, body := api.sendRequest("test", "test1", context, config.Args, make(map[string]string), false)
-      Expect(response.Status).To(Equal("404 Not Found"))
-      Expect(body["message"]).To(Equal("API not found with these values"))
-    })
+			config, _ := GetConfig().FindSubCommandConfig("test", "test1")
+			response, body := api.sendRequest("test", "test1", context, config.Args, make(map[string]string), false)
+			Expect(response.Status).To(Equal("404 Not Found"))
+			Expect(body["message"]).To(Equal("API not found with these values"))
+		})
 
-    It("should process the response body", func() {
-      Test=true
-      api := Api{Config: GetConfig()}
-      set := flag.NewFlagSet("set", 0)
+		It("should process the response body", func() {
+			Test = true
+			api := Api{Config: GetConfig()}
+			set := flag.NewFlagSet("set", 0)
 
-      subCommand := cli.Command{Name: "test1"}
-      command := cli.Command{Name: "test", Subcommands: []cli.Command{subCommand}}
-      context := cli.NewContext(nil, set, nil)
-      context.Command = command
+			subCommand := cli.Command{Name: "test1"}
+			command := cli.Command{Name: "test", Subcommands: []cli.Command{subCommand}}
+			context := cli.NewContext(nil, set, nil)
+			context.Command = command
 
-      config, _ := GetConfig().FindSubCommandConfig("test", "test1")
-      response, body := api.sendRequest("test", "test1", context, config.Args, make(map[string]string), false)
-      Expect(api.processResponse(response, body)).To(Equal("API not found with these values"))
-    })
-  })
+			config, _ := GetConfig().FindSubCommandConfig("test", "test1")
+			response, body := api.sendRequest("test", "test1", context, config.Args, make(map[string]string), false)
+			Expect(api.processResponse(response, body)).To(Equal("API not found with these values"))
+		})
+	})
 
-  AfterEach(func() {
-    Debug = false
-  })
+	AfterEach(func() {
+		Debug = false
+	})
 })
