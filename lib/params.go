@@ -35,6 +35,11 @@ type PostParams struct {
     Status      string   `json:"status,omitempty"`
     Results     map[string]interface{}   `json:"results,omitempty"`
     ScanType    string   `json:"scan_type,omitempty"`
+
+    Name    string   `json:"name,omitempty"`
+    Description string   `json:"description,omitempty"`
+    Rules []interface{}   `json:"rules,omitempty"`
+    // ScanSet map[string]interface{}   `json:"scan_set,omitempty"`
 }
 
 type GetParams struct {
@@ -55,6 +60,11 @@ type GetParams struct {
     Status      string   `url:"status,omitempty"`
     Results     map[string]interface{}   `url:"results,omitempty"`
     ScanType    string   `url:"scan_type,omitempty"`
+
+    Name    string   `url:"name,omitempty"`
+    Description string   `url:"description,omitempty"`
+    Rules []interface{}   `url:"rules,omitempty"`
+    // ScanSet map[string]interface{}   `url:"scan_set,omitempty"`
 }
 
 func (params GetParams) String() string {
@@ -63,7 +73,7 @@ func (params GetParams) String() string {
 
 func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
   for index, arg := range args {
-    if argConfigs[index].Type != "json" {
+    if argConfigs[index].Type != "object" &&  argConfigs[index].Type != "array" {
       reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetString(arg)
     }
   }
@@ -95,14 +105,24 @@ func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
     }
 
     Debugf("Setting %s to %s", strings.Title(argConfigs[index].Name), arg )
-    if argConfigs[index].Type == "json" {
+    if argConfigs[index].Type == "object" {
+      Debugln("Using object parser")
       var jsonArg map[string]interface{}
       err := json.Unmarshal([]byte(arg), &jsonArg)
     	if err != nil {
     		panic(fmt.Sprintf("Error parsing json from %s - %s", argConfigs[index].Name, err.Error()))
     	}
       reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).Set(reflect.ValueOf(jsonArg))
+    } else if argConfigs[index].Type == "array" {
+      Debugln("Using array parser")
+      var jsonArray []interface{}
+      err := json.Unmarshal([]byte(arg), &jsonArray)
+    	if err != nil {
+    		panic(fmt.Sprintf("Error parsing json from %s - %s", argConfigs[index].Name, err.Error()))
+    	}
+      reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).Set(reflect.ValueOf(jsonArray))
     } else {
+      Debugln("Using string parser")
       reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetString(arg)
     }
 
