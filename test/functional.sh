@@ -33,14 +33,14 @@ if [ "$?" != "0" ]; then
 fi
 
 echo "It should get vulnerabilities for a project"
-OUTPUT=$(ion-connect --insecure vulnerabilities get-vulnerabilities --limit 1 --offset 0 "solr")
+OUTPUT=$(ion-connect --insecure vulnerability get-vulnerabilities --limit 1 --offset 0 "solr")
 if [ "$?" != "0" ]; then
   echo "Failed - $OUTPUT"
   exit 1
 fi
 
 echo "It should get vulnerabilities for text"
-OUTPUT=$(ion-connect --insecure vulnerabilities get-vulnerabilities --text --limit 12 --offset 10 "testing")
+OUTPUT=$(ion-connect --insecure vulnerability get-vulnerabilities --text --limit 12 --offset 10 "testing")
 if [ "$?" != "0" ]; then
   echo "Failed - $OUTPUT"
   exit 1

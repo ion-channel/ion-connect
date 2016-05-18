@@ -13,33 +13,48 @@ import (
   "reflect"
   "fmt"
   "io/ioutil"
+  "encoding/json"
 )
 
 type Params interface {
 }
 
 type PostParams struct {
-    Project   string   `json:"project,omitempty"`
-    Url       string   `json:"url,omitempty"`
-    Type      string   `json:"type,omitempty"`
-    Checksum  string   `json:"checksum,omitempty"`
-    Id        string   `json:"id,omitempty"`
-    Text      string   `json:"text,omitempty"`
-    Version   string   `json:"version,omitempty"`
-    File      string   `json:"file,omitempty"`
+    Project     string   `json:"project,omitempty"`
+    Url         string   `json:"url,omitempty"`
+    Type        string   `json:"type,omitempty"`
+    Checksum    string   `json:"checksum,omitempty"`
+    Id          string   `json:"id,omitempty"`
+    Text        string   `json:"text,omitempty"`
+    Version     string   `json:"version,omitempty"`
+    File        string   `json:"file,omitempty"`
+    ProjectId   string   `json:"project_id,omitempty"`
+    AccountId   string   `json:"account_id,omitempty"`
+    AnalysisId  string   `json:"analysis_id,omitempty"`
+    BuildNumber string   `json:"build_number,omitempty"`
+    Status      string   `json:"status,omitempty"`
+    Results     map[string]interface{}   `json:"results,omitempty"`
+    ScanType    string   `json:"scan_type,omitempty"`
 }
 
 type GetParams struct {
-    Project   string   `url:"project,omitempty"`
-    Url       string   `url:"url,omitempty"`
-    Type      string   `url:"type,omitempty"`
-    Checksum  string   `url:"checksum,omitempty"`
-    Id        string   `url:"id,omitempty"`
-    Text      string   `url:"text,omitempty"`
-    Version   string   `url:"version,omitempty"`
-    Limit     string   `url:"limit,omitempty"`
-    Offset    string   `url:"offset,omitempty"`
-    File      string   `url:"file,omitempty"`
+    Project     string   `url:"project,omitempty"`
+    Url         string   `url:"url,omitempty"`
+    Type        string   `url:"type,omitempty"`
+    Checksum    string   `url:"checksum,omitempty"`
+    Id          string   `url:"id,omitempty"`
+    Text        string   `url:"text,omitempty"`
+    Version     string   `url:"version,omitempty"`
+    Limit       string   `url:"limit,omitempty"`
+    Offset      string   `url:"offset,omitempty"`
+    File        string   `url:"file,omitempty"`
+    ProjectId   string   `url:"project_id,omitempty"`
+    AccountId   string   `url:"account_id,omitempty"`
+    AnalysisId  string   `url:"analysis_id,omitempty"`
+    BuildNumber string   `url:"build_number,omitempty"`
+    Status      string   `url:"status,omitempty"`
+    Results     map[string]interface{}   `url:"results,omitempty"`
+    ScanType    string   `url:"scan_type,omitempty"`
 }
 
 func (params GetParams) String() string {
@@ -48,15 +63,17 @@ func (params GetParams) String() string {
 
 func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
   for index, arg := range args {
-    reflect.ValueOf(&params).Elem().FieldByName(strings.Title(argConfigs[index].Name)).SetString(arg)
+    if argConfigs[index].Type != "json" {
+      reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetString(arg)
+    }
   }
   return params
 }
 
 func (params GetParams) UpdateFromMap(paramMap map[string]string) GetParams {
   for param, value := range paramMap {
-    Debugf("Setting %s to %s", param, value )
-    reflect.ValueOf(&params).Elem().FieldByName(strings.Title(param)).SetString(value)
+    Debugf("Setting %s to %s", strings.Replace(strings.Title(param), "-", "", -1), value )
+    reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(param), "-", "", -1)).SetString(value)
   }
   return params
 }
@@ -67,7 +84,7 @@ func (params PostParams) String() string {
 
 func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
   for index, arg := range args {
-    Debugf("Setting %s to %s", argConfigs[index].Name, arg )
+    Debugf("Index and args %d %s %v", index, arg, argConfigs)
     if argConfigs[index].Type == "file" {
       Debugf("Reading file %s", arg)
       bytes, err := ioutil.ReadFile(arg)
@@ -76,7 +93,21 @@ func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
       }
       arg = string(bytes)
     }
-    reflect.ValueOf(&params).Elem().FieldByName(strings.Title(argConfigs[index].Name)).SetString(arg)
+
+    Debugf("Setting %s to %s", strings.Title(argConfigs[index].Name), arg )
+    if argConfigs[index].Type == "json" {
+      var jsonArg map[string]interface{}
+      err := json.Unmarshal([]byte(arg), &jsonArg)
+    	if err != nil {
+    		panic(fmt.Sprintf("Error parsing json from %s - %s", argConfigs[index].Name, err.Error()))
+    	}
+      reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).Set(reflect.ValueOf(jsonArg))
+    } else {
+      reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetString(arg)
+    }
+
+
+    Debugf("Finished %s", arg)
   }
   return params
 }
