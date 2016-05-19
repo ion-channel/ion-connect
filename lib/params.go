@@ -59,7 +59,7 @@ type GetParams struct {
 	ProjectId   string                 `url:"project_id,omitempty"`
 	AccountId   string                 `url:"account_id,omitempty"`
 	AnalysisId  string                 `url:"analysis_id,omitempty"`
-  RulesetId   string                 `url:"ruleset_id,omitempty"`
+	RulesetId   string                 `url:"ruleset_id,omitempty"`
 	BuildNumber string                 `url:"build_number,omitempty"`
 	Status      string                 `url:"status,omitempty"`
 	Results     map[string]interface{} `url:"results,omitempty"`
