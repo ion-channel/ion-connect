@@ -96,6 +96,7 @@ func (command Command) GetArgsUsageWithFlags(flagName string) string {
 func (args Args) GetRequiredArgsCount() int {
 	var count int
 	for _, arg := range args {
+    Debugf("Arg (%s) is required (%b)", arg.Name, arg.Required)
 		if len(arg.Usage) > 0 && arg.Required {
 			count++
 		}

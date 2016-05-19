@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"reflect"
 	"strings"
+  "strconv"
 )
 
 type Params interface {
@@ -30,12 +31,16 @@ type PostParams struct {
 	ProjectId   string                 `json:"project_id,omitempty"`
 	AccountId   string                 `json:"account_id,omitempty"`
 	AnalysisId  string                 `json:"analysis_id,omitempty"`
+  RulesetId   string                 `json:"ruleset_id,omitempty"`
 	BuildNumber string                 `json:"build_number,omitempty"`
 	Status      string                 `json:"status,omitempty"`
 	Results     map[string]interface{} `json:"results,omitempty"`
 	ScanType    string                 `json:"scan_type,omitempty"`
 	Name        string                 `json:"name,omitempty"`
 	Description string                 `json:"description,omitempty"`
+  Branch      string                 `json:"branch,omitempty"`
+  Source      string                 `json:"source,omitempty"`
+  Active      bool                   `json:"active,omitempty"`
 	Rules       []interface{}          `json:"rules,omitempty"`
 	ScanSet     []interface{}          `json:"data,omitempty"`
 }
@@ -54,12 +59,16 @@ type GetParams struct {
 	ProjectId   string                 `url:"project_id,omitempty"`
 	AccountId   string                 `url:"account_id,omitempty"`
 	AnalysisId  string                 `url:"analysis_id,omitempty"`
+  RulesetId   string                 `url:"ruleset_id,omitempty"`
 	BuildNumber string                 `url:"build_number,omitempty"`
 	Status      string                 `url:"status,omitempty"`
 	Results     map[string]interface{} `url:"results,omitempty"`
 	ScanType    string                 `url:"scan_type,omitempty"`
 	Name        string                 `url:"name,omitempty"`
 	Description string                 `url:"description,omitempty"`
+  Branch      string                 `url:"branch,omitempty"`
+  Source      string                 `url:"source,omitempty"`
+  Active      bool                   `url:"active,omitempty"`
 	Rules       []interface{}          `url:"rules,omitempty"`
 	ScanSet     []interface{}          `url:"data,omitempty"`
 }
@@ -72,6 +81,9 @@ func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
 	for index, arg := range args {
 		if argConfigs[index].Type != "object" && argConfigs[index].Type != "array" {
 			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetString(arg)
+		} else if argConfigs[index].Type == "bool" {
+      boolArg, _ := strconv.ParseBool(arg)
+      reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetBool(boolArg)
 		}
 	}
 	return params
@@ -80,7 +92,12 @@ func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
 func (params GetParams) UpdateFromMap(paramMap map[string]string) GetParams {
 	for param, value := range paramMap {
 		Debugf("Setting %s to %s", strings.Replace(strings.Title(param), "-", "", -1), value)
-		reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(param), "-", "", -1)).SetString(value)
+    boolValue, err := strconv.ParseBool(value)
+    if err == nil {
+      reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(param), "-", "", -1)).SetBool(boolValue)
+    } else {
+		  reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(param), "-", "", -1)).SetString(value)
+    }
 	}
 	return params
 }
@@ -101,7 +118,7 @@ func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
 			arg = string(bytes)
 		}
 
-		Debugf("Setting %s to %s", strings.Title(argConfigs[index].Name), arg)
+		Debugf("PostParams Setting %s to %s", strings.Title(argConfigs[index].Name), arg)
 		if argConfigs[index].Type == "object" {
 			Debugln("Using object parser")
 			var jsonArg map[string]interface{}
@@ -118,8 +135,20 @@ func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
 				panic(fmt.Sprintf("Error parsing json from %s - %s", argConfigs[index].Name, err.Error()))
 			}
 			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).Set(reflect.ValueOf(jsonArray))
+		} else if argConfigs[index].Type == "bool" {
+      Debugf("Using bool parser for (%s) = (%s)", argConfigs[index].Name, arg)
+      if arg == ""{
+        Debugf("Missing arg value (%s) using default (%s)", argConfigs[index].Name, argConfigs[index].Value)
+        arg = argConfigs[index].Value
+      }
+      boolArg, _ := strconv.ParseBool(arg)
+			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetBool(boolArg)
 		} else {
-			Debugln("Using string parser")
+			Debugf("Using string parser for (%s) = (%s)", argConfigs[index].Name, arg)
+      if arg == ""{
+        Debugf("Missing arg value (%s) using default (%s)", argConfigs[index].Name, argConfigs[index].Value)
+        arg = argConfigs[index].Value
+      }
 			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetString(arg)
 		}
 
