@@ -31,16 +31,16 @@ type PostParams struct {
 	ProjectId   string                 `json:"project_id,omitempty"`
 	AccountId   string                 `json:"account_id,omitempty"`
 	AnalysisId  string                 `json:"analysis_id,omitempty"`
-  RulesetId   string                 `json:"ruleset_id,omitempty"`
+	RulesetId   string                 `json:"ruleset_id,omitempty"`
 	BuildNumber string                 `json:"build_number,omitempty"`
 	Status      string                 `json:"status,omitempty"`
 	Results     map[string]interface{} `json:"results,omitempty"`
 	ScanType    string                 `json:"scan_type,omitempty"`
 	Name        string                 `json:"name,omitempty"`
 	Description string                 `json:"description,omitempty"`
-  Branch      string                 `json:"branch,omitempty"`
-  Source      string                 `json:"source,omitempty"`
-  Active      bool                   `json:"active,omitempty"`
+	Branch      string                 `json:"branch,omitempty"`
+	Source      string                 `json:"source,omitempty"`
+	Active      bool                   `json:"active,omitempty"`
 	Rules       []interface{}          `json:"rules,omitempty"`
 	ScanSet     []interface{}          `json:"data,omitempty"`
 }
@@ -66,9 +66,9 @@ type GetParams struct {
 	ScanType    string                 `url:"scan_type,omitempty"`
 	Name        string                 `url:"name,omitempty"`
 	Description string                 `url:"description,omitempty"`
-  Branch      string                 `url:"branch,omitempty"`
-  Source      string                 `url:"source,omitempty"`
-  Active      bool                   `url:"active,omitempty"`
+	Branch      string                 `url:"branch,omitempty"`
+	Source      string                 `url:"source,omitempty"`
+	Active      bool                   `url:"active,omitempty"`
 	Rules       []interface{}          `url:"rules,omitempty"`
 	ScanSet     []interface{}          `url:"data,omitempty"`
 }
