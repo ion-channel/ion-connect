@@ -379,6 +379,182 @@
               required: True
               type: string
 
+    # mulch
+    - name: repository
+      usage: set of commands for querying source repository data
+      subcommands:
+        - name: get-repository
+          url: /repository/getRepository
+          usage: get data surrounding a source repository specified by the NAME argument
+          post: false
+          args:
+            - name: name
+              value:
+              usage: NAME
+              required: True
+
+        - name: get-repository-by-dependency
+          url: /repository/getRepositoryByDependency
+          usage: get data surrounding a source repository by dependency specified by the NAME and TYPE arguments. Where TYPE can be one of [maven]
+          post: false
+          args:
+            - name: name
+              value:
+              usage: NAME
+              required: True
+            - name: type
+              value:
+              usage: TYPE
+              required: True
+
+    - name: dependency
+      usage: set of commands for querying dependency data
+      subcommands:
+      - name: resolve-dependencies-in-file
+        url: /dependency/resolveDependenciesInFile
+        usage: get a list of dependencies for a file at FILE
+        post: True
+        flags:
+          - name: flatten
+            value:
+            usage: format data flattened
+            required: False
+            type: bool
+        args:
+          - name: file
+            value:
+            usage: FILE
+            required: True
+
+      - name: get-latest-version-for-dependency
+        url: /dependency/getLatestVersionForDependency
+        usage: get latest version of a dependency
+        post: false
+        args:
+          - name: name
+            value:
+            usage: NAME
+            required: True
+          - name: type
+            value:
+            usage: TYPE
+            required: True
+
+      - name: get-latest-versions-for-dependency
+        url: /dependency/getVersionsForDependency
+        usage: get latest versions of a dependency
+        post: false
+        args:
+          - name: name
+            value:
+            usage: NAME
+            required: True
+          - name: type
+            value:
+            usage: TYPE
+            required: True
+
+      - name: get-dependencies
+        url: /dependency/getDependencies
+        usage: get a list of dependencies for a versions of a project
+        post: false
+        args:
+          - name: name
+            value:
+            usage: NAME
+            required: True
+          - name: type
+            value:
+            usage: TYPE
+            required: True
+
+      - name: get-resolved-dependencies
+        url: /dependency/getResolvedDependencies
+        usage: get a list of resolved dependencies for a versions of a project
+        post: false
+        flags:
+          - name: flatten
+            value:
+            usage: format data flattened
+            required: False
+            type: bool
+        args:
+          - name: name
+            value:
+            usage: NAME
+            required: True
+          - name: type
+            value:
+            usage: TYPE
+            required: True
+
+      - name: get-resolved-version-for-dependency
+        url: /dependency/getResolvedVersionForDependency
+        usage: get a resolved version for a project
+        post: false
+        args:
+          - name: name
+            value:
+            usage: NAME
+            required: True
+          - name: type
+            value:
+            usage: TYPE
+            required: True
+          - name: version
+            value:
+            usage: VERSION
+            required: True
+
+
+    - name: mail
+      usage: set of commands for querying mail message data
+      subcommands:
+        - name: get-message-counts
+          url: /mail/getMessageCounts
+          usage: get message counts for a project
+          post: false
+          args:
+            - name: project
+              value:
+              usage: PROJECT
+              required: True
+
+
+    - name: community
+      usage: set of commands for querying a project's community data
+      subcommands:
+        - name: get-team-contributions
+          url: /community/getTeamContributions
+          usage: get team contribution data for a project [org/name]
+          post: false
+          args:
+            - name: project
+              value:
+              usage: PROJECT
+              required: True
+
+        - name: get-lead-activity
+          url: /community/getLeadActivity
+          usage: get team lead activity data for a project [org/name]
+          post: false
+          args:
+            - name: project
+              value:
+              usage: PROJECT
+              required: True
+
+        - name: get-project-activity
+          url: /community/getProjectActivity
+          usage: get project activity data for a project [org/name]
+          post: false
+          args:
+            - name: project
+              value:
+              usage: PROJECT
+              required: True
+
+
     # animal
     - name: animal
       usage: set of commands for querying raw analysis and scan data

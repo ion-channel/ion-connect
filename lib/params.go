@@ -41,6 +41,7 @@ type PostParams struct {
 	Branch      string                 `json:"branch,omitempty"`
 	Source      string                 `json:"source,omitempty"`
 	Active      bool                   `json:"active,omitempty"`
+	Flatten     bool                   `json:"flatten,omitempty"`
 	Rules       []interface{}          `json:"rules,omitempty"`
 	ScanSet     []interface{}          `json:"data,omitempty"`
 }
@@ -69,6 +70,7 @@ type GetParams struct {
 	Branch      string                 `url:"branch,omitempty"`
 	Source      string                 `url:"source,omitempty"`
 	Active      bool                   `url:"active,omitempty"`
+	Flatten     bool                   `url:"flatten,omitempty"`
 	Rules       []interface{}          `url:"rules,omitempty"`
 	ScanSet     []interface{}          `url:"data,omitempty"`
 }
