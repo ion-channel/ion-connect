@@ -37,6 +37,7 @@ type PostParams struct {
 	Name        string                 `json:"name,omitempty"`
 	Description string                 `json:"description,omitempty"`
 	Rules       []interface{}          `json:"rules,omitempty"`
+	ScanSet     []interface{}          `json:"data,omitempty"`
 }
 
 type GetParams struct {
@@ -60,6 +61,7 @@ type GetParams struct {
 	Name        string                 `url:"name,omitempty"`
 	Description string                 `url:"description,omitempty"`
 	Rules       []interface{}          `url:"rules,omitempty"`
+	ScanSet     []interface{}          `url:"data,omitempty"`
 }
 
 func (params GetParams) String() string {
