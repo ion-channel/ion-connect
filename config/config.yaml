@@ -304,6 +304,81 @@
               required: True
               type: string
 
+    # projects
+    - name: project
+      usage: set of commands for manipulating projects for your account
+      subcommands:
+        - name: create-project
+          url: /project/createProject
+          usage: Create a new project defined by the NAME SOURCE [BRANCH]
+          post: true
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account for the project
+              required: True
+              type: string
+            - name: ruleset-id
+              value:
+              usage: The id of the ruleset for the project to use
+              required: True
+              type: string
+            - name: active
+              value: True
+              usage: Should the project be active upon creation
+              required: True
+              type: bool
+            - name: type
+              value: git
+              required: True
+              usage: Type of project to create, supported values are currently [git|file].  Defaults to 'git'
+              type: string
+            - name: branch
+              value: master
+              required: True
+              usage: Branch of project to create.  Defaults to 'master'
+              type: string
+          args:
+            - name: name
+              value:
+              usage: NAME
+              required: True
+            - name: source
+              value:
+              usage: SOURCE
+              required: True
+            - name: description
+              value:
+              usage: DESCRIPTION
+              required: True
+
+        - name: get-project
+          url: /project/getProject
+          usage: get the values for a given project id
+          post: false
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the project is in
+              required: True
+              type: string
+          args:
+            - name: id
+              value:
+              usage: ID
+              required: True
+
+        - name: get-projects
+          url: /project/getProjects
+          usage: get the projects for an account
+          post: false
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the projects are in
+              required: True
+              type: string
+
     # animal
     - name: animal
       usage: set of commands for querying raw analysis and scan data
