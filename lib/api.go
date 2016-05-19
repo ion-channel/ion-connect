@@ -74,13 +74,13 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
 		params := GetParams{}.UpdateFromMap(options)
 		client.QueryStruct(&params)
 		client.BodyJSON(&body)
-		Debugf("Sending body %v", body)
-		Debugf("Sending params %v", params)
+		Debugf("Sending body %b", body)
+		Debugf("Sending params %b", params)
 	} else {
 		params := GetParams{}.Generate(context.Args(), args).UpdateFromMap(options)
 		client.Get(api.Config.LoadEndpoint())
 		client.QueryStruct(&params)
-		Debugf("Sending params %v", params)
+		Debugf("Sending params %b", params)
 	}
 
 	Debugf("Processing url")
@@ -137,9 +137,15 @@ func (api Api) validateFlags(commandConfig Command, ctx *cli.Context) ([]Arg, ma
 	args := []Arg{}
 	params := make(map[string]string)
 	for _, flag := range commandConfig.Flags {
+    Debugf("Found option %s that is required (%b) with value %s", flag.Name, flag.Required, flag.Value)
 		if !ctx.IsSet(flag.Name) && flag.Required {
-			Debugf("Missing required option %s", flag.Name)
-			return args, params, errors.New(fmt.Sprintf("Missing required option %s", flag.Name))
+      if flag.Value == "" {
+			     Debugf("Missing required option %s", flag.Name)
+			     return args, params, errors.New(fmt.Sprintf("Missing required option %s", flag.Name))
+      } else {
+        Debugf("Found default value for flag %s: %s", flag.Name, flag.Value)
+  			params[flag.Name] = flag.Value
+      }
 		} else if len(flag.Args) > 0 && ctx.IsSet(flag.Name) {
 			Debugf("Getting args for flag %s", flag.Name)
 			args = flag.Args
