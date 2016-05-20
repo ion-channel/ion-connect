@@ -17,7 +17,11 @@ import (
 	"fmt"
 	"log"
 	"strings"
-
+  "bytes"
+  "mime/multipart"
+  "os"
+  "io"
+  "io/ioutil"
 	"crypto/tls"
 )
 
@@ -52,12 +56,19 @@ func (api Api) HandleCommand(ctx *cli.Context) {
 		cli.ShowCommandHelp(ctx, ctx.Command.Name)
 		panic(Exit(1))
 	}
-	response, body := api.sendRequest(command, subcommand, ctx, args, options, subcommandConfig.Post)
 
+
+  var response http.Response
+  var body map[string]interface{}
+  if subcommandConfig.Method == "file" {
+    response, body = api.postFile(command, subcommand, ctx, args, options)
+  } else {
+  	response, body = api.sendRequest(command, subcommand, ctx, args, options, subcommandConfig.Method)
+  }
 	fmt.Println(api.processResponse(response, body))
 }
 
-func (api Api) sendRequest(command string, subcommand string, context *cli.Context, args Args, options map[string]string, shouldPost bool) (http.Response, map[string]interface{}) {
+func (api Api) sendRequest(command string, subcommand string, context *cli.Context, args Args, options map[string]string, httpMethod string) (http.Response, map[string]interface{}) {
 	client := sling.New()
 	if Insecure {
 		transport := &http.Transport{
@@ -68,7 +79,7 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
 	}
 	var url string
 
-	if shouldPost {
+	if httpMethod == "post" {
 		body := PostParams{}.Generate(context.Args(), args)
 		client.Post(api.Config.LoadEndpoint())
 		params := GetParams{}.UpdateFromMap(options)
@@ -76,7 +87,7 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
 		client.BodyJSON(&body)
 		Debugf("Sending body %b", body)
 		Debugf("Sending params %b", params)
-	} else {
+	} else if httpMethod == "get" {
 		params := GetParams{}.Generate(context.Args(), args).UpdateFromMap(options)
 		client.Get(api.Config.LoadEndpoint())
 		client.QueryStruct(&params)
@@ -98,7 +109,7 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
 	body := make(map[string]interface{})
 	response, responseErr := client.Receive(&body, &body)
 	if responseErr != nil {
-		fmt.Println(responseErr.Error())
+		Debugf("Failure occurred during request %s", responseErr.Error())
 		Exit(1)
 	}
 	Debugf("Response received with status %s, %v", response.Status, body)
@@ -161,4 +172,63 @@ func (api Api) validateFlags(commandConfig Command, ctx *cli.Context) ([]Arg, ma
 
 	Debugf("Found args %v", args)
 	return args, params, nil
+}
+
+
+func (api Api) postFile(command string, subcommand string, context *cli.Context, args Args, options map[string]string) (http.Response, map[string]interface{}) {
+    params := GetParams{}.Generate(context.Args(), args).UpdateFromMap(options)
+    bodyParams := PostParams{}.Generate(context.Args(), args)
+    Debugf("Sending params %b", params)
+
+    Debugf("Processing url")
+  	url, err := api.Config.ProcessUrlFromConfig(command, subcommand, GetParams{}.Generate(context.Args(), args))
+  	if err != nil {
+  		log.Fatal(err.Error())
+  	}
+
+    bodyBuf := &bytes.Buffer{}
+    bodyWriter := multipart.NewWriter(bodyBuf)
+
+    Debugf("Sending file %s", bodyParams.File)
+
+    fileWriter, err := bodyWriter.CreateFormFile("file", bodyParams.File)
+    if err != nil {
+        fmt.Println("error writing to buffer")
+    }
+
+    fh, err := os.Open(bodyParams.File)
+    if err != nil {
+        fmt.Println(err.Error())
+        Exit(1)
+    }
+
+    _, err = io.Copy(fileWriter, fh)
+    if err != nil {
+      log.Fatal(err.Error())
+    }
+
+    contentType := bodyWriter.FormDataContentType()
+    bodyWriter.Close()
+
+    url = fmt.Sprintf("%s%s%s",api.Config.LoadEndpoint(), api.Config.Version, url)
+    Debugf("Sending request to %s", url)
+    client := &http.Client{}
+    req, _ := http.NewRequest("POST", url, bodyBuf)
+    req.Header.Set(api.Config.Token, LoadCredential())
+    req.Header.Set("Content-Type", contentType)
+    resp, err := client.Do(req)
+    if err != nil {
+      log.Fatal(err.Error())
+    }
+    defer resp.Body.Close()
+    resp_body, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+      log.Fatal(err.Error())
+    }
+    var jsonResponse map[string]interface{}
+    err = json.Unmarshal([]byte(resp_body), &jsonResponse)
+    if err != nil {
+      panic(fmt.Sprintf("Error parsing json from %s - %s", resp_body, err.Error()))
+    }
+    return *resp, jsonResponse
 }

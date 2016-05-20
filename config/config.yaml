@@ -16,7 +16,7 @@
         - name: scan-git
           url: /scanner/scanGit
           usage: scan a git source code repository
-          post: True
+          method: post
           args:
             - name: project
               value:
@@ -29,7 +29,7 @@
         - name: analyze-project
           url: /scanner/analyzeProject
           usage: run an analysis on an Ion Channel project
-          post: True
+          method: post
           flags:
             - name: account-id
               value:
@@ -49,7 +49,7 @@
         - name: get-analysis-status
           url: /scanner/getAnalysisStatus
           usage: returns the status data for a given analysis [id]
-          post: False
+          method: get
           flags:
             - name: account-id
               value:
@@ -69,7 +69,7 @@
         - name: add-scan-result
           url: /scanner/addScanResult
           usage: add the result of an external scan to an existing or new analysis
-          post: True
+          method: post
           flags:
             - name: account-id
               value:
@@ -103,7 +103,7 @@
         - name: scan-artifact-url
           url: /scanner/scanArtifactUrl
           usage: scan an artifact from a remote url
-          post: True
+          method: post
           args:
             - name: project
               value:
@@ -120,37 +120,37 @@
         - name: get-scan
           url: /scanner/getScan
           usage: returns the status data for a given [id]
-          post: False
+          method: get
           args:
             - name: id
               value:
               usage: ID
               required: True
-        - name: scan-dependencies
-          url: /scanner/scanDependencies
-          usage: scan a file for a list of dependencies
-          post: True
-          flags:
-            - name: type
-              value:
-              usage: The type of dependency file the file contents represents [gemfile|gemspec|package]
-              required: True
-              type: string
-          args:
-            - name: file
-              type: file
-              value:
-              usage: path/to/dependency/file
-              required: True
-        - name: get-dependencies
-          url: /scanner/getDependencies
-          usage: returns the dependencies data for a given [id]
-          post: False
-          args:
-            - name: id
-              value:
-              usage: ID
-              required: True
+        # - name: scan-dependencies
+        #   url: /scanner/scanDependencies
+        #   usage: scan a file for a list of dependencies
+        #   method: post
+        #   flags:
+        #     - name: type
+        #       value:
+        #       usage: The type of dependency file the file contents represents [gemfile|gemspec|package]
+        #       required: True
+        #       type: string
+        #   args:
+        #     - name: file
+        #       type: file
+        #       value:
+        #       usage: path/to/dependency/file
+        #       required: True
+        # - name: get-dependencies
+        #   url: /scanner/getDependencies
+        #   usage: returns the dependencies data for a given [id]
+        #   method: get
+        #   args:
+        #     - name: id
+        #       value:
+        #       usage: ID
+        #       required: True
 
     # airgap
     - name: airgap
@@ -159,7 +159,7 @@
         - name: push-artifact-url
           url: /airgap/pushArtifactUrl
           usage: push an artifact from a remote url
-          post: True
+          method: post
           args:
             - name: project
               value:
@@ -176,7 +176,7 @@
         - name: get-push
           url: /airgap/getPush
           usage: returns the status data for a given [id]
-          post: False
+          method: get
           args:
             - name: id
               value:
@@ -190,7 +190,7 @@
         - name: get-locations
           url: /metadata/getLocations
           usage: returns the locations parsed from the [text] input
-          post: True
+          method: post
           args:
             - name: text
               value:
@@ -199,7 +199,7 @@
         - name: get-languages
           url: /metadata/getLanguages
           usage: returns the languages parsed from the [text] input
-          post: True
+          method: post
           args:
             - name: text
               value:
@@ -208,7 +208,7 @@
         - name: get-licenses
           url: /metadata/getLicenses
           usage: returns the licenses parsed from the [text] input
-          post: True
+          method: post
           args:
             - name: text
               value:
@@ -217,7 +217,7 @@
         - name: get-sentiment
           url: /metadata/getSentiment
           usage: returns the sentiment parsed from the [text] input
-          post: True
+          method: post
           args:
             - name: text
               value:
@@ -230,7 +230,7 @@
         - name: apply-ruleset
           url: /ruleset/applyRuleset
           usage: apply a rulset defined by [id] to a provided analysis' scan set
-          post: true
+          method: post
           flags:
             - name: account-id
               value:
@@ -251,7 +251,7 @@
         - name: create-ruleset
           url: /ruleset/createRuleset
           usage: create a rulset with the data provided
-          post: true
+          method: post
           flags:
             - name: account-id
               value:
@@ -280,7 +280,7 @@
         - name: get-ruleset
           url: /ruleset/getRuleset
           usage: get the values for a given ruleset id
-          post: false
+          method: get
           flags:
             - name: account-id
               value:
@@ -296,7 +296,7 @@
         - name: get-rulesets
           url: /ruleset/getRulesets
           usage: get all rulsets for an account
-          post: false
+          method: get
           flags:
             - name: account-id
               value:
@@ -311,7 +311,7 @@
         - name: create-project
           url: /project/createProject
           usage: Create a new project defined by the NAME SOURCE [BRANCH]
-          post: true
+          method: post
           flags:
             - name: account-id
               value:
@@ -355,7 +355,7 @@
         - name: get-project
           url: /project/getProject
           usage: get the values for a given project id
-          post: false
+          method: get
           flags:
             - name: account-id
               value:
@@ -371,7 +371,7 @@
         - name: get-projects
           url: /project/getProjects
           usage: get the projects for an account
-          post: false
+          method: get
           flags:
             - name: account-id
               value:
@@ -386,7 +386,7 @@
         - name: get-repository
           url: /repository/getRepository
           usage: get data surrounding a source repository specified by the NAME argument
-          post: false
+          method: get
           args:
             - name: name
               value:
@@ -396,7 +396,7 @@
         - name: get-repository-by-dependency
           url: /repository/getRepositoryByDependency
           usage: get data surrounding a source repository by dependency specified by the NAME and TYPE arguments. Where TYPE can be one of [maven]
-          post: false
+          method: get
           args:
             - name: name
               value:
@@ -413,7 +413,7 @@
       - name: resolve-dependencies-in-file
         url: /dependency/resolveDependenciesInFile
         usage: get a list of dependencies for a file at FILE
-        post: True
+        method: file
         flags:
           - name: flatten
             value:
@@ -429,7 +429,7 @@
       - name: get-latest-version-for-dependency
         url: /dependency/getLatestVersionForDependency
         usage: get latest version of a dependency
-        post: false
+        method: get
         args:
           - name: name
             value:
@@ -443,7 +443,7 @@
       - name: get-latest-versions-for-dependency
         url: /dependency/getVersionsForDependency
         usage: get latest versions of a dependency
-        post: false
+        method: get
         args:
           - name: name
             value:
@@ -457,7 +457,7 @@
       - name: get-dependencies
         url: /dependency/getDependencies
         usage: get a list of dependencies for a versions of a project
-        post: false
+        method: get
         args:
           - name: name
             value:
@@ -471,7 +471,7 @@
       - name: get-resolved-dependencies
         url: /dependency/getResolvedDependencies
         usage: get a list of resolved dependencies for a versions of a project
-        post: false
+        method: get
         flags:
           - name: flatten
             value:
@@ -491,7 +491,7 @@
       - name: get-resolved-version-for-dependency
         url: /dependency/getResolvedVersionForDependency
         usage: get a resolved version for a project
-        post: false
+        method: get
         args:
           - name: name
             value:
@@ -513,7 +513,7 @@
         - name: get-message-counts
           url: /mail/getMessageCounts
           usage: get message counts for a project
-          post: false
+          method: get
           args:
             - name: project
               value:
@@ -527,7 +527,7 @@
         - name: get-team-contributions
           url: /community/getTeamContributions
           usage: get team contribution data for a project [org/name]
-          post: false
+          method: get
           args:
             - name: project
               value:
@@ -537,7 +537,7 @@
         - name: get-lead-activity
           url: /community/getLeadActivity
           usage: get team lead activity data for a project [org/name]
-          post: false
+          method: get
           args:
             - name: project
               value:
@@ -547,7 +547,7 @@
         - name: get-project-activity
           url: /community/getProjectActivity
           usage: get project activity data for a project [org/name]
-          post: false
+          method: get
           args:
             - name: project
               value:
@@ -562,7 +562,7 @@
         - name: get-analysis
           url: /animal/getAnalysis
           usage: get an analysis for the provided account, project and analysis ids
-          post: false
+          method: get
           flags:
             - name: account-id
               value:
@@ -583,7 +583,7 @@
         - name: get-scan
           url: /animal/getScan
           usage: get a scan for the provided account, project, analysis and scan ids
-          post: false
+          method: get
           flags:
             - name: account-id
               value:
@@ -608,7 +608,7 @@
         - name: get-analyses
           url: /animal/getAnalyses
           usage: get analyses for the provided account and project ids
-          post: false
+          method: get
           flags:
             - name: account-id
               value:
@@ -628,7 +628,7 @@
         - name: get-vulnerabilities
           url: /vulnerability/getVulnerabilities
           usage: returns a list of vulnerabilities for a given query
-          post: False
+          method: get
           flags:
             - name: limit
               value: 10
@@ -678,7 +678,7 @@
         - name: test1
           url: /
           usage: tests only
-          post: False
+          method: get
           flags:
           - name: project
             usage: query vulnerabilities using [PROJECT]
@@ -710,7 +710,7 @@
         - name: test2
           url: /test/getTest
           usage: tests only
-          post: True
+          method: post
           args:
             - name: text
               value:
@@ -727,12 +727,12 @@
         - name: test3
           url: /test/getTest
           usage: tests only
-          post: True
+          method: post
           args:
         - name: test-json
           url: /test/getTest
           usage: tests only
-          post: True
+          method: post
           args:
             - name: results
               value:
