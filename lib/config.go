@@ -23,7 +23,7 @@ import (
 type Command struct {
 	Name        string
 	Usage       string
-	Post        bool
+	Method      string
 	Url         string
 	Flags       []Flag
 	Args        Args

@@ -84,15 +84,10 @@ if [ "$STATUS" != "finished" ]; then
 fi
 
 echo "It should scan for dependencies"
-OUTPUT=$(./bin/dependency-scan-job.sh ./test/Gemfile gemfile)
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+OUTPUT=$(ion-connect dependency resolve-dependencies-in-file --flatten $DIR/package.json)
 if [ "$?" != "0" ]; then
   echo "Failed - $OUTPUT"
-  exit 1
-fi
-
-STATUS=$(echo $OUTPUT | jq -r .status)
-if [ "$STATUS" != "finished" ]; then
-  echo "Failed - $STATUS"
   exit 1
 fi
 
