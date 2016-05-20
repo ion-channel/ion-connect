@@ -1,0 +1,68 @@
+{
+  "account_id": "account_id",
+  "build_number": "4",
+  "created_at": "2016-05-19T23:43:53.382+00:00",
+  "id": "84ee98b9687834837efdb45296d48765",
+  "message": null,
+  "project_id": "044d931cd9056898a1fd755e34ab0cb6",
+  "scan_status": [
+    {
+      "account_id": "account_id",
+      "analysis_status_account_id": "account_id",
+      "analysis_status_id": "84ee98b9687834837efdb45296d48765",
+      "analysis_status_project_id": "044d931cd9056898a1fd755e34ab0cb6",
+      "created_at": "2016-05-19T23:44:11.715+00:00",
+      "id": "07fb060f17a28e871126f5b429d1a091",
+      "message": "Finished license scan for Kelly-s-Testarooster, found license apache-2.0.",
+      "name": "license",
+      "project_id": "044d931cd9056898a1fd755e34ab0cb6",
+      "read": false,
+      "status": "finished",
+      "updated_at": "2016-05-19T23:44:11.719+00:00"
+    },
+    {
+      "account_id": "account_id",
+      "analysis_status_account_id": "account_id",
+      "analysis_status_id": "84ee98b9687834837efdb45296d48765",
+      "analysis_status_project_id": "044d931cd9056898a1fd755e34ab0cb6",
+      "created_at": "2016-05-19T23:44:40.663+00:00",
+      "id": "557270c5d24b97f27a6fae3b5f136d69",
+      "message": "Finished clamav scan for Kelly-s-Testarooster, found 0 infected files.",
+      "name": "clamav",
+      "project_id": "044d931cd9056898a1fd755e34ab0cb6",
+      "read": false,
+      "status": "finished",
+      "updated_at": "2016-05-19T23:44:40.666+00:00"
+    },
+    {
+      "account_id": "account_id",
+      "analysis_status_account_id": "account_id",
+      "analysis_status_id": "84ee98b9687834837efdb45296d48765",
+      "analysis_status_project_id": "044d931cd9056898a1fd755e34ab0cb6",
+      "created_at": "2016-05-19T23:44:16.782+00:00",
+      "id": "eebaa42e11fbc6b60130ebf11647e596",
+      "message": "Finished dependency scan for Kelly-s-Testarooster, found 24 out of version dependencies.",
+      "name": "dependency",
+      "project_id": "044d931cd9056898a1fd755e34ab0cb6",
+      "read": false,
+      "status": "finished",
+      "updated_at": "2016-05-19T23:44:16.785+00:00"
+    },
+    {
+      "account_id": "account_id",
+      "analysis_status_account_id": "account_id",
+      "analysis_status_id": "84ee98b9687834837efdb45296d48765",
+      "analysis_status_project_id": "044d931cd9056898a1fd755e34ab0cb6",
+      "created_at": "2016-05-19T23:44:13.773+00:00",
+      "id": "f646fcd06f5c0221c62ed71cda3c5ba4",
+      "message": "Finished file type scan for Kelly-s-Testarooster, all file types look correct.",
+      "name": "file_type",
+      "project_id": "044d931cd9056898a1fd755e34ab0cb6",
+      "read": false,
+      "status": "finished",
+      "updated_at": "2016-05-19T23:44:13.776+00:00"
+    }
+  ],
+  "status": "finished",
+  "updated_at": "2016-05-19T23:44:40.723+00:00"
+}
