@@ -44,6 +44,7 @@ type PostParams struct {
 	Flatten     bool                   `json:"flatten,omitempty"`
 	Rules       []interface{}          `json:"rules,omitempty"`
 	ScanSet     []interface{}          `json:"data,omitempty"`
+	SkipAck     bool                   `json:"skip_ack,omitempty"`
 }
 
 type GetParams struct {
@@ -73,6 +74,7 @@ type GetParams struct {
 	Flatten     bool                   `url:"flatten,omitempty"`
 	Rules       []interface{}          `url:"rules,omitempty"`
 	ScanSet     []interface{}          `url:"data,omitempty"`
+	SkipAck     bool                   `url:"skip_ack,omitempty"`
 }
 
 func (params GetParams) String() string {
@@ -94,8 +96,9 @@ func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
 func (params GetParams) UpdateFromMap(paramMap map[string]string) GetParams {
 	for param, value := range paramMap {
 		Debugf("Setting %s to %s", strings.Replace(strings.Title(param), "-", "", -1), value)
-    boolValue, err := strconv.ParseBool(value)
-    if err == nil {
+    _, intErr := strconv.ParseInt(value, 10, 64)
+    boolValue, boolErr := strconv.ParseBool(value)
+    if boolErr == nil && intErr != nil {
       reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(param), "-", "", -1)).SetBool(boolValue)
     } else {
 		  reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(param), "-", "", -1)).SetString(value)
