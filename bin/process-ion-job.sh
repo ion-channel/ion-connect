@@ -74,7 +74,7 @@ done
 
 ## We have completed the scan portion, now push the artifact
 
-PUSHRESULT=`ion-connect --insecure airgap push-artifact-url $1 $3 $2`
+PUSHRESULT=`ion-connect --insecure airgap push-artifact-url --skip-ack $1 $3 $2`
 #echo "PR: $PUSHRESULT"
 PUSHSTATUS=`echo $PUSHRESULT | jq -r '.status'`
 #echo "PS: $PUSHSTATUS"

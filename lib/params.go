@@ -44,6 +44,7 @@ type PostParams struct {
 	Flatten     bool                   `json:"flatten,omitempty"`
 	Rules       []interface{}          `json:"rules,omitempty"`
 	ScanSet     []interface{}          `json:"data,omitempty"`
+	SkipAck     bool                   `json:"skip_ack,omitempty"`
 }
 
 type GetParams struct {
@@ -73,6 +74,7 @@ type GetParams struct {
 	Flatten     bool                   `url:"flatten,omitempty"`
 	Rules       []interface{}          `url:"rules,omitempty"`
 	ScanSet     []interface{}          `url:"data,omitempty"`
+	SkipAck     bool                   `url:"skip_ack,omitempty"`
 }
 
 func (params GetParams) String() string {
