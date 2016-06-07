@@ -32,7 +32,7 @@ var _ = Describe("Config", func() {
 			Expect(config.Version).To(Equal("v1"))
 		})
 		It("should contain the api endpoint", func() {
-			Expect(config.Endpoint).To(Equal("https://api.ionchannel.io/"))
+			Expect(config.Endpoint).To(Equal("https://api.test.ionchannel.io/"))
 		})
 		It("should contain the api token header name", func() {
 			Expect(config.Token).To(Equal("apikey"))

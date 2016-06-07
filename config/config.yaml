@@ -6,7 +6,7 @@
  # of the MIT license.  See the LICENSE file for details.
 ---
   version: v1
-  endpoint: https://api.ionchannel.io/
+  endpoint: https://api.test.ionchannel.io/
   token: apikey
   commands:
     # scanner
@@ -173,6 +173,12 @@
               value:
               usage: CHECKSUM
               required: True
+          flags:
+            - name: skip-ack
+              value:
+              usage: Should this push skip the acknowledgment check (not recommended)
+              required: False
+              type: bool
         - name: get-push
           url: /airgap/getPush
           usage: returns the status data for a given [id]
