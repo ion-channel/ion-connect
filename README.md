@@ -93,6 +93,12 @@ $ ion-connect configure
 Ion Channel Api Key []:
 ```
 
+NOTE:  Ion Connect can also do configuration through environment variables.  The following variables are supported:
+
+- `IONCHANNEL_SECRET_KEY` - allows the user to set the secret key used for authentication with Ion Channel
+- `IONCHANNEL_ENDPOINT_URL` - allows the user to set the location of the Ion Channel api
+
+
 You can then run various commands to query the Ion Channel system.  The best next step is the the help command.  From there you can see a list of top level commands and global options.
 
 ```sh
@@ -130,5 +136,7 @@ $ IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ ion-connect metadata g
   }
 ]
 ```
+
+
 
 That's it! You are well on your way to world domination.
