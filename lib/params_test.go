@@ -24,19 +24,19 @@ var _ = Describe("Params", func() {
 	BeforeEach(func() {
 		Debug = true
 		set = flag.NewFlagSet("set", 0)
-		command := cli.Command{Name: "scan-git"}
+		command := cli.Command{Name: "analyze-project"}
 		context = cli.NewContext(nil, set, nil)
 		context.Command = command
 
-		config, _ = GetConfig().FindSubCommandConfig("scanner", "scan-git")
+		config, _ = GetConfig().FindSubCommandConfig("scanner", "analyze-project")
 	})
 
 	Context("When generating Post Params", func() {
 		It("should populate the fields from the context flags", func() {
 			args := []string{"ernie"}
 			params := PostParams{}.Generate(args, config.Args)
-			Expect(params).To(Equal(PostParams{Project: "ernie"}))
-			Expect(params.String()).To(Equal("Project=ernie, Url=, Type=, Checksum=, Id=, Text=, Version=, File="))
+			Expect(params).To(Equal(PostParams{BuildNumber: "ernie"}))
+			Expect(params.String()).To(Equal("Project=, Url=, Type=, Checksum=, Id=, Text=, Version=, File="))
 		})
 
 		It("should populate the fields from json data", func() {
@@ -101,8 +101,8 @@ var _ = Describe("Params", func() {
 				"offset": "105",
 			}
 			params := GetParams{}.Generate(args, config.Args).UpdateFromMap(options)
-			Expect(params).To(Equal(GetParams{Project: "ernie", Limit: "22", Offset: "105"}))
-			Expect(params.String()).To(Equal("Project=ernie, Url=, Type=, Checksum=, Id=, Text=, Version=, Limit=22, Offset=105"))
+			Expect(params).To(Equal(GetParams{BuildNumber: "ernie", Limit: "22", Offset: "105"}))
+			Expect(params.String()).To(Equal("Project=, Url=, Type=, Checksum=, Id=, Text=, Version=, Limit=22, Offset=105"))
 		})
 	})
 

@@ -13,19 +13,6 @@
     - name: scanner
       usage: set of commands for effecting artifacts or source code
       subcommands:
-        - name: scan-git
-          url: /scanner/scanGit
-          usage: scan a git source code repository
-          method: post
-          args:
-            - name: project
-              value:
-              usage: PROJECT
-              required: True
-            - name: url
-              value:
-              usage: URL
-              required: True
         - name: analyze-project
           url: /scanner/analyzeProject
           usage: run an analysis on an Ion Channel project
