@@ -297,6 +297,85 @@
               required: True
               type: string
 
+    # analysis
+    - name: analysis
+      usage: set of commands for querying for projects analysis scan results
+      subcommands:
+        - name: get-scan
+          url: /analysis/getScan
+          usage: get the values for a given scan id
+          method: get
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the project is in
+              required: True
+              type: string
+            - name: project-id
+              value:
+              usage: The id of the project the analysis is in
+              required: True
+              type: string
+          args:
+            - name: analysis-id
+              value:
+              usage: ANALYSIS_ID
+              required: True
+            - name: scan-id
+              value:
+              usage: SCAN_ID
+              required: True
+
+        - name: get-analysis
+          url: /analysis/getAnalysis
+          usage: get the values for a given analysis id
+          method: get
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the project is in
+              required: True
+              type: string
+            - name: project-id
+              value:
+              usage: The id of the project the analysis is in
+              required: True
+              type: string
+          args:
+            - name: analysis-id
+              value:
+              usage: ANALYSIS_ID
+              required: True
+
+        - name: get-project
+          url: /analysis/getProject
+          usage: get the values for a given project id
+          method: get
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the project is in
+              required: True
+              type: string
+            - name: project-id
+              value:
+              usage: The id of the project
+              required: True
+              type: string
+
+
+        - name: get-projects
+          url: /analysis/getProjects
+          usage: get the projects for an account
+          method: get
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the projects are in
+              required: True
+              type: string
+
+
     # projects
     - name: project
       usage: set of commands for manipulating projects for your account
