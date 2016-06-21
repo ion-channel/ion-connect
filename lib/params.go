@@ -31,6 +31,7 @@ type PostParams struct {
 	ProjectId   string                 `json:"project_id,omitempty"`
 	AccountId   string                 `json:"account_id,omitempty"`
 	AnalysisId  string                 `json:"analysis_id,omitempty"`
+	ScanId      string                 `json:"scan_id,omitempty"`
 	RulesetId   string                 `json:"ruleset_id,omitempty"`
 	BuildNumber string                 `json:"build_number,omitempty"`
 	Status      string                 `json:"status,omitempty"`
@@ -61,6 +62,7 @@ type GetParams struct {
 	ProjectId   string                 `url:"project_id,omitempty"`
 	AccountId   string                 `url:"account_id,omitempty"`
 	AnalysisId  string                 `url:"analysis_id,omitempty"`
+	ScanId      string                 `url:"scan_id,omitempty"`
 	RulesetId   string                 `url:"ruleset_id,omitempty"`
 	BuildNumber string                 `url:"build_number,omitempty"`
 	Status      string                 `url:"status,omitempty"`
