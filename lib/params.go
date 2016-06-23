@@ -142,6 +142,10 @@ func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
       boolArg, _ := strconv.ParseBool(arg)
 			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetBool(boolArg)
 		} else {
+      if argConfigs[index].Type == "url" {
+        Debugf("Handling url %s", arg)
+        arg = ConvertFileToUrl(arg)
+      }
 			Debugf("Using string parser for (%s) = (%s)", argConfigs[index].Name, arg)
       if arg == ""{
         Debugf("Missing arg value (%s) using default (%s)", argConfigs[index].Name, argConfigs[index].Value)

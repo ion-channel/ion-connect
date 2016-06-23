@@ -18,7 +18,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "ion-connect"
 	app.Usage = "Interact with Ion Channel"
-	app.Version = "0.6.0"
+	app.Version = "0.6.1"
 
 	var api = ionconnect.Api{ionconnect.GetConfig()}
 
