@@ -10,7 +10,6 @@ package ionconnect
 import (
 	"encoding/json"
 	"fmt"
-	// "io/ioutil"
 	"reflect"
 	"strings"
   "strconv"
@@ -116,14 +115,6 @@ func (params PostParams) String() string {
 func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
 	for index, arg := range args {
 		Debugf("Index and args %d %s %v", index, arg, argConfigs)
-		// if argConfigs[index].Type == "file" {
-		// 	Debugf("Reading file %s", arg)
-		// 	bytes, err := ioutil.ReadFile(arg)
-		// 	if err != nil {
-		// 		panic(err.Error())
-		// 	}
-		// 	arg = string(bytes)
-		// }
 
 		Debugf("PostParams Setting %s to %s", strings.Title(argConfigs[index].Name), arg)
 		if argConfigs[index].Type == "object" {

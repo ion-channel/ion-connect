@@ -11,10 +11,10 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/GeertJohan/go.rice"
-	"github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/codegangsta/cli"
-	"github.com/ion-channel/ion-connect/Godeps/_workspace/src/golang.org/x/crypto/ssh/terminal"
-	"github.com/ion-channel/ion-connect/Godeps/_workspace/src/gopkg.in/yaml.v2"
+	"github.com/GeertJohan/go.rice"
+	"github.com/codegangsta/cli"
+	"golang.org/x/crypto/ssh/terminal"
+	"gopkg.in/yaml.v2"
 	"log"
 	"os"
 	"text/template"
@@ -96,7 +96,7 @@ func (command Command) GetArgsUsageWithFlags(flagName string) string {
 func (args Args) GetRequiredArgsCount() int {
 	var count int
 	for _, arg := range args {
-    Debugf("Arg (%s) is required (%b)", arg.Name, arg.Required)
+		Debugf("Arg (%s) is required (%b)", arg.Name, arg.Required)
 		if len(arg.Usage) > 0 && arg.Required {
 			count++
 		}

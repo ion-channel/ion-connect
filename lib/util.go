@@ -10,10 +10,15 @@ package ionconnect
 import (
 	"bufio"
 	"fmt"
-	"github.com/ion-channel/ion-connect/Godeps/_workspace/src/gopkg.in/mattes/go-expand-tilde.v1"
+	"gopkg.in/mattes/go-expand-tilde.v1"
 	"io/ioutil"
 	"log"
 	"os"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+  "path/filepath"
+  "net/url"
 )
 
 var Debug bool = false
@@ -25,6 +30,8 @@ var CREDENTIALS_KEY_FIELD string = "secret_key"
 var CONFIGURE_API_ENDPOINT_FIELD string = "endpoint"
 var CREDENTIALS_ENVIRONMENT_VARIABLE string = "IONCHANNEL_SECRET_KEY"
 var ENDPOINT_ENVIRONMENT_VARIABLE string = "IONCHANNEL_ENDPOINT_URL"
+var DEFAUL_WRITE_BUCKET string = "testprivate.ionchannel.io"
+var DEFAUL_WRITE_FOLDER string = "/files/upload/"
 
 func Debugln(str string) {
 	if Debug {
@@ -61,6 +68,40 @@ func ReadBytesFromFile(filename string) ([]byte, error) {
 	filename, _ = tilde.Expand(filename)
 	bytes, err := ioutil.ReadFile(filename)
 	return bytes, err
+}
+
+func ConvertFileToUrl(path string) (string) {
+  u, err := url.Parse(path)
+	if err != nil {
+		fmt.Printf("Invalid url string %s", path)
+    Exit(1)
+	}
+  if u.Scheme == "file" {
+    absolutePath, err := filepath.Abs(u.Host + u.Path)
+    basePath := filepath.Base(absolutePath)
+    reader, err := os.Open(absolutePath)
+    if err != nil {
+      fmt.Printf("Failed to process file from url %s. Make sure the file exists and permissions are correct. (%s)", path, err)
+      Exit(1)
+    }
+    key := (DEFAUL_WRITE_FOLDER + basePath)
+    sess := session.New(&aws.Config{Region: aws.String("us-east-1")})
+    uploader := s3manager.NewUploader(sess)
+    upParams := &s3manager.UploadInput{
+      Bucket: &DEFAUL_WRITE_BUCKET,
+      Key:    &key,
+      Body:   reader,
+    }
+
+    result, err := uploader.Upload(upParams)
+    if err != nil {
+      fmt.Printf("Failed to process file from url %s. Make sure the file exists and permissions are correct. (%s)", path, err)
+      Exit(1)
+    }
+    return result.Location
+  } else {
+    return path
+  }
 }
 
 func PathExists(path string) (bool, error) {

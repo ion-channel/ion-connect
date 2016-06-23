@@ -9,7 +9,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/codegangsta/cli"
+	"github.com/codegangsta/cli"
 	"github.com/ion-channel/ion-connect/lib"
 	"os"
 )

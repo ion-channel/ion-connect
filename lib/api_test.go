@@ -9,7 +9,7 @@ package ionconnect
 
 import (
 	"flag"
-	"github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/codegangsta/cli"
+	"github.com/codegangsta/cli"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
