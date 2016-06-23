@@ -15,7 +15,7 @@ import (
 	"log"
 	"os"
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"  
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
   "path/filepath"
@@ -31,7 +31,7 @@ var CREDENTIALS_KEY_FIELD string = "secret_key"
 var CONFIGURE_API_ENDPOINT_FIELD string = "endpoint"
 var CREDENTIALS_ENVIRONMENT_VARIABLE string = "IONCHANNEL_SECRET_KEY"
 var ENDPOINT_ENVIRONMENT_VARIABLE string = "IONCHANNEL_ENDPOINT_URL"
-var DEFAUL_WRITE_BUCKET string = "testprivate.ionchannel.io"
+var DEFAUL_WRITE_BUCKET string = "files.ionchannel.io"
 var DEFAUL_WRITE_FOLDER string = "/files/upload/"
 
 func Debugln(str string) {
