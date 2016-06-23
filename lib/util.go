@@ -15,6 +15,7 @@ import (
 	"log"
 	"os"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"  
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
   "path/filepath"
@@ -85,7 +86,7 @@ func ConvertFileToUrl(path string) (string) {
       Exit(1)
     }
     key := (DEFAUL_WRITE_FOLDER + basePath)
-    sess := session.New(&aws.Config{Region: aws.String("us-east-1")})
+    sess := session.New(&aws.Config{Region: aws.String("us-east-1"), Credentials: credentials.AnonymousCredentials})
     uploader := s3manager.NewUploader(sess)
     upParams := &s3manager.UploadInput{
       Bucket: &DEFAUL_WRITE_BUCKET,
