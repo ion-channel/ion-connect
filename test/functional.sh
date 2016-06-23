@@ -71,6 +71,13 @@ if [ "$?" != "0" ]; then
   exit 1
 fi
 
+echo "It should scan and push a local artifact"
+OUTPUT=$(./bin/process-ion-job.sh ion-channel/ion-connect 2051f72683f76f3b57b57ddc7eb8bc2261ef9d2b "file://./main.go")
+if [ "$?" != "0" ]; then
+  echo "Failed - $OUTPUT"
+  exit 1
+fi
+
 STATUS=$(echo $OUTPUT | jq -r .scanner.status)
 if [ "$STATUS" != "finished" ]; then
   echo "Failed - $STATUS - $OUTPUT"
