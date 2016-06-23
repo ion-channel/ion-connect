@@ -10,7 +10,6 @@ package ionconnect
 import (
 	"encoding/json"
 	"fmt"
-	// "io/ioutil"
 	"reflect"
 	"strings"
   "strconv"
@@ -116,14 +115,6 @@ func (params PostParams) String() string {
 func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
 	for index, arg := range args {
 		Debugf("Index and args %d %s %v", index, arg, argConfigs)
-		// if argConfigs[index].Type == "file" {
-		// 	Debugf("Reading file %s", arg)
-		// 	bytes, err := ioutil.ReadFile(arg)
-		// 	if err != nil {
-		// 		panic(err.Error())
-		// 	}
-		// 	arg = string(bytes)
-		// }
 
 		Debugf("PostParams Setting %s to %s", strings.Title(argConfigs[index].Name), arg)
 		if argConfigs[index].Type == "object" {
@@ -151,6 +142,10 @@ func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
       boolArg, _ := strconv.ParseBool(arg)
 			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetBool(boolArg)
 		} else {
+      if argConfigs[index].Type == "url" {
+        Debugf("Handling url %s", arg)
+        arg = ConvertFileToUrl(arg)
+      }
 			Debugf("Using string parser for (%s) = (%s)", argConfigs[index].Name, arg)
       if arg == ""{
         Debugf("Missing arg value (%s) using default (%s)", argConfigs[index].Name, argConfigs[index].Value)

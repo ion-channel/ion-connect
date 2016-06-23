@@ -10,7 +10,7 @@ addons:
     - jq
 language: go
 go:
-- 1.5.3
+- 1.6.2
 install:
 - go get github.com/onsi/gomega
 - go get github.com/onsi/ginkgo
@@ -18,7 +18,7 @@ install:
 - go get github.com/GeertJohan/go.rice/rice
 - gem install fpm
 script:
-- IONCHANNEL_SECRET_KEY="" go test -v ./...
+- IONCHANNEL_SECRET_KEY="" go test -v ./lib
 - IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ test/functional.sh
 - GOOS=windows go build -o ion-connect/windows/bin/ion-connect.exe ./
 - rice append --exec ion-connect/windows/bin/ion-connect.exe -i ./lib

@@ -99,6 +99,7 @@
             - name: url
               value:
               usage: URL
+              type: url
               required: True
             - name: checksum
               value:
@@ -156,6 +157,7 @@
               value:
               usage: URL
               required: True
+              type: url
             - name: checksum
               value:
               usage: CHECKSUM
