@@ -8,9 +8,9 @@
 package ionconnect
 
 import (
-	"github.com/ion-channel/ion-connect/Godeps/_workspace/src/gopkg.in/mattes/go-expand-tilde.v1"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"gopkg.in/mattes/go-expand-tilde.v1"
 )
 
 var _ = Describe("Util", func() {
@@ -47,6 +47,13 @@ var _ = Describe("Util", func() {
 			Expect(PathExists(path)).To(BeTrue())
 		})
 	})
+
+  Context("When a param is a file type", func() {
+    It("should upload a file and change the param to a url", func() {
+      url := ConvertFileToUrl("file://./util.go")
+      Expect(url).To(Equal("https://s3.amazonaws.com/testprivate.ionchannel.io/files/upload/util.go"))
+    })
+  })
 
 	AfterEach(func() {
 		Debug = false

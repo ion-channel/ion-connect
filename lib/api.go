@@ -9,20 +9,19 @@ package ionconnect
 
 import (
 	"encoding/json"
-	"github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/codegangsta/cli"
-	"github.com/ion-channel/ion-connect/Godeps/_workspace/src/github.com/dghubble/sling"
+	"github.com/codegangsta/cli"
+	"github.com/dghubble/sling"
 	"net/http"
-	// "strings"
+	"bytes"
+	"crypto/tls"
 	"errors"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"log"
+	"mime/multipart"
+	"os"
 	"strings"
-  "bytes"
-  "mime/multipart"
-  "os"
-  "io"
-  "io/ioutil"
-	"crypto/tls"
 )
 
 type Api struct {
@@ -57,14 +56,13 @@ func (api Api) HandleCommand(ctx *cli.Context) {
 		panic(Exit(1))
 	}
 
-
-  var response http.Response
-  var body map[string]interface{}
-  if subcommandConfig.Method == "file" {
-    response, body = api.postFile(command, subcommand, ctx, args, options)
-  } else {
-  	response, body = api.sendRequest(command, subcommand, ctx, args, options, subcommandConfig.Method)
-  }
+	var response http.Response
+	var body map[string]interface{}
+	if subcommandConfig.Method == "file" {
+		response, body = api.postFile(command, subcommand, ctx, args, options)
+	} else {
+		response, body = api.sendRequest(command, subcommand, ctx, args, options, subcommandConfig.Method)
+	}
 	fmt.Println(api.processResponse(response, body))
 }
 
@@ -148,15 +146,15 @@ func (api Api) validateFlags(commandConfig Command, ctx *cli.Context) ([]Arg, ma
 	args := []Arg{}
 	params := make(map[string]string)
 	for _, flag := range commandConfig.Flags {
-    Debugf("Found option %s that is required (%b) with value %s", flag.Name, flag.Required, flag.Value)
+		Debugf("Found option %s that is required (%b) with value %s", flag.Name, flag.Required, flag.Value)
 		if !ctx.IsSet(flag.Name) && flag.Required {
-      if flag.Value == "" {
-			     Debugf("Missing required option %s", flag.Name)
-			     return args, params, errors.New(fmt.Sprintf("Missing required option %s", flag.Name))
-      } else {
-        Debugf("Found default value for flag %s: %s", flag.Name, flag.Value)
-  			params[flag.Name] = flag.Value
-      }
+			if flag.Value == "" {
+				Debugf("Missing required option %s", flag.Name)
+				return args, params, errors.New(fmt.Sprintf("Missing required option %s", flag.Name))
+			} else {
+				Debugf("Found default value for flag %s: %s", flag.Name, flag.Value)
+				params[flag.Name] = flag.Value
+			}
 		} else if len(flag.Args) > 0 && ctx.IsSet(flag.Name) {
 			Debugf("Getting args for flag %s", flag.Name)
 			args = flag.Args
@@ -174,61 +172,60 @@ func (api Api) validateFlags(commandConfig Command, ctx *cli.Context) ([]Arg, ma
 	return args, params, nil
 }
 
-
 func (api Api) postFile(command string, subcommand string, context *cli.Context, args Args, options map[string]string) (http.Response, map[string]interface{}) {
-    params := GetParams{}.Generate(context.Args(), args).UpdateFromMap(options)
-    bodyParams := PostParams{}.Generate(context.Args(), args)
-    Debugf("Sending params %b", params)
+	params := GetParams{}.Generate(context.Args(), args).UpdateFromMap(options)
+	bodyParams := PostParams{}.Generate(context.Args(), args)
+	Debugf("Sending params %b", params)
 
-    Debugf("Processing url")
-  	url, err := api.Config.ProcessUrlFromConfig(command, subcommand, GetParams{}.Generate(context.Args(), args))
-  	if err != nil {
-  		log.Fatal(err.Error())
-  	}
+	Debugf("Processing url")
+	url, err := api.Config.ProcessUrlFromConfig(command, subcommand, GetParams{}.Generate(context.Args(), args))
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
-    bodyBuf := &bytes.Buffer{}
-    bodyWriter := multipart.NewWriter(bodyBuf)
+	bodyBuf := &bytes.Buffer{}
+	bodyWriter := multipart.NewWriter(bodyBuf)
 
-    Debugf("Sending file %s", bodyParams.File)
+	Debugf("Sending file %s", bodyParams.File)
 
-    fileWriter, err := bodyWriter.CreateFormFile("file", bodyParams.File)
-    if err != nil {
-        fmt.Println("error writing to buffer")
-    }
+	fileWriter, err := bodyWriter.CreateFormFile("file", bodyParams.File)
+	if err != nil {
+		fmt.Println("error writing to buffer")
+	}
 
-    fh, err := os.Open(bodyParams.File)
-    if err != nil {
-        fmt.Println(err.Error())
-        Exit(1)
-    }
+	fh, err := os.Open(bodyParams.File)
+	if err != nil {
+		fmt.Println(err.Error())
+		Exit(1)
+	}
 
-    _, err = io.Copy(fileWriter, fh)
-    if err != nil {
-      log.Fatal(err.Error())
-    }
+	_, err = io.Copy(fileWriter, fh)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
-    contentType := bodyWriter.FormDataContentType()
-    bodyWriter.Close()
+	contentType := bodyWriter.FormDataContentType()
+	bodyWriter.Close()
 
-    url = fmt.Sprintf("%s%s%s",api.Config.LoadEndpoint(), api.Config.Version, url)
-    Debugf("Sending request to %s", url)
-    client := &http.Client{}
-    req, _ := http.NewRequest("POST", url, bodyBuf)
-    req.Header.Set(api.Config.Token, LoadCredential())
-    req.Header.Set("Content-Type", contentType)
-    resp, err := client.Do(req)
-    if err != nil {
-      log.Fatal(err.Error())
-    }
-    defer resp.Body.Close()
-    resp_body, err := ioutil.ReadAll(resp.Body)
-    if err != nil {
-      log.Fatal(err.Error())
-    }
-    var jsonResponse map[string]interface{}
-    err = json.Unmarshal([]byte(resp_body), &jsonResponse)
-    if err != nil {
-      panic(fmt.Sprintf("Error parsing json from %s - %s", resp_body, err.Error()))
-    }
-    return *resp, jsonResponse
+	url = fmt.Sprintf("%s%s%s", api.Config.LoadEndpoint(), api.Config.Version, url)
+	Debugf("Sending request to %s", url)
+	client := &http.Client{}
+	req, _ := http.NewRequest("POST", url, bodyBuf)
+	req.Header.Set(api.Config.Token, LoadCredential())
+	req.Header.Set("Content-Type", contentType)
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	defer resp.Body.Close()
+	resp_body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	var jsonResponse map[string]interface{}
+	err = json.Unmarshal([]byte(resp_body), &jsonResponse)
+	if err != nil {
+		panic(fmt.Sprintf("Error parsing json from %s - %s", resp_body, err.Error()))
+	}
+	return *resp, jsonResponse
 }
