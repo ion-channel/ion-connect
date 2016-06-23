@@ -157,6 +157,7 @@
               value:
               usage: URL
               required: True
+              type: url
             - name: checksum
               value:
               usage: CHECKSUM
