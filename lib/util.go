@@ -31,6 +31,7 @@ var CREDENTIALS_KEY_FIELD string = "secret_key"
 var CONFIGURE_API_ENDPOINT_FIELD string = "endpoint"
 var CREDENTIALS_ENVIRONMENT_VARIABLE string = "IONCHANNEL_SECRET_KEY"
 var ENDPOINT_ENVIRONMENT_VARIABLE string = "IONCHANNEL_ENDPOINT_URL"
+var DROPBUCKET_ENVIRONMENT_VARIABLE string = "IONCHANNEL_DROPBUCKET_NAME"
 var DEFAUL_WRITE_BUCKET string = "files.ionchannel.io"
 var DEFAUL_WRITE_FOLDER string = "/files/upload/"
 
@@ -85,11 +86,18 @@ func ConvertFileToUrl(path string) (string) {
       fmt.Printf("Failed to process file from url %s. Make sure the file exists and permissions are correct. (%s)", path, err)
       Exit(1)
     }
+
+    var bucket string
+    if os.Getenv(DROPBUCKET_ENVIRONMENT_VARIABLE) != "" {
+      bucket = os.Getenv(DROPBUCKET_ENVIRONMENT_VARIABLE)
+    } else {
+      bucket = DEFAUL_WRITE_BUCKET
+    }
     key := (DEFAUL_WRITE_FOLDER + basePath)
     sess := session.New(&aws.Config{Region: aws.String("us-east-1"), Credentials: credentials.AnonymousCredentials})
     uploader := s3manager.NewUploader(sess)
     upParams := &s3manager.UploadInput{
-      Bucket: &DEFAUL_WRITE_BUCKET,
+      Bucket: &bucket,
       Key:    &key,
       Body:   reader,
     }
