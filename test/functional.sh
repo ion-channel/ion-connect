@@ -72,7 +72,7 @@ if [ "$?" != "0" ]; then
 fi
 
 echo "It should scan and push a local artifact"
-OUTPUT=$(./bin/process-ion-job.sh ion-channel/ion-connect 2051f72683f76f3b57b57ddc7eb8bc2261ef9d2b "file://./main.go")
+OUTPUT=$(./bin/process-ion-job.sh ion-channel/ion-connect 02754f7539c7db341000387fd6437f9377931a37 "file://./LICENSE.txt")
 if [ "$?" != "0" ]; then
   echo "Failed - $OUTPUT"
   exit 1
