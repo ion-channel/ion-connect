@@ -6,7 +6,7 @@
  # of the MIT license.  See the LICENSE file for details.
 ---
   version: v1
-  endpoint: https://api.test.ionchannel.io/
+  endpoint: https://api.ionchannel.io/
   token: apikey
   commands:
     # scanner
