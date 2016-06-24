@@ -17,7 +17,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+  "github.com/aws/aws-sdk-go/service/s3"
   "path/filepath"
   "net/url"
 )
@@ -95,19 +95,18 @@ func ConvertFileToUrl(path string) (string) {
     }
     key := (DEFAUL_WRITE_FOLDER + basePath)
     sess := session.New(&aws.Config{Region: aws.String("us-east-1"), Credentials: credentials.AnonymousCredentials})
-    uploader := s3manager.NewUploader(sess)
-    upParams := &s3manager.UploadInput{
-      Bucket: &bucket,
-      Key:    &key,
-      Body:   reader,
-    }
+    svc := s3.New(sess)
+    _, err = svc.PutObject(&s3.PutObjectInput{
+        Body:   reader,
+        Bucket: &bucket,
+        Key:    &key,
+    })
 
-    result, err := uploader.Upload(upParams)
     if err != nil {
       fmt.Printf("Failed to process file from url %s. Make sure the file exists and permissions are correct. (%s)", path, err)
       Exit(1)
     }
-    return result.Location
+    return "https://s3.amazonaws.com/" + bucket + key
   } else {
     return path
   }
