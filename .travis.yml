@@ -10,22 +10,28 @@ addons:
     - jq
 language: go
 go:
-- 1.6.2
+ - 1.6.2
+
 install:
+- bundle
+# - export GOPATH="$PWD"/.gopath/
 - go get github.com/onsi/gomega
 - go get github.com/onsi/ginkgo
 - go get github.com/GeertJohan/go.rice
 - go get github.com/GeertJohan/go.rice/rice
 - gem install fpm
 script:
+# - export GOPATH="$PWD"/.gopath/
 - IONCHANNEL_SECRET_KEY="" go test -v ./lib
-- IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ test/functional.sh
+#- IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ test/functional.sh
 - GOOS=windows go build -o ion-connect/windows/bin/ion-connect.exe ./
 - rice append --exec ion-connect/windows/bin/ion-connect.exe -i ./lib
 - GOOS=linux go build -o ion-connect/linux/bin/ion-connect ./
 - rice append --exec ion-connect/linux/bin/ion-connect -i ./lib
 - GOOS=darwin go build -o ion-connect/darwin/bin/ion-connect ./
 - rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
+- cp ion-connect/$(echo "$(uname)" | perl -ne 'print lc')/bin/ion-connect $GOPATH/bin
+- cucumber
 - VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi`
 - FILE_NAME=ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER
 - cp bin/process-ion-job.sh ion-connect/linux/bin/
