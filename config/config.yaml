@@ -254,10 +254,6 @@
               required: True
               type: string
           args:
-            - name: id
-              value:
-              usage: ID
-              required: True
             - name: name
               value:
               usage: NAME
@@ -266,9 +262,9 @@
               value:
               usage: DESCRIPTION
               required: True
-            - name: rules
+            - name: rule-ids
               value:
-              usage: RULES
+              usage: RULESIDS
               required: True
               type: array
 
