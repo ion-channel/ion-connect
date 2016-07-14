@@ -11,7 +11,7 @@ First thing you will need is the Golang environment setup. [The install process]
 
 ```sh
 $ brew install go
-$ export $GOPATH=$HOME/go
+$ export GOPATH=$HOME/go
 ```
 
 Go provides a command for retrieving dependencies called `go get`.  Since ion-connect is currently private it may be helpful (and more generally helpful) to force git to use ssh by default with  `git config --global url."git@github.com:".insteadOf "https://github.com/"`
