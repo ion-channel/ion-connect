@@ -43,6 +43,7 @@ type PostParams struct {
 	Active      bool                   `json:"active,omitempty"`
 	Flatten     bool                   `json:"flatten,omitempty"`
 	Rules       []interface{}          `json:"rules,omitempty"`
+	RuleIds     []interface{}          `json:"rule_ids,omitempty"`
 	ScanSet     []interface{}          `json:"data,omitempty"`
 	SkipAck     bool                   `json:"skip_ack,omitempty"`
 }
@@ -74,6 +75,7 @@ type GetParams struct {
 	Active      bool                   `url:"active,omitempty"`
 	Flatten     bool                   `url:"flatten,omitempty"`
 	Rules       []interface{}          `url:"rules,omitempty"`
+	RuleIds     []interface{}          `url:"rule_ids,omitempty"`
 	ScanSet     []interface{}          `url:"data,omitempty"`
 	SkipAck     bool                   `url:"skip_ack,omitempty"`
 }
