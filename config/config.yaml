@@ -222,6 +222,12 @@
     - name: ruleset
       usage: set of commands for managing rulesets
       subcommands:
+        - name: get-rules
+          url: /ruleset/getRules
+          usage: get a list of rules that are available in the Ion Channel
+          method: get
+          flags:
+
         - name: apply-ruleset
           url: /ruleset/applyRuleset
           usage: apply a rulset defined by [id] to a provided analysis' scan set
