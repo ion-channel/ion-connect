@@ -3,7 +3,7 @@ Feature: Get help
    When I successfully run `ion-connect --version`
    Then the output should contain:
    """
-ion-connect version 0.6.2
+ion-connect version 0.6.3
    """
 
  Scenario: Get Help
