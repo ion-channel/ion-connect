@@ -1,4 +1,14 @@
 Feature: Rulesets
+  Scenario: Get rules
+    When I successfully run with 'account_id' `ion-connect ruleset get-rules`
+    Then the ion output should contain:
+    """
+    "category": "Code Coverage"
+    """
+    Then the ion output should contain:
+    """
+    "category": "About Dot Yaml"
+    """
   Scenario: Create a ruleset
     Given an Ion Channel account id 'test-account'
     When I successfully run with 'account_id' `ion-connect ruleset create-ruleset --account-id account_id test-ruleset "this is a test ruleset" '["0239f0f8c5223fc47f32ebdf6636f4f0","c30b917956c3040daa2c571ef31dbe3a"]'`
@@ -32,5 +42,3 @@ Feature: Rulesets
     """
     "description": "The project source is required to include a valid .about.yml file.",
     """
-
-  
