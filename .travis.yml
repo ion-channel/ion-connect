@@ -44,6 +44,11 @@ script:
   ion-connect/linux
 notifications:
   slack: selectpress:80BkOLkmohrgd7bWC7cdA8C5
+
+before_deploy:
+  - mkdir $TRAVIS_TAG
+  - cp $FILE_NAME.tar.gz $TRAVIS_TAG/
+
 deploy:
   - provider: releases
     api_key:
@@ -60,7 +65,7 @@ deploy:
     secret_access_key:
       secure: "hgOlJr7Ddo14jeU4QirYtXkK49olcG5lglHZudJeh3QR1g5HMu6Z4/FXnN/F8ITsb97FHs+4itVMNR39Oe9lDDgeRDRQFWsZG2y2KX8cLZ9XlBeaBQDHloK0g4Tr5dWvdllZIN7wQvjx8SX9f5TomIRTJixEilOM0+33hq+dbjiHRrNSdU9N/4aLwjTUG2LRNSrDEiJI6tTnLOhfn99tJSogPR8qy/mMBX5rdtgljXIYzaYZZMR3DLuEAqFkGGBxCaN5cr3Qd4pVTIXKqTORLLkWK08r7JSWbRJhbSSTx0v/nuOdA78V8a31Ll63f+O/ZHTCqoxIUsxx1dMzb+KA/63ol5xemztZZzMQCUe65AvN9FxHg4zUU5lv9EIR1NIy8dcK5A2D32ctBKTMDM+MrHO1jP31lkciaOjukP4jJqx8pljfuJRvyHREmM1HDmhS5lWBwuxqq+3e9m3Kw121NDfb5YZRJb4jamOlhTaTySRtkJpYcndgpHlzmZPbh4gAWw4ATqVvfOVfPU34TM22PFEX/AAwyBIx3tMFDckSHQ7iGGeS3cj+wYlGEiAzg9bzD7a/++PSbi4dJLXE+aSk0u6GxNn2bYUnByPsOCjiBNU3bidB55zVvkKeYmeTwEUKTMJnKVRNigbI6awdPPCKq/LK4cYwbAwQncRUPo2c7MQ="
     upload-dir: files/ion-connect
-    file: "$FILE_NAME.tar.gz"
+    local_dir: $TRAVIS_TAG
     on:
       tags: true
 after_deploy:
