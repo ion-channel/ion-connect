@@ -8,7 +8,12 @@ rulesets and create, view, update and analyze a given project.  The analysis ste
 # Install
 
 The first step when using `ion-connect` is getting it installed and configured.  
-It can be installed from a prebuilt executable you can download for here (TODO: figure out where to host it).
+It can be installed from a prebuilt executable you can download the latest release here:
+
+https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/0.6.3/ion-connect-0.6.3-312.tar.gz
+
+The package contains binaries compiled for linux, windows and mac os (darwin).
+
 
 Once you get `ion-connect` properly installed and in your `PATH` you are ready to run the `configure` command.  
 The `configure` command will allow you to specify your api key (provided by Ion Channel along with your account id) and any default properties.
