@@ -46,7 +46,7 @@ notifications:
   slack: selectpress:80BkOLkmohrgd7bWC7cdA8C5
 
 before_deploy:
-  - mkdir ion-connect/$TRAVIS_TAG
+  - mkdir -p ion-connect/$TRAVIS_TAG
   - cp $FILE_NAME.tar.gz ion-connect/$TRAVIS_TAG/
 
 deploy:
