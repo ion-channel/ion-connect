@@ -24,13 +24,39 @@ $ ion-connect configure
 Ion Channel Api Key []:
 ```
 
-This will create a `$HOME/.aws/credentials` file that will be used for authentication during the following commands.
+This will create a `$HOME/.ionchannel/credentials` file that will be used for authentication during the following commands.
 
-NOTE:  You can override the value in the `$HOME/.aws/credentials` file at anytime using the `IONCHANNEL_SECRET_KEY` environment variable.
+NOTE:  You can override the value in the `$HOME/.ionchannel/credentials` file at anytime using the `IONCHANNEL_SECRET_KEY` environment variable.
+
+If your `ion-connect` environment hasn't been configured, or you don't have the env var set you'll see:
+
+```
+$ ion-connect ruleset get-rules
+Unauthorized, make sure you run 'ion-connect configure' and set your Api Token
+```
 
 # Rulesets
 
 Now you are ready to run ion-connect and set up some rule sets and projects to analyze for compliance and risk.  The first step is to view a list of rules provided by Ion Channel.
+
+```
+$  ion-connect git:(master) ✗ ion-connect ruleset
+NAME:
+   ion-connect ruleset - set of commands for managing rulesets
+
+USAGE:
+   ion-connect ruleset command [command options] [arguments...]
+
+COMMANDS:
+   get-rules		get a list of rules that are available in the Ion Channel
+   apply-ruleset	apply a rulset defined by [id] to a provided analysis' scan set
+   create-ruleset	create a rulset with the data provided
+   get-ruleset		get the values for a given ruleset id
+   get-rulesets		get all rulsets for an account
+   help, h		Shows a list of commands or help for one command
+```   
+
+To get a listing of all rules in Ion Channel:
 
 ```
 $ ion-connect ruleset get-rules
@@ -57,7 +83,7 @@ $ ion-connect ruleset get-rules
 ]
 ```
 
-From here you can define rule sets which will govern your projects.  The following example will create a ruleset that requires a valid .about.yml file.
+From here you can define rule sets which will govern your projects.  The following example will create a ruleset that requires a valid .about.yml file to be present at the root of a source code repository.
 
 ```
 $ ion-connect ruleset create-ruleset --account-id <your-account-id> "rule set name" "this is a test ruleset" '[c30b917956c3040daa2c571ef31dbe3a"]'
@@ -123,7 +149,22 @@ $ ion-connect ruleset get-ruleset --account-id <your-account-id> <some-ruleset-i
 
 # Projects
 
-After you have a rule set defined you can create your project in ion channel for analysis.  The following will create a project record in Ion Channel named 'Project Name' for analysis of the DevOps/sonar-auth-geoaxis project in gitlab.  Since we are using the rule set previously defined, analysis of this project will fail unless there is a valid .about.yml file at the root of the repository.
+```
+➜  ion-connect git:(master) ✗ ion-connect project
+NAME:
+   ion-connect project - set of commands for manipulating projects for your account
+
+USAGE:
+   ion-connect project command [command options] [arguments...]
+
+COMMANDS:
+   create-project	Create a new project defined by the NAME SOURCE [BRANCH]
+   get-project		get the values for a given project id
+   get-projects		get the projects for an account
+   help, h		Shows a list of commands or help for one command
+```
+
+After you have a rule set defined you can create your project in Ion Channel for analysis.  The following will create a project record in Ion Channel named 'Project Name' for analysis of the DevOps/sonar-auth-geoaxis project in GitLab.  Since we are using the rule set previously defined, analysis of this project will fail unless there is a valid .about.yml file at the root of the repository.
 
 ```
 $ ion-connect project create-project --account-id <your-account-id> --ruleset-id <some-ruleset-id>  --active "Project Name" "https://gitlab.devops.geointservices.io/DevOps/sonar-auth-geoaxis.git" "Project description"
@@ -142,7 +183,7 @@ $ ion-connect project create-project --account-id <your-account-id> --ruleset-id
 }
 ```
 
-Similar to rule sets, `ion-connect` provides commands for querying for the projects in your account.  
+Similar to rule sets, `ion-connect` provides commands for querying the projects in your account.  
 
 ```
 $ ion-connect project get-project --account-id <your-account-id> <some-project-id>
@@ -165,7 +206,7 @@ $ ion-connect project get-project --account-id <your-account-id> <some-project-i
 
 Now that you have your project record in Ion Channel it's time to do some analysis. This is done with the `ion-connect scanner analyze-project` project command on the scanner resource.
 
-NOTE: This is meant to provide an example of you to manually run the analysis of a project.  The following commands should be combined for use inside a CI/CD pipeline to ensure compliance is met.
+NOTE: This is meant to provide an example of how you can manually (outside of a CI/CD tool) run the analysis of a project.  The following commands _should_ be combined for use inside a CI/CD pipeline to ensure compliance against defined rule sets/policies.
 
 ```
 ion-connect scanner analyze-project --account-id <your-account-id> --project-id <some-project-id> 1
@@ -181,7 +222,7 @@ ion-connect scanner analyze-project --account-id <your-account-id> --project-id 
 }
 ```
 
-Since the analysis happens asychronously you can monitor the status of the analysis with the `ion-connect scanner get-analysis-status` command.  Once the analysis has completed you should see some like this:
+Since the analysis happens asynchronously you can monitor the status of the analysis with the `ion-connect scanner get-analysis-status` command.  Once the analysis has completed you should see some like this:
 
 ```
 ion-connect scanner get-analysis-status --account-id <your-account-id> --project-id <some-project-id> <some-analysis-id>
@@ -247,8 +288,7 @@ ion-connect scanner get-analysis-status --account-id <your-account-id> --project
 }
 ```
 
-
-You can see from the above output the analysis finished with several scans also completing.  Once the analysis is finished you can request the evaluated analysis results with an additional command.  This details below show that the analysis completed
+You can see from the above output, the analysis finished with several scans also completing.  Once the analysis is finished you can request the evaluated analysis results with an additional command.  The details below show that the analysis completed:
 
 ```
 $ ion-connect analysis get-analysis --account-id <your-account-id> --project-id <some-project-id> <some-analysis-id>
@@ -300,4 +340,35 @@ $ ion-connect analysis get-analysis --account-id <your-account-id> --project-id 
   "type": "git",
   "updated_at": "2016-07-20T16:43:58.309Z"
 }
+```
+
+# Scripting / Wrapping
+Most people will need or want to script a sequence of commands.  
+
+PRO TIP: jq (https://stedolan.github.io/jq/) can be used to pipe the output of the `ion-connect` commands, to parse directly to specific fields within the responses.
+
+For example, to pull just a list of rule set IDs:
+
+```
+➜  ion-connect git:(master) ✗ ion-connect ruleset get-rules | jq '[.[] | {id: .id}]'
+[
+  {
+    "id": "15ce3fee5d9d2c1506c4f167df2168d6"
+  },
+  {
+    "id": "c30b917956c3040daa2c571ef31dbe3a"
+  },
+  {
+    "id": "786adcff70d73f4ecee2385068ae0ed1"
+  },
+  {
+    "id": "d928de6b9aa02b98466317c23d68efc3"
+  },
+  {
+    "id": "865b64e5d9d936ced71582e88146dd11"
+  },
+  {
+    "id": "0239f0f8c5223fc47f32ebdf6636f4f0"
+  }
+]
 ```
