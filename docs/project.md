@@ -342,6 +342,9 @@ $ ion-connect analysis get-analysis --account-id <your-account-id> --project-id 
 }
 ```
 
+# Scripting / Wrapping
+Most people will need or want to script a sequence of commands.  
+
 PRO TIP: jq (https://stedolan.github.io/jq/) can be used to pipe the output of the `ion-connect` commands, to parse directly to specific fields within the responses.
 
 For example, to pull just a list of rule set IDs:
