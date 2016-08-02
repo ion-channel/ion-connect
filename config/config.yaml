@@ -738,9 +738,9 @@
                   usage: ID
                   required: True
           args:
-            - name: project
+            - name: product
               value:
-              usage: PROJECT
+              usage: PRODUCT
               required: True
             - name: version
               value:
