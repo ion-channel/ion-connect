@@ -20,6 +20,7 @@ type Params interface {
 
 type PostParams struct {
 	Project     string                 `json:"project,omitempty"`
+	Product     string                 `json:"product,omitempty"`
 	Url         string                 `json:"url,omitempty"`
 	Type        string                 `json:"type,omitempty"`
 	Checksum    string                 `json:"checksum,omitempty"`
@@ -50,6 +51,7 @@ type PostParams struct {
 
 type GetParams struct {
 	Project     string                 `url:"project,omitempty"`
+	Product     string                 `url:"product,omitempty"`
 	Url         string                 `url:"url,omitempty"`
 	Type        string                 `url:"type,omitempty"`
 	Checksum    string                 `url:"checksum,omitempty"`
