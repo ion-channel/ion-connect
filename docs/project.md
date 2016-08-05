@@ -10,7 +10,7 @@ rulesets and create, view, update and analyze a given project.  The analysis ste
 The first step when using `ion-connect` is getting it installed and configured.  
 It can be installed from a prebuilt executable you can download the latest release here:
 
-https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/0.6.3/ion-connect-0.6.3-312.tar.gz
+https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/0.6.4/ion-connect-0.6.4-324.tar.gz
 
 The package contains binaries compiled for linux, windows and mac os (darwin).
 
