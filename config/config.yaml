@@ -91,6 +91,12 @@
           url: /scanner/scanArtifactUrl
           usage: scan an artifact from a remote url
           method: post
+          flags:		
+            - name: checksum		
+              value:		
+              usage: CHECKSUM		
+              required: false		
+              type: string
           args:
             - name: project
               value:
@@ -100,10 +106,6 @@
               value:
               usage: URL
               type: url
-              required: True
-            - name: checksum
-              value:
-              usage: CHECKSUM
               required: True
         - name: get-scan
           url: /scanner/getScan
