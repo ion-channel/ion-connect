@@ -8,20 +8,20 @@
 package ionconnect
 
 import (
-	"bufio"
-	"crypto/md5"
 	"encoding/hex"
+	"crypto/md5"
+	"bufio"
 	"fmt"
+	"gopkg.in/mattes/go-expand-tilde.v1"
 	"io/ioutil"
 	"log"
-	"net/url"
 	"os"
-	"path/filepath"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+  	"path/filepath"
+  	"net/url"
 )
 
 var Debug bool = false
