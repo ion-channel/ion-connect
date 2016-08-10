@@ -8,20 +8,21 @@
 package ionconnect
 
 import (
-	"encoding/hex"
-	"crypto/md5"
 	"bufio"
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
-	"gopkg.in/mattes/go-expand-tilde.v1"
 	"io/ioutil"
 	"log"
+	"net/url"
 	"os"
+	"path/filepath"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-  	"path/filepath"
-  	"net/url"
+	"gopkg.in/mattes/go-expand-tilde.v1"
 )
 
 var Debug bool = false
@@ -78,7 +79,7 @@ func ComputeMd5(path string) (string, error) {
 	u, err := url.Parse(path)
 	if err != nil {
 		fmt.Printf("Invalid url string %s", path)
-		Exit(1)
+		return "", err
 	}
 	absolutePath, err := filepath.Abs(u.Host + u.Path)
 	if dat, err := ioutil.ReadFile(absolutePath); err != nil {
