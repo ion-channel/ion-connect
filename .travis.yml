@@ -43,7 +43,9 @@ script:
 - fpm -s dir -t deb -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C
   ion-connect/linux
 notifications:
-  slack: selectpress:80BkOLkmohrgd7bWC7cdA8C5
+  slack:
+    rooms:
+      - ionchannel:judViUieHy4ppRX1vYhok1HK#build
 
 before_deploy:
   - mkdir -p ion-connect/$TRAVIS_TAG
