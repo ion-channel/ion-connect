@@ -8,8 +8,6 @@
 package ionconnect
 
 import (
-	"strings"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"gopkg.in/mattes/go-expand-tilde.v1"
@@ -31,7 +29,7 @@ var _ = Describe("Util", func() {
 		It("should return MD5 if the file exists", func() {
 			md5, err := ComputeMd5("../test/analysisstatus.json")
 			Expect(err).To(BeNil())
-			Expect(strings.ToUpper(md5)).To(Equal("29803548A0CF1281078BB9D88621DDB8"))
+			Expect(md5).To(Equal("29803548a0cf1281078bb9d88621ddb8"))
 		})
 	})
 
