@@ -701,6 +701,25 @@
     - name: vulnerability
       usage: set of commands for querying vulnerabilities
       subcommands:
+        - name: get-vulnerabilities-in-file
+          url: /vulnerability/getVulnerabilitiesInFile
+          usage: returns a list of vulnerabilities for a given set of product/version
+          method: file
+          args:
+            - name: file
+              value:
+              usage: path/to/file
+              required: True
+        - name: get-vulnerabilities-for-list
+          url: /vulnerability/getVulnerabilities
+          usage: returns a list of vulnerabilities for a given set of product/version
+          method: post
+          args:
+            - name: data
+              type: string
+              value:
+              usage: DATA
+              required: True
         - name: get-vulnerabilities
           url: /vulnerability/getVulnerabilities
           usage: returns a list of vulnerabilities for a given query

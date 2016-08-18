@@ -19,6 +19,7 @@ type Params interface {
 }
 
 type PostParams struct {
+	Data        string                 `json:"data,omitempty"`
 	Project     string                 `json:"project,omitempty"`
 	Product     string                 `json:"product,omitempty"`
 	Url         string                 `json:"url,omitempty"`
@@ -50,6 +51,7 @@ type PostParams struct {
 }
 
 type GetParams struct {
+	Data        string                 `url:"data,omitempty"`
 	Project     string                 `url:"project,omitempty"`
 	Product     string                 `url:"product,omitempty"`
 	Url         string                 `url:"url,omitempty"`
@@ -83,7 +85,7 @@ type GetParams struct {
 }
 
 func (params GetParams) String() string {
-	return fmt.Sprintf("Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, Limit=%s, Offset=%s", params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version, params.Limit, params.Offset)
+	return fmt.Sprintf("Data=%s, Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, Limit=%s, Offset=%s", params.Data, params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version, params.Limit, params.Offset)
 }
 
 func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
@@ -113,7 +115,7 @@ func (params GetParams) UpdateFromMap(paramMap map[string]string) GetParams {
 }
 
 func (params PostParams) String() string {
-	return fmt.Sprintf("Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, File=%s", params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version, params.File)
+	return fmt.Sprintf("Data=%s, Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, File=%s", params.Data, params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version, params.File)
 }
 
 func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
