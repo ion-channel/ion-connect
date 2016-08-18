@@ -9,17 +9,20 @@ package ionconnect
 
 import (
 	"bufio"
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
-	"gopkg.in/mattes/go-expand-tilde.v1"
 	"io/ioutil"
 	"log"
+	"net/url"
 	"os"
+	"path/filepath"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-  "github.com/aws/aws-sdk-go/service/s3"
-  "path/filepath"
-  "net/url"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"gopkg.in/mattes/go-expand-tilde.v1"
 )
 
 var Debug bool = false
@@ -72,44 +75,61 @@ func ReadBytesFromFile(filename string) ([]byte, error) {
 	return bytes, err
 }
 
-func ConvertFileToUrl(path string) (string) {
-  u, err := url.Parse(path)
+func ComputeMd5(path string) (string, error) {
+	u, err := url.Parse(path)
 	if err != nil {
 		fmt.Printf("Invalid url string %s", path)
-    Exit(1)
+		return "", err
 	}
-  if u.Scheme == "file" {
-    absolutePath, err := filepath.Abs(u.Host + u.Path)
-    basePath := filepath.Base(absolutePath)
-    reader, err := os.Open(absolutePath)
-    if err != nil {
-      fmt.Printf("Failed to process file from url %s. Make sure the file exists and permissions are correct. (%s)", path, err)
-      Exit(1)
-    }
+	absolutePath, err := filepath.Abs(u.Host + u.Path)
+	if dat, err := ioutil.ReadFile(absolutePath); err != nil {
+		return "", err
+	} else {
+		data := []byte(dat)
+		var ba = md5.Sum(data)
+		s := hex.EncodeToString(ba[:])
+		return s, nil
+	}
+}
 
-    var bucket string
-    if os.Getenv(DROPBUCKET_ENVIRONMENT_VARIABLE) != "" {
-      bucket = os.Getenv(DROPBUCKET_ENVIRONMENT_VARIABLE)
-    } else {
-      bucket = DEFAUL_WRITE_BUCKET
-    }
-    key := (DEFAUL_WRITE_FOLDER + basePath)
-    sess := session.New(&aws.Config{Region: aws.String("us-east-1"), Credentials: credentials.AnonymousCredentials})
-    svc := s3.New(sess)
-    _, err = svc.PutObject(&s3.PutObjectInput{
-        Body:   reader,
-        Bucket: &bucket,
-        Key:    &key,
-    })
+func ConvertFileToUrl(path string) string {
+	u, err := url.Parse(path)
+	if err != nil {
+		fmt.Printf("Invalid url string %s", path)
+		Exit(1)
+	}
+	if u.Scheme == "file" {
+		absolutePath, err := filepath.Abs(u.Host + u.Path)
+		basePath := filepath.Base(absolutePath)
+		reader, err := os.Open(absolutePath)
+		if err != nil {
+			fmt.Printf("Failed to process file from url %s. Make sure the file exists and permissions are correct. (%s)", path, err)
+			Exit(1)
+		}
 
-    if err != nil {
-      fmt.Printf("Failed to process file from url %s. Make sure the file exists and permissions are correct. (%s)", path, err)
-      Exit(1)
-    }
-    return "https://s3.amazonaws.com/" + bucket + key
-  } else {
-    return path
-  }
+		var bucket string
+		if os.Getenv(DROPBUCKET_ENVIRONMENT_VARIABLE) != "" {
+			bucket = os.Getenv(DROPBUCKET_ENVIRONMENT_VARIABLE)
+		} else {
+			bucket = DEFAUL_WRITE_BUCKET
+		}
+		key := (DEFAUL_WRITE_FOLDER + basePath)
+		sess := session.New(&aws.Config{Region: aws.String("us-east-1"), Credentials: credentials.AnonymousCredentials})
+		svc := s3.New(sess)
+		_, err = svc.PutObject(&s3.PutObjectInput{
+			Body:   reader,
+			Bucket: &bucket,
+			Key:    &key,
+		})
+
+		if err != nil {
+			fmt.Printf("Failed to process file from url %s. Make sure the file exists and permissions are correct. (%s)", path, err)
+			Exit(1)
+		}
+		return "https://s3.amazonaws.com/" + bucket + key
+	} else {
+		return path
+	}
 }
 
 func PathExists(path string) (bool, error) {
