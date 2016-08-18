@@ -20,6 +20,19 @@ var _ = Describe("Util", func() {
 		Debug = true
 	})
 
+	Context("When generating the MD5 hash", func() {
+		It("should return empty if the file doesnt exist", func() {
+			md5, err := ComputeMd5("/aint/real")
+			Expect(err).NotTo(Equal(nil))
+			Expect(md5).To(Equal(""))
+		})
+		It("should return MD5 if the file exists", func() {
+			md5, err := ComputeMd5("../test/analysisstatus.json")
+			Expect(err).To(BeNil())
+			Expect(md5).To(Equal("29803548a0cf1281078bb9d88621ddb8"))
+		})
+	})
+
 	Context("When the debug flag is set", func() {
 		It("should write out debug statements", func() {
 			Expect(func() { Debugln("testing") }).ShouldNot(Panic())
@@ -48,12 +61,12 @@ var _ = Describe("Util", func() {
 		})
 	})
 
-  Context("When a param is a file type", func() {
-    It("should upload a file and change the param to a url", func() {
-      url := ConvertFileToUrl("file://./util.go")
-      Expect(url).To(Equal("https://s3.amazonaws.com/files.ionchannel.io/files/upload/util.go"))
-    })
-  })
+	Context("When a param is a file type", func() {
+		It("should upload a file and change the param to a url", func() {
+			url := ConvertFileToUrl("file://./util.go")
+			Expect(url).To(Equal("https://s3.amazonaws.com/files.ionchannel.io/files/upload/util.go"))
+		})
+	})
 
 	AfterEach(func() {
 		Debug = false

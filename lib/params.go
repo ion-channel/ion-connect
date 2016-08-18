@@ -11,8 +11,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
-  "strconv"
 )
 
 type Params interface {
@@ -91,8 +91,8 @@ func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
 		if argConfigs[index].Type != "object" && argConfigs[index].Type != "array" {
 			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetString(arg)
 		} else if argConfigs[index].Type == "bool" {
-      boolArg, _ := strconv.ParseBool(arg)
-      reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetBool(boolArg)
+			boolArg, _ := strconv.ParseBool(arg)
+			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetBool(boolArg)
 		}
 	}
 	return params
@@ -101,13 +101,13 @@ func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
 func (params GetParams) UpdateFromMap(paramMap map[string]string) GetParams {
 	for param, value := range paramMap {
 		Debugf("Setting %s to %s", strings.Replace(strings.Title(param), "-", "", -1), value)
-    _, intErr := strconv.ParseInt(value, 10, 64)
-    boolValue, boolErr := strconv.ParseBool(value)
-    if boolErr == nil && intErr != nil {
-      reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(param), "-", "", -1)).SetBool(boolValue)
-    } else {
-		  reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(param), "-", "", -1)).SetString(value)
-    }
+		_, intErr := strconv.ParseInt(value, 10, 64)
+		boolValue, boolErr := strconv.ParseBool(value)
+		if boolErr == nil && intErr != nil {
+			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(param), "-", "", -1)).SetBool(boolValue)
+		} else {
+			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(param), "-", "", -1)).SetString(value)
+		}
 	}
 	return params
 }
@@ -117,6 +117,7 @@ func (params PostParams) String() string {
 }
 
 func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
+	var md5hash string
 	for index, arg := range args {
 		Debugf("Index and args %d %s %v", index, arg, argConfigs)
 
@@ -138,27 +139,36 @@ func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
 			}
 			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).Set(reflect.ValueOf(jsonArray))
 		} else if argConfigs[index].Type == "bool" {
-      Debugf("Using bool parser for (%s) = (%s)", argConfigs[index].Name, arg)
-      if arg == ""{
-        Debugf("Missing arg value (%s) using default (%s)", argConfigs[index].Name, argConfigs[index].Value)
-        arg = argConfigs[index].Value
-      }
-      boolArg, _ := strconv.ParseBool(arg)
+			Debugf("Using bool parser for (%s) = (%s)", argConfigs[index].Name, arg)
+			if arg == "" {
+				Debugf("Missing arg value (%s) using default (%s)", argConfigs[index].Name, argConfigs[index].Value)
+				arg = argConfigs[index].Value
+			}
+			boolArg, _ := strconv.ParseBool(arg)
 			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetBool(boolArg)
 		} else {
-      if argConfigs[index].Type == "url" {
-        Debugf("Handling url %s", arg)
-        arg = ConvertFileToUrl(arg)
-      }
+			if argConfigs[index].Type == "url" {
+				Debugf("Handling url %s", arg)
+				a, err := ComputeMd5(arg)
+				md5hash = a
+				if err != nil {
+					fmt.Printf("Failed to generate MD5 from url %s. Make sure the file exists and permissions are correct. (%s)", arg, err)
+					Exit(1)
+				}
+				arg = ConvertFileToUrl(arg)
+			}
 			Debugf("Using string parser for (%s) = (%s)", argConfigs[index].Name, arg)
-      if arg == ""{
-        Debugf("Missing arg value (%s) using default (%s)", argConfigs[index].Name, argConfigs[index].Value)
-        arg = argConfigs[index].Value
-      }
+			if arg == "" {
+				Debugf("Missing arg value (%s) using default (%s)", argConfigs[index].Name, argConfigs[index].Value)
+				arg = argConfigs[index].Value
+			}
 			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetString(arg)
 		}
 
 		Debugf("Finished %s", arg)
+	}
+	if len(md5hash) > 0 {
+		params.Checksum = md5hash
 	}
 	return params
 }
