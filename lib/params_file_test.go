@@ -39,7 +39,7 @@ var _ = Describe("Params_Files", func() {
 			Debugf("Params_Files_Test post args : %s", args)
 			params := PostParams{}.Generate(args, config.Args)
 			Debugf("Params_Files_Test : %s", params)
-			Expect(params.String()).To(Equal("Project=fart, Url=https://s3.amazonaws.com/files.ionchannel.io/files/upload/analysisstatus.json, Type=, Checksum=29803548a0cf1281078bb9d88621ddb8, Id=, Text=, Version=, File="))
+			Expect(params.String()).To(Equal("List=[], Project=fart, Url=https://s3.amazonaws.com/files.ionchannel.io/files/upload/analysisstatus.json, Type=, Checksum=29803548a0cf1281078bb9d88621ddb8, Id=, Text=, Version=, File="))
 		})
 	})
 

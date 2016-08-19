@@ -82,9 +82,10 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
 		client.Post(api.Config.LoadEndpoint())
 		params := GetParams{}.UpdateFromMap(options)
 		client.QueryStruct(&params)
+		Debugf("Sending body %s", &body)
+
 		client.BodyJSON(&body)
-		Debugf("Sending body %b", body)
-		Debugf("Sending params %b", params)
+		Debugf("Sending params %s", params)
 	} else if httpMethod == "get" {
 		params := GetParams{}.Generate(context.Args(), args).UpdateFromMap(options)
 		client.Get(api.Config.LoadEndpoint())
@@ -92,11 +93,12 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
 		Debugf("Sending params %b", params)
 	}
 
-	Debugf("Processing url")
+
 	url, err := api.Config.ProcessUrlFromConfig(command, subcommand, GetParams{}.Generate(context.Args(), args))
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	Debugf("Processing url: %s", url)
 
 	Debugf("Done")
 
@@ -104,14 +106,14 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
 	Debugf("Sending request to %s%s", api.Config.LoadEndpoint(), fmt.Sprintf("%s%s", api.Config.Version, url))
 	client.Add(api.Config.Token, LoadCredential())
 
-	body := make(map[string]interface{})
-	response, responseErr := client.Receive(&body, &body)
+	responseBody := make(map[string]interface{})
+	response, responseErr := client.Receive(&responseBody, &responseBody)
 	if responseErr != nil {
 		Debugf("Failure occurred during request %s", responseErr.Error())
 		Exit(1)
 	}
-	Debugf("Response received with status %s, %v", response.Status, body)
-	return *response, body
+	Debugf("Response received with status %s, %v", response.Status, responseBody)
+	return *response, responseBody
 }
 
 func (api Api) processResponse(response http.Response, body map[string]interface{}) string {

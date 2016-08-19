@@ -45,7 +45,7 @@ type PostParams struct {
 	Flatten     bool                   `json:"flatten,omitempty"`
 	Rules       []interface{}          `json:"rules,omitempty"`
 	RuleIds     []interface{}          `json:"rule_ids,omitempty"`
-	ScanSet     []interface{}          `json:"data,omitempty"`
+	List        []interface{}          `json:"data,omitempty"`
 	SkipAck     bool                   `json:"skip_ack,omitempty"`
 }
 
@@ -78,12 +78,12 @@ type GetParams struct {
 	Flatten     bool                   `url:"flatten,omitempty"`
 	Rules       []interface{}          `url:"rules,omitempty"`
 	RuleIds     []interface{}          `url:"rule_ids,omitempty"`
-	ScanSet     []interface{}          `url:"data,omitempty"`
+	List        []interface{}          `url:"data,omitempty"`
 	SkipAck     bool                   `url:"skip_ack,omitempty"`
 }
 
 func (params GetParams) String() string {
-	return fmt.Sprintf("Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, Limit=%s, Offset=%s", params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version, params.Limit, params.Offset)
+	return fmt.Sprintf("List=%s, Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, Limit=%s, Offset=%s", params.List, params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version, params.Limit, params.Offset)
 }
 
 func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
@@ -113,7 +113,7 @@ func (params GetParams) UpdateFromMap(paramMap map[string]string) GetParams {
 }
 
 func (params PostParams) String() string {
-	return fmt.Sprintf("Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, File=%s", params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version, params.File)
+	return fmt.Sprintf("List=%s, Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, File=%s", params.List, params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version, params.File)
 }
 
 func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
