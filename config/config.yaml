@@ -91,11 +91,11 @@
           url: /scanner/scanArtifactUrl
           usage: scan an artifact from a remote url
           method: post
-          flags:		
-            - name: checksum		
-              value:		
-              usage: CHECKSUM		
-              required: false		
+          flags:
+            - name: checksum
+              value:
+              usage: CHECKSUM
+              required: false
               type: string
           args:
             - name: project
@@ -245,9 +245,9 @@
               value:
               usage: ID
               required: True
-            - name: scan-set
+            - name: list
               value:
-              usage: SCANSET
+              usage: LIST
               type: array
               required: True
 
@@ -703,6 +703,25 @@
     - name: vulnerability
       usage: set of commands for querying vulnerabilities
       subcommands:
+        - name: get-vulnerabilities-in-file
+          url: /vulnerability/getVulnerabilitiesInFile
+          usage: returns a list of vulnerabilities for a given set of product/version
+          method: file
+          args:
+            - name: file
+              value:
+              usage: path/to/file
+              required: True
+        - name: get-vulnerabilities-for-list
+          url: /vulnerability/getVulnerabilities
+          usage: returns a list of vulnerabilities for a given set of product/version
+          method: post
+          args:
+            - name: list
+              type: array
+              value:
+              usage: LIST
+              required: True
         - name: get-vulnerabilities
           url: /vulnerability/getVulnerabilities
           usage: returns a list of vulnerabilities for a given query
