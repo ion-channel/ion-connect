@@ -722,6 +722,18 @@
               value:
               usage: LIST
               required: True
+        - name: get-vulnerability
+          url: /vulnerability/getVulnerability
+          usage: returns a specific vulnerability for a given query
+          method: get
+          flags:
+            
+          args:
+            - name: name
+              value:
+              usage: NAME
+              required: True
+
         - name: get-vulnerabilities
           url: /vulnerability/getVulnerabilities
           usage: returns a list of vulnerabilities for a given query
@@ -747,16 +759,6 @@
                 - name: text
                   value:
                   usage: TEXT
-                  required: True
-
-            - name: id
-              usage: query vulnerabilities using a vulnerability [ID]
-              required: False
-              type: bool
-              args:
-                - name: id
-                  value:
-                  usage: ID
                   required: True
           args:
             - name: product

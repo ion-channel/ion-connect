@@ -9,16 +9,17 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/codegangsta/cli"
 	"github.com/ion-channel/ion-connect/lib"
-	"os"
 )
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "ion-connect"
 	app.Usage = "Interact with Ion Channel"
-	app.Version = "0.6.5"
+	app.Version = "0.6.6"
 
 	var api = ionconnect.Api{ionconnect.GetConfig()}
 
