@@ -4,3 +4,5 @@ target*
 ion-connect/
 ion-connect
 tmp
+.vscode
+debug
