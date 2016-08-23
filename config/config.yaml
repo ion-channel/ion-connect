@@ -712,6 +712,7 @@
               value:
               usage: path/to/file
               required: True
+
         - name: get-vulnerabilities-for-list
           url: /vulnerability/getVulnerabilities
           usage: returns a list of vulnerabilities for a given set of product/version
@@ -722,17 +723,16 @@
               value:
               usage: LIST
               required: True
+
         - name: get-vulnerability
           url: /vulnerability/getVulnerability
           usage: returns a specific vulnerability for a given query
           method: get
-          flags:
-            
           args:
             - name: name
               value:
               usage: NAME
-              required: True
+              required: True 
 
         - name: get-vulnerabilities
           url: /vulnerability/getVulnerabilities
@@ -770,6 +770,28 @@
               usage: VERSION
               required: False
 
+        - name: get-product
+          url: /vulnerability/getProducts
+          usage: returns a specific product for a given query
+          method: get
+          args:
+            - name: name
+              value:
+              usage: NAME
+              required: True
+        - name: get-products
+          url: /vulnerability/getProducts
+          usage: returns a list of products for a given query
+          method: get
+          args:
+            - name: product
+              value:
+              usage: PRODUCT
+              required: True
+            - name: version
+              value:
+              usage: VERSION
+              required: False
 # only for test
     - name: test
       usage: set of commands testing
