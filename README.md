@@ -102,26 +102,36 @@ NOTE:  Ion Connect can also do configuration through environment variables.  The
 You can then run various commands to query the Ion Channel system.  The best next step is the the help command.  From there you can see a list of top level commands and global options.
 
 ```sh
-$ ion-connect help
 NAME:
-   ionconnect - Interact with Ion Channel
+   ion-connect - Interact with Ion Channel
 
 USAGE:
    ./ion-connect [global options] command [command options] [arguments...]
 
 VERSION:
-   0.2.3
+   0.6.6
 
 COMMANDS:
-   scanner set of commands for affecting artifacts or source code
-   airgap	set of commands for moving artifacts or source code
-   configure	setup the Ion Channel secret key for later use
-   help, h	Shows a list of commands or help for one command
+   scanner             set of commands for effecting artifacts or source code
+   airgap              set of commands for moving artifacts or source code
+   metadata            set of commands for parsing metadata from text
+   ruleset             set of commands for managing rulesets
+   analysis            set of commands for querying for projects analysis scan results
+   project             set of commands for manipulating projects for your account
+   repository          set of commands for querying source repository data
+   dependency          set of commands for querying dependency data
+   mail                set of commands for querying mail message data
+   community           set of commands for querying a project's community data
+   animal              set of commands for querying raw analysis and scan data
+   vulnerability       set of commands for querying vulnerabilities
+   configure           setup the Ion Channel secret key for later use
+   help, h             Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --debug		display debug logging
-   --help, -h		show help
-   --version, -v	print the version
+   --debug             display debug logging
+   --insecure          allow for insecure https connections
+   --help, -h          show help
+   --version, -v       print the version
 ```
 
 Commands that are only supported in test by supplying the Ion Channel API endpoint url using an environment variable, similar to the following:
@@ -136,7 +146,5 @@ $ IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ ion-connect metadata g
   }
 ]
 ```
-
-
 
 That's it! You are well on your way to world domination.
