@@ -86,13 +86,13 @@ $ ion-connect ruleset get-rules
 From here you can define rule sets which will govern your projects.  The following example will create a ruleset that requires a valid .about.yml file to be present at the root of a source code repository.
 
 ```
-$ ion-connect ruleset create-ruleset --account-id <your-account-id> "rule set name" "this is a test ruleset" '[c30b917956c3040daa2c571ef31dbe3a"]'
+$ ion-connect ruleset create-ruleset --account-id <your-account-id> "rule set name" "this is a test ruleset" '["c30b917956c3040daa2c571ef31dbe3a"]'
 ```
 
 At any time you can query for all or any of the rule sets in your account using the `get-rulesets` and `get-ruleset` commands.
 
 ```
-$ ion-connect ion-connect ruleset get-rulesets --account-id <your-account-id>
+$ ion-connect ruleset get-rulesets --account-id <your-account-id>
 [
   {
     "account_id": "<your-account-id>",
