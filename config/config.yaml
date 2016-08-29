@@ -732,7 +732,7 @@
             - name: name
               value:
               usage: NAME
-              required: True 
+              required: True
 
         - name: get-vulnerabilities
           url: /vulnerability/getVulnerabilities
@@ -750,16 +750,16 @@
               usage: set the start index of the vulnerabilities returned, defaults to 0
               required: False
               type: string
-
-            - name: text
-              usage: query vulnerabilities using [TEXT]
-              required: False
-              type: bool
-              args:
-                - name: text
-                  value:
-                  usage: TEXT
-                  required: True
+            #
+            # - name: text
+            #   usage: query vulnerabilities using [TEXT]
+            #   required: False
+            #   type: bool
+            #   args:
+            #     - name: text
+            #       value:
+            #       usage: TEXT
+            #       required: True
           args:
             - name: product
               value:
