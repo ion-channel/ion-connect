@@ -8,7 +8,7 @@ This is a brief tutorial on the use of `ion-connect` and the Ion Channel API to 
 The first step to using `ion-connect` is getting it installed and configured.
 It can be installed from a prebuilt executable you can download the latest release here:
 
-https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/0.6.6/ion-connect-0.6.6-348.tar.gz
+https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/ion-connect-latest.tar.gz
 
 The package contains binaries compiled for linux, windows and mac os (darwin).
 
@@ -309,7 +309,7 @@ It is possible to have a list inside a file, in the form of:
 And reference it from a call:
 
 ```
-➜  ~ ion-connect vulnerability get-vulnerabilities-in-file /Users/kplummer/go/src/github.com/ion-channel/ion-connect/test/products.json
+➜  ~ ion-connect vulnerability get-vulnerabilities-in-file /somedir/somefile.json
 [
   {
     "product": "docker/docker",
@@ -525,4 +525,3 @@ returns:
     "last_modified": "2015-07-02T22:39:34.887-04:00",
 ...
 ```
-
