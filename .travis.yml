@@ -50,7 +50,8 @@ notifications:
 before_deploy:
   - mkdir -p ion-connect/$TRAVIS_TAG
   - cp $FILE_NAME.tar.gz ion-connect/$TRAVIS_TAG/
-
+  - cp $FILE_NAME.tar.gz ion-connect/ion-connect-latest.tar.gz
+  
 deploy:
   - provider: releases
     api_key:
