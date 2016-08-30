@@ -4,6 +4,9 @@ CLI tool for interacting with the Ion Channel Service/API
 
 [![Build Status](https://magnum.travis-ci.com/ion-channel/ion-connect.svg?token=AGRFpUr1LzvrKJ1SmsR3)](https://magnum.travis-ci.com/ion-channel/ion-connect)
 
+## License
+
+Apache Software License 2.0 [See LICENSE.txt]
 
 ## Let's build it!
 
@@ -51,19 +54,6 @@ $ go install github.com/ion-channel/ion-connect
 
 If you've added the $GOHOME/bin to you path you should now be able to get ion-connect action going.
 
-### Install from apt
-
-Add the following file /etc/apt/sources.list.d/fury.list:
-```sh
-deb [trusted=yes] https://lywwDM0pBrN3qB9xqynb@apt.fury.io/kitplummer/ /
-```
-
-Then run:
-```sh
-$ apt-get update
-$ apt-get install ion-connect
-```
-
 ### To get stuff 'cross-compiled':
 
 ```sh
@@ -76,13 +66,6 @@ $ rice append --exec ion-connect/linux/bin/ion-connect -i ./lib
 $ GOOS=darwin go build -o ion-connect/darwin/bin/ion-connect ./
 $ rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
 ```
-
-## Release a new version
-
-Create a git tag, of the version number to release.  Push the tag to Github.  travis-ci
-will create the new artifacts and push them to GemFury.
-
-Then, create a branch, update the app version in the main.go file, commit and push/PR.
 
 ## Your wish
 
@@ -98,6 +81,7 @@ NOTE:  Ion Connect can also do configuration through environment variables.  The
 - `IONCHANNEL_SECRET_KEY` - allows the user to set the secret key used for authentication with Ion Channel
 - `IONCHANNEL_ENDPOINT_URL` - allows the user to set the location of the Ion Channel api
 
+The default endpoint url is the Ion Channel public/production environment.
 
 You can then run various commands to query the Ion Channel system.  The best next step is the the help command.  From there you can see a list of top level commands and global options.
 
@@ -109,29 +93,29 @@ USAGE:
    ./ion-connect [global options] command [command options] [arguments...]
 
 VERSION:
-   0.6.6
+   0.6.8
 
 COMMANDS:
-   scanner             set of commands for effecting artifacts or source code
-   airgap              set of commands for moving artifacts or source code
-   metadata            set of commands for parsing metadata from text
-   ruleset             set of commands for managing rulesets
-   analysis            set of commands for querying for projects analysis scan results
-   project             set of commands for manipulating projects for your account
-   repository          set of commands for querying source repository data
-   dependency          set of commands for querying dependency data
-   mail                set of commands for querying mail message data
-   community           set of commands for querying a project's community data
-   animal              set of commands for querying raw analysis and scan data
-   vulnerability       set of commands for querying vulnerabilities
-   configure           setup the Ion Channel secret key for later use
-   help, h             Shows a list of commands or help for one command
+   scanner     		set of commands for effecting artifacts or source code
+   airgap      		set of commands for moving artifacts or source code
+   metadata    		set of commands for parsing metadata from text
+   ruleset     		set of commands for managing rulesets
+   analysis    		set of commands for querying for projects analysis scan results
+   project     		set of commands for manipulating projects for your account
+   repository  		set of commands for querying source repository data
+   dependency  		set of commands for querying dependency data
+   mail			      set of commands for querying mail message data
+   community   		set of commands for querying a project's community data
+   animal      		set of commands for querying raw analysis and scan data
+   vulnerability  set of commands for querying vulnerabilities
+   configure   		setup the Ion Channel secret key for later use
+   help, h     		Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --debug             display debug logging
-   --insecure          allow for insecure https connections
-   --help, -h          show help
-   --version, -v       print the version
+   --debug     		display debug logging
+   --insecure  		allow for insecure https connections
+   --help, -h  		show help
+   --version, -v  print the version
 ```
 
 Commands that are only supported in test by supplying the Ion Channel API endpoint url using an environment variable, similar to the following:
