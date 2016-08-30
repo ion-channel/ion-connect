@@ -4,6 +4,10 @@ CLI tool for interacting with the Ion Channel Service/API
 
 [![Build Status](https://magnum.travis-ci.com/ion-channel/ion-connect.svg?token=AGRFpUr1LzvrKJ1SmsR3)](https://magnum.travis-ci.com/ion-channel/ion-connect)
 
+## Latest Build
+
+[https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/ion-connect-latest.tar.gz](https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/ion-connect-latest.tar.gz)
+
 ## License
 
 Apache Software License 2.0 [See LICENSE.txt]
