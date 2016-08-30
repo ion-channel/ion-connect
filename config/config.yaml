@@ -15,7 +15,7 @@
 # limitations under the License.
 ---
   version: v1
-  endpoint: https:#api.ionchannel.io/
+  endpoint: https://api.ionchannel.io/
   token: apikey
   commands:
     # scanner
