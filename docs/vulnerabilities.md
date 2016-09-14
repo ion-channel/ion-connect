@@ -356,7 +356,7 @@ The full API specification is here: [http://ion.docs.ionchannel.io/bunsen.html](
 ## getProducts?product=
 
 ```
-curl https://api.ionchannel.io/v1/vulnerability/getVulnerabilities\?product\=docker/docker\&apikey\=3c92b12c2b0344a0834f21589d35df87
+curl https://api.ionchannel.io/v1/vulnerability/getVulnerabilities\?product\=docker/docker\&apikey\=APIKEY
 ```
 
 returns:
