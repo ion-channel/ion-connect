@@ -643,7 +643,7 @@
 
 
     # animal
-    - name: animal
+    - name: raw
       usage: set of commands for querying raw analysis and scan data
       subcommands:
         - name: get-analysis

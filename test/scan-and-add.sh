@@ -60,7 +60,7 @@ done
 echo "Retreived external scan id from analysis"
 
 #Get the results of the scan
-SCAN_RESULT=$(IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ ion-connect animal get-scan --account-id account_id --project-id $PROJECT_ID $ANALYSIS_ID $SCAN_ID)
+SCAN_RESULT=$(IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ ion-connect raw get-scan --account-id account_id --project-id $PROJECT_ID $ANALYSIS_ID $SCAN_ID)
 echo "Retreived external scan data from analysis"
 
 #Apply the rules to the scan
