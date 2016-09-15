@@ -32,9 +32,6 @@ import (
 
 	"github.com/codegangsta/cli"
 	"github.com/dghubble/sling"
-
-  net_url "net/url"
-  goquery "github.com/google/go-querystring/query"
 )
 
 type Api struct {
@@ -223,27 +220,7 @@ func (api Api) postFile(command string, subcommand string, context *cli.Context,
 	contentType := bodyWriter.FormDataContentType()
 	bodyWriter.Close()
 
-  urlValues, err := net_url.ParseQuery("")
-	if err != nil {
-    fmt.Println(err.Error())
-    Exit(1)
-	}
-
-  paramValues, err := goquery.Values(params)
-  if err != nil {
-    fmt.Println(err.Error())
-    Exit(1)
-  }
-
-  for key, values := range paramValues {
-    for _, value := range values {
-      if key != "file" {
-        urlValues.Add(key, value)
-      }
-    }
-  }
-
-	url = fmt.Sprintf("%s%s%s?%s", api.Config.LoadEndpoint(), api.Config.Version, url, urlValues.Encode())
+	url = fmt.Sprintf("%s%s%s?%s", api.Config.LoadEndpoint(), api.Config.Version, url, params.String())
 
 	Debugf("Sending request to %s", url)
 	client := &http.Client{}

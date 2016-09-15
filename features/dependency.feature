@@ -96,8 +96,8 @@ Feature: Dependency
     ]
     """
   Scenario: Get dependencies from a file
-    When I successfully run `ion-connect dependency resolve-dependencies-in-file --flatten "../../test/package.json"`
+    When I successfully run `ion-connect dependency resolve-dependencies-in-file --type npmjs --flatten "../../test/package.json"`
     Then the output should contain:
     """
-    "MAGE@4.2.1"
+    "bson"
     """
