@@ -19,11 +19,11 @@ package ionconnect
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/google/go-querystring/query"
+	"net/url"
 	"reflect"
 	"strconv"
 	"strings"
-  "net/url"
-  "github.com/google/go-querystring/query"
 )
 
 type Params interface {
@@ -94,27 +94,27 @@ type GetParams struct {
 }
 
 func (params GetParams) String() string {
-  urlValues, err := url.ParseQuery("")
+	urlValues, err := url.ParseQuery("")
 	if err != nil {
-    fmt.Println(err.Error())
-    Exit(1)
+		fmt.Println(err.Error())
+		Exit(1)
 	}
 
-  paramValues, err := query.Values(params)
-  if err != nil {
-    fmt.Println(err.Error())
-    Exit(1)
-  }
+	paramValues, err := query.Values(params)
+	if err != nil {
+		fmt.Println(err.Error())
+		Exit(1)
+	}
 
-  for key, values := range paramValues {
-    for _, value := range values {
-      if key != "file" {
-        urlValues.Add(key, value)
-      }
-    }
-  }
+	for key, values := range paramValues {
+		for _, value := range values {
+			if key != "file" {
+				urlValues.Add(key, value)
+			}
+		}
+	}
 
-  return urlValues.Encode()
+	return urlValues.Encode()
 }
 
 func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {

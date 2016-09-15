@@ -188,7 +188,6 @@ func (api Api) postFile(command string, subcommand string, context *cli.Context,
 	bodyParams := PostParams{}.Generate(context.Args(), args)
 	Debugf("Sending params %b", params)
 
-
 	url, err := api.Config.ProcessUrlFromConfig(command, subcommand, params)
 	if err != nil {
 		log.Fatal(err.Error())

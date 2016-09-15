@@ -20,12 +20,12 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"log"
-	"os"
 	"github.com/GeertJohan/go.rice"
 	"github.com/codegangsta/cli"
 	"golang.org/x/crypto/ssh/terminal"
 	"gopkg.in/yaml.v2"
+	"log"
+	"os"
 )
 
 type Command struct {
@@ -184,9 +184,9 @@ func (config Config) ProcessUrlFromConfig(commandName string, subcommandName str
 		return "", err
 	}
 
-  Debugf("url template: %s", subCommandConfig.Url)
+	Debugf("url template: %s", subCommandConfig.Url)
 
-  url := subCommandConfig.Url
+	url := subCommandConfig.Url
 
 	return url, nil
 }
