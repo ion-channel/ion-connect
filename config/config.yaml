@@ -507,6 +507,11 @@
             usage: format data flattened
             required: False
             type: bool
+          - name: type
+            value:
+            usage: the type of file that is being submitted [maven|npmjs]
+            required: True
+            type: string
         args:
           - name: file
             value:

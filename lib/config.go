@@ -22,8 +22,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"text/template"
-
 	"github.com/GeertJohan/go.rice"
 	"github.com/codegangsta/cli"
 	"golang.org/x/crypto/ssh/terminal"
@@ -186,16 +184,11 @@ func (config Config) ProcessUrlFromConfig(commandName string, subcommandName str
 		return "", err
 	}
 
-	url := subCommandConfig.Url
+  Debugf("url template: %s", subCommandConfig.Url)
 
-	templ := template.Must(template.New("url").Parse(url))
-	buf := bytes.Buffer{}
-	err = templ.Execute(&buf, params)
-	if err != nil {
-		return "", err
-	}
+  url := subCommandConfig.Url
 
-	return string(buf.Bytes()), nil
+	return url, nil
 }
 
 func (config Config) FindSubCommandConfig(commandName string, subcommandName string) (Command, error) {
