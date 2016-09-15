@@ -183,12 +183,7 @@ func (config Config) ProcessUrlFromConfig(commandName string, subcommandName str
 	if err != nil {
 		return "", err
 	}
-
-	Debugf("url template: %s", subCommandConfig.Url)
-
-	url := subCommandConfig.Url
-
-	return url, nil
+	return subCommandConfig.Url, nil
 }
 
 func (config Config) FindSubCommandConfig(commandName string, subcommandName string) (Command, error) {

@@ -94,11 +94,7 @@ type GetParams struct {
 }
 
 func (params GetParams) String() string {
-	urlValues, err := url.ParseQuery("")
-	if err != nil {
-		fmt.Println(err.Error())
-		Exit(1)
-	}
+	urlValues := url.Values{}
 
 	paramValues, err := query.Values(params)
 	if err != nil {
