@@ -20,14 +20,12 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"log"
-	"os"
-	"text/template"
-
 	"github.com/GeertJohan/go.rice"
 	"github.com/codegangsta/cli"
 	"golang.org/x/crypto/ssh/terminal"
 	"gopkg.in/yaml.v2"
+	"log"
+	"os"
 )
 
 type Command struct {
@@ -185,17 +183,7 @@ func (config Config) ProcessUrlFromConfig(commandName string, subcommandName str
 	if err != nil {
 		return "", err
 	}
-
-	url := subCommandConfig.Url
-
-	templ := template.Must(template.New("url").Parse(url))
-	buf := bytes.Buffer{}
-	err = templ.Execute(&buf, params)
-	if err != nil {
-		return "", err
-	}
-
-	return string(buf.Bytes()), nil
+	return subCommandConfig.Url, nil
 }
 
 func (config Config) FindSubCommandConfig(commandName string, subcommandName string) (Command, error) {

@@ -73,7 +73,7 @@ var _ = Describe("Params", func() {
 			}
 			params := GetParams{}.Generate(args, config.Args).UpdateFromMap(options)
 			Expect(params).To(Equal(GetParams{BuildNumber: "ernie", Limit: "22", Offset: "105"}))
-			Expect(params.String()).To(Equal("List=[], Project=, Url=, Type=, Checksum=, Id=, Text=, Version=, Limit=22, Offset=105"))
+			Expect(params.String()).To(Equal("build_number=ernie&limit=22&offset=105"))
 		})
 	})
 

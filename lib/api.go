@@ -188,11 +188,12 @@ func (api Api) postFile(command string, subcommand string, context *cli.Context,
 	bodyParams := PostParams{}.Generate(context.Args(), args)
 	Debugf("Sending params %b", params)
 
-	Debugf("Processing url")
-	url, err := api.Config.ProcessUrlFromConfig(command, subcommand, GetParams{}.Generate(context.Args(), args))
+	url, err := api.Config.ProcessUrlFromConfig(command, subcommand, params)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+
+	Debugf("Processing url %b", url)
 
 	bodyBuf := &bytes.Buffer{}
 	bodyWriter := multipart.NewWriter(bodyBuf)
@@ -218,12 +219,14 @@ func (api Api) postFile(command string, subcommand string, context *cli.Context,
 	contentType := bodyWriter.FormDataContentType()
 	bodyWriter.Close()
 
-	url = fmt.Sprintf("%s%s%s", api.Config.LoadEndpoint(), api.Config.Version, url)
+	url = fmt.Sprintf("%s%s%s?%s", api.Config.LoadEndpoint(), api.Config.Version, url, params.String())
+
 	Debugf("Sending request to %s", url)
 	client := &http.Client{}
 	req, _ := http.NewRequest("POST", url, bodyBuf)
 	req.Header.Set(api.Config.Token, LoadCredential())
 	req.Header.Set("Content-Type", contentType)
+
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -233,6 +236,7 @@ func (api Api) postFile(command string, subcommand string, context *cli.Context,
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+
 	var jsonResponse map[string]interface{}
 	err = json.Unmarshal([]byte(resp_body), &jsonResponse)
 	if err != nil {
