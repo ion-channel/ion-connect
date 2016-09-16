@@ -97,7 +97,7 @@ USAGE:
    ./ion-connect [global options] command [command options] [arguments...]
 
 VERSION:
-   0.6.8
+   0.7.0
 
 COMMANDS:
    scanner     		set of commands for effecting artifacts or source code
@@ -108,9 +108,9 @@ COMMANDS:
    project     		set of commands for manipulating projects for your account
    repository  		set of commands for querying source repository data
    dependency  		set of commands for querying dependency data
-   mail			set of commands for querying mail message data
+   mail			      set of commands for querying mail message data
    community   		set of commands for querying a project's community data
-   raw      		set of commands for querying raw analysis and scan data
+   raw      		  set of commands for querying raw analysis and scan data
    vulnerability  set of commands for querying vulnerabilities
    configure   		setup the Ion Channel secret key for later use
    help, h     		Shows a list of commands or help for one command
