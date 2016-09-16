@@ -134,6 +134,10 @@ func (api Api) processResponse(response http.Response, body map[string]interface
 		fmt.Println(body["message"])
 		Exit(1)
 		return body["message"].(string)
+	} else if body["data"] == nil {
+		fmt.Println(body["message"])
+		Exit(1)
+		return body["message"].(string)
 	}
 
 	jsonBytes, err := json.MarshalIndent(body["data"], "", "  ")
