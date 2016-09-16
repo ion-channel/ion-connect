@@ -3,6 +3,10 @@
 
 This is a brief tutorial on the use of `ion-connect` and the Ion Channel API to query the vulnerability database.
 
+Currently, the focus is collecting, ingesting and exposing the data from the NIST [National Vulnerability Database](https://nvd.nist.gov/).  The NVD is updated (recent and modified) on an every-two-hour schedule.  Ion Channel runs a fetch and update process every hour, so that our database is within and hour's sync from upstream changes.
+
+Future plans include support for processing of other database (e.g. DWF and language-specific sources like [Node.js](https://nodesecurity.io/advisories)).
+
 # Installation
 
 The first step to using `ion-connect` is getting it installed and configured.
