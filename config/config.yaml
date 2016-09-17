@@ -467,32 +467,32 @@
               type: string
 
     # mulch
-    - name: repository
-      usage: set of commands for querying source repository data
-      subcommands:
-        - name: get-repository
-          url: /repository/getRepository
-          usage: get data surrounding a source repository specified by the NAME argument
-          method: get
-          args:
-            - name: name
-              value:
-              usage: NAME
-              required: True
-
-        - name: get-repository-by-dependency
-          url: /repository/getRepositoryByDependency
-          usage: get data surrounding a source repository by dependency specified by the NAME and TYPE arguments. Where TYPE can be one of [maven]
-          method: get
-          args:
-            - name: name
-              value:
-              usage: NAME
-              required: True
-            - name: type
-              value:
-              usage: TYPE
-              required: True
+    # - name: repository
+    #   usage: set of commands for querying source repository data
+    #   subcommands:
+    #     - name: get-repository
+    #       url: /repository/getRepository
+    #       usage: get data surrounding a source repository specified by the NAME argument
+    #       method: get
+    #       args:
+    #         - name: name
+    #           value:
+    #           usage: NAME
+    #           required: True
+    #
+    #     - name: get-repository-by-dependency
+    #       url: /repository/getRepositoryByDependency
+    #       usage: get data surrounding a source repository by dependency specified by the NAME and TYPE arguments. Where TYPE can be one of [maven]
+    #       method: get
+    #       args:
+    #         - name: name
+    #           value:
+    #           usage: NAME
+    #           required: True
+    #         - name: type
+    #           value:
+    #           usage: TYPE
+    #           required: True
 
     - name: dependency
       usage: set of commands for querying dependency data
