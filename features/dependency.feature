@@ -45,11 +45,6 @@ Feature: Dependency
       }
     }
     """
-  Scenario: Get a resolved version for dependency for a project
-    When I successfully run `ion-connect --debug dependency get-resolved-version-for-dependency mocha npmjs 2.4.5`
-    Then the output should contain:
-    """
-    """
   Scenario: Get a list of dependencies for a project
     When I successfully run `ion-connect dependency get-dependencies fart rubygems`
     Then the output should contain:

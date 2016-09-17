@@ -1,1 +1,1 @@
-{"data":[{"product":"docker/docker","version":"1.6"},{"product":"redhat/docker"}]}
+{"data":[{"name":"docker","org":"docker","version":"1.6"},{"name":"docker","org":"redhat"}]}

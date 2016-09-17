@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+@ignore
 Feature: Stuff related to repositories
   Scenario: Get repository data from a dependency
      When I successfully run `ion-connect repository get-repository-by-dependency com.intel.jndn.utils:jndn-utils maven`
@@ -48,6 +48,7 @@ Feature: Stuff related to repositories
        "watchers_count": 0
      }
      """
+  @ignore     
   Scenario: Get repository data from a dependency
     When I successfully run `ion-connect repository get-repository ruby/ruby`
     Then the output should contain:
