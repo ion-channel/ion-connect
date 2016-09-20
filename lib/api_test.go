@@ -73,6 +73,7 @@ var _ = Describe("Api", func() {
 		})
 
 		It("should process the response body", func() {
+			Debug = false
 			Test = true
 			api := Api{Config: GetConfig()}
 			set := flag.NewFlagSet("set", 0)
