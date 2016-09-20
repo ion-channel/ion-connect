@@ -126,7 +126,10 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
 }
 
 func (api Api) processResponse(response http.Response, body map[string]interface{}) string {
-	if response.StatusCode == 401 || response.StatusCode == 403 {
+	if IsDebug() {
+		jsonBytes, _ := json.MarshalIndent(body, "", "  ")
+		return string(jsonBytes)
+	} else if response.StatusCode == 401 || response.StatusCode == 403 {
 		fmt.Println("Unauthorized, make sure you run 'ion-connect configure' and set your Api Token")
 		Exit(1)
 		return body["message"].(string)

@@ -47,6 +47,10 @@ var DROPBUCKET_ENVIRONMENT_VARIABLE string = "IONCHANNEL_DROPBUCKET_NAME"
 var DEFAUL_WRITE_BUCKET string = "files.ionchannel.io"
 var DEFAUL_WRITE_FOLDER string = "/files/upload/"
 
+func IsDebug() bool {
+	return Debug
+}
+
 func Debugln(str string) {
 	if Debug {
 		fmt.Printf("DEBUG: %v\n", str)

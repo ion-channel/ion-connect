@@ -502,6 +502,11 @@
         usage: get a list of dependencies for a file at FILE
         method: file
         flags:
+          - name: use-proxy
+            value: false
+            usage: keep request internal to Ion Channel
+            required: True
+            type: bool
           - name: flatten
             value:
             usage: format data flattened
