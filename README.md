@@ -3,6 +3,7 @@
 CLI tool for interacting with the Ion Channel Service/API
 
 [![Build Status](https://magnum.travis-ci.com/ion-channel/ion-connect.svg?token=AGRFpUr1LzvrKJ1SmsR3)](https://magnum.travis-ci.com/ion-channel/ion-connect)
+[![Join the chat at https://gitter.im/ion-channel/ion-connect](https://badges.gitter.im/ion-channel/ion-connect.svg)](https://gitter.im/ion-channel/ion-connect?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Latest Build
 
