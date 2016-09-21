@@ -19,11 +19,12 @@ package ionconnect
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/google/go-querystring/query"
 	"net/url"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/google/go-querystring/query"
 )
 
 type Params interface {
@@ -54,6 +55,7 @@ type PostParams struct {
 	Source      string                 `json:"source,omitempty"`
 	Active      bool                   `json:"active,omitempty"`
 	Flatten     bool                   `json:"flatten,omitempty"`
+	UseProxy    bool                   `json:"use_proxy,omitempty"`
 	Rules       []interface{}          `json:"rules,omitempty"`
 	RuleIds     []interface{}          `json:"rule_ids,omitempty"`
 	List        []interface{}          `json:"data,omitempty"`
@@ -87,6 +89,7 @@ type GetParams struct {
 	Source      string                 `url:"source,omitempty"`
 	Active      bool                   `url:"active,omitempty"`
 	Flatten     bool                   `url:"flatten,omitempty"`
+	UseProxy    bool                   `url:"use_proxy,omitempty"`
 	Rules       []interface{}          `url:"rules,omitempty"`
 	RuleIds     []interface{}          `url:"rule_ids,omitempty"`
 	List        []interface{}          `url:"data,omitempty"`
