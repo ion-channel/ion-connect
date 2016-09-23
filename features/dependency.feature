@@ -13,38 +13,6 @@
 # limitations under the License.
 
 Feature: Dependency
-  Scenario: Get a list of resolved dependencies for a project
-    When I successfully run `ion-connect dependency get-resolved-dependencies mocha npmjs`
-    Then the output should contain:
-    """
-    {
-      "mocha@2.4.5": {
-        "commander@2.3.0": {},
-        "debug@2.2.0": {
-          "ms@0.7.1": {}
-        },
-        "diff@1.4.0": {},
-        "escape-string-regexp@1.0.2": {},
-        "glob@3.2.3": {
-          "graceful-fs@2.0.3": {},
-          "inherits@2.0.1": {},
-          "minimatch@0.2.14": {
-            "lru-cache@2.7.3": {},
-            "sigmund@1.0.1": {}
-          }
-        },
-        "growl@1.8.1": {},
-        "jade@0.26.3": {
-          "commander@0.6.1": {},
-          "mkdirp@0.3.0": {}
-        },
-        "mkdirp@0.5.1": {
-          "minimist@0.0.8": {}
-        },
-        "supports-color@1.2.0": {}
-      }
-    }
-    """
   Scenario: Get a list of dependencies for a project
     When I successfully run `ion-connect dependency get-dependencies fart rubygems`
     Then the output should contain:
@@ -91,8 +59,8 @@ Feature: Dependency
     ]
     """
   Scenario: Get dependencies from a file
-    When I successfully run `ion-connect dependency resolve-dependencies-in-file --type npmjs --flatten "../../test/package.json"`
+    When I successfully run `ion-connect dependency resolve-dependencies-in-file --type maven --flatten "../../test/open-pom.xml"`
     Then the output should contain:
     """
-    "bson"
+    "total_unique_count"
     """
