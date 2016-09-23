@@ -74,7 +74,7 @@ $ rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
 
 ## Your wish
 
-Ion Connect provides a setup command called *configure*.  This should probably be the first command you run.  You will be prompted for your Ion Channel Secret Key which will be provided by an Ion Channel staff member.
+Ion Connect provides a setup command called *configure*.  This should probably be the first command you run.  You will be prompted for your Ion Channel Secret Key which will be provided by an Ion Channel staff member. Contact us at <ion-connect@ionchannel.io>
 
 ```sh
 $ ion-connect configure
