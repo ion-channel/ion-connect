@@ -11,7 +11,7 @@ CLI tool for interacting with the Ion Channel Service/API
 
 ## License
 
-Apache Software License 2.0 [See LICENSE.txt]
+[Apache Software License 2.0](LICENSE.txt)
 
 ## Let's build it!
 
