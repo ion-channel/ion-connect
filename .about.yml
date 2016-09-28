@@ -1,0 +1,68 @@
+---
+# .about.yml project metadata
+#
+# Copy this template into your project repository's root directory as
+# .about.yml and fill in the fields as described below.
+
+# This is a short name of your project that can be used as a URL slug.
+# (required)
+name: ion-connect
+
+# This is the display name of your project. (required)
+full_name: Ion Channel CLI
+
+# What is the problem your project solves? What is the solution? Use the
+# format shown below. The #dashboard team will gladly help you put this
+# together for your project. (required)
+description: This is the CLI for interaction with the Ion Channel
+
+# What is the measurable impact of your project? Use the format shown below.
+# The #dashboard team will gladly help you put this together for your project.
+# (required)
+impact: high
+
+# What kind of team owns the repository? (required)
+# values: guild, working-group, project
+owner_type: project
+
+# What is your project's current status? (required)
+# values: discovery, alpha, beta, live
+stage: alpha
+
+# Should this repo have automated tests? If so, set to `true`. (required)
+# values: true, false
+testable: true
+
+licenses:
+  bunsen:
+    name: CC0
+    url: https://github.com/ion-channel/bunsen/blob/master/LICENSE.md
+
+team:
+- github: kellyp
+  role: lead
+
+# Defines the stack requirements/dependencies
+stack:
+  - go:1.7
+
+services:
+- name: HP Fortify
+  category: scan
+  url: tbd
+- name: OWASP ZAP
+  category: scan
+  url: tbd
+- name: SonarQube
+  category: scan
+  url: tbd
+- name: Nessus
+  category: scan
+  url: tbd
+- name: about.yml
+  category: scan
+  url: tbd
+
+# The name of the git branch or tag to be tested and scanned for ATO
+release:
+- name: ato
