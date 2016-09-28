@@ -35,7 +35,7 @@ testable: true
 
 licenses:
   bunsen:
-    name: CC0
+    name: Apache 2.0
     url: https://github.com/ion-channel/bunsen/blob/master/LICENSE.md
 
 team:
