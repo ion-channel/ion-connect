@@ -25,6 +25,7 @@ install:
 - gem install fpm
 script:
 # - export GOPATH="$PWD"/.gopath/
+- export GOBIN=$GOPATH/bin
 - IONCHANNEL_SECRET_KEY="" go test -v ./lib
 #- IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ test/functional.sh
 - GOOS=windows go build -o ion-connect/windows/bin/ion-connect.exe ./
