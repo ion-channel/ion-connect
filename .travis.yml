@@ -15,10 +15,11 @@ go:
 install:
 - bundle
 # - export GOPATH="$PWD"/.gopath/
-- go get github.com/onsi/gomega
-- go get github.com/onsi/ginkgo
-- go get github.com/GeertJohan/go.rice
-- go get github.com/GeertJohan/go.rice/rice
+#- go get github.com/onsi/gomega
+#- go get github.com/onsi/ginkgo
+#- go get github.com/GeertJohan/go.rice
+#- go get github.com/GeertJohan/go.rice/rice
+- glide install
 - gem install fpm
 script:
 # - export GOPATH="$PWD"/.gopath/
