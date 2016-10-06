@@ -6,3 +6,4 @@ ion-connect
 tmp
 .vscode
 debug
+vendor/*
