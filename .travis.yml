@@ -19,6 +19,8 @@ install:
 #- go get github.com/onsi/ginkgo
 #- go get github.com/GeertJohan/go.rice
 #- go get github.com/GeertJohan/go.rice/rice
+- go get -v github.com/Masterminds/glide
+- cd $GOPATH/src/github.com/Masterminds/glide && git checkout 8460774 && go install && cd -
 - glide install
 - gem install fpm
 script:
