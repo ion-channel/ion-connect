@@ -19,13 +19,21 @@ First thing you will need is the Golang environment setup. [The install process]
 
 ```sh
 $ brew install go
+$ brew install glide
 $ export GOPATH=$HOME/go
+$ export GOBIN=$GOPATH/bin
 ```
 
 Go provides a command for retrieving dependencies called `go get`.  Since ion-connect is currently private it may be helpful (and more generally helpful) to force git to use ssh by default with  `git config --global url."git@github.com:".insteadOf "https://github.com/"`
 
 ```sh
 $ go get github.com/ion-channel/ion-connect
+```
+
+then grab our Go dependencies:
+
+```sh
+$ glide install
 ```
 
 finally you can build ion-connect with the following:
@@ -36,12 +44,7 @@ $ go build github.com/ion-channel/ion-connect
 
 ## Don't forget the tests
 
-Running the tests requires the install of a couple of test environment dependencies. You can use go to install these as well.
-
-```sh
-$ go get github.com/onsi/gomega
-$ go get github.com/onsi/ginkgo
-```
+NOTE: test dependencies are also managed with `glide install` as above.
 
 You can then run the tests with the following command:
 
