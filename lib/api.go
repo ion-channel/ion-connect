@@ -114,6 +114,7 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
 	client.Path(fmt.Sprintf("%s%s", api.Config.Version, url))
 	Debugf("Sending request to %s%s", api.Config.LoadEndpoint(), fmt.Sprintf("%s%s", api.Config.Version, url))
 	client.Add(api.Config.Token, LoadCredential())
+	client.Add("Authorization", fmt.Sprintf("Bearer %s", LoadCredential()))
 
 	responseBody := make(map[string]interface{})
 	response, responseErr := client.Receive(&responseBody, &responseBody)
@@ -232,6 +233,7 @@ func (api Api) postFile(command string, subcommand string, context *cli.Context,
 	client := &http.Client{}
 	req, _ := http.NewRequest("POST", url, bodyBuf)
 	req.Header.Set(api.Config.Token, LoadCredential())
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", LoadCredential()))
 	req.Header.Set("Content-Type", contentType)
 
 	resp, err := client.Do(req)
