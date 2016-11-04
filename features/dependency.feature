@@ -14,6 +14,7 @@
 
 Feature: Dependency
 
+  @expected_failure
   Scenario: Get a list of dependencies for a project
     When I successfully run `ion-connect dependency get-dependencies fart rubygems`
     Then the output should contain:
@@ -43,6 +44,7 @@ Feature: Dependency
     }
     """
 
+  @expected_failure
   Scenario: Get the latest dependency version
     When I successfully run `ion-connect dependency get-latest-version-for-dependency rails rubygems`
     Then the output should contain:
@@ -52,6 +54,7 @@ Feature: Dependency
     }
     """
 
+  @expected_failure
   Scenario: Get the latest dependency version
     When I successfully run `ion-connect dependency get-latest-versions-for-dependency fart rubygems`
     Then the output should contain:
