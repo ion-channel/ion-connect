@@ -13,6 +13,8 @@
 # limitations under the License.
 
 Feature: Dependency
+
+  @expected_failure
   Scenario: Get a list of dependencies for a project
     When I successfully run `ion-connect dependency get-dependencies fart rubygems`
     Then the output should contain:
@@ -41,6 +43,8 @@ Feature: Dependency
       "summary": "Fart Noise"
     }
     """
+
+  @expected_failure
   Scenario: Get the latest dependency version
     When I successfully run `ion-connect dependency get-latest-version-for-dependency rails rubygems`
     Then the output should contain:
@@ -49,6 +53,8 @@ Feature: Dependency
       "version": "4.2.6"
     }
     """
+
+  @expected_failure
   Scenario: Get the latest dependency version
     When I successfully run `ion-connect dependency get-latest-versions-for-dependency fart rubygems`
     Then the output should contain:
@@ -58,6 +64,7 @@ Feature: Dependency
       "0.0.2"
     ]
     """
+
   Scenario: Get dependencies from a file
     When I successfully run `ion-connect dependency resolve-dependencies-in-file --type maven --flatten "../../test/open-pom.xml"`
     Then the output should contain:
