@@ -32,6 +32,9 @@ clean:  ## Clean out all generated files
 coverage:  ## Generates the code coverage from all the tests
 	@numbers=0; sum=0; for j in $$(go test -cover $$(go list ./... | grep -v '/vendor/') 2>&1 | sed -e 's/\[no\ test\ files\]/0\.0s\ coverage:\ 0%/g' -e 's/[[:space:]]/\ /g' | tr -d "%" | cut -d ":" -f 2 | cut -d " " -f 2); do ((numbers+=1)) && sum=$$(echo $$sum + $$j | bc); done; avg=$$(echo "$$sum / $$numbers" | bc -l); printf "Total Coverage: %.1f%%\n" $$avg
 
+coverage_compfriendly:  ## Generates the code coverage in a computer friendly manner
+	@echo `make coverage | cut -d " " -f 3 | tr -d "%"`
+	
 crosscompile:  ## Build the binaries for the primary OS'
 	GOOS=linux $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP)-linux .
 	GOOS=darwin $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP)-darwin .
