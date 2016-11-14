@@ -378,7 +378,6 @@
               required: True
               type: string
 
-
         - name: get-projects
           url: /analysis/getProjects
           usage: get the projects for an account
@@ -717,7 +716,21 @@
               usage: The id of the project the analysis resides
               required: True
               type: string
-
+        - name: get-latest-analysis
+          url: /animal/getLatestAnalysis
+          usage: get analyses for the provided account and project ids
+          method: get
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the analysis and project reside
+              required: True
+              type: string
+            - name: project-id
+              value:
+              usage: The id of the project the analysis resides
+              required: True
+              type: string
     # vulnerability
     - name: vulnerability
       usage: set of commands for querying vulnerabilities
