@@ -37,11 +37,7 @@
               usage: The id of the project the analysis resides
               required: True
               type: string
-          args:
-            - name: build-number
-              value:
-              usage: BUILDNUMBER
-              required: True
+
         - name: get-analysis-status
           url: /scanner/getAnalysisStatus
           usage: returns the status data for a given analysis [id]
