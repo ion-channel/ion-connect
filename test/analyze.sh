@@ -26,7 +26,7 @@ echo
 
 #RUN Analysis
 cool_echo "Begining compliance analysis of project ($PROJECT_ID)."
-ANALYSIS_ID=$(ion-connect scanner analyze-project --account-id $ACCOUNT_ID --project-id $PROJECT_ID 1 | jq -r .id)
+ANALYSIS_ID=$(ion-connect scanner analyze-project --account-id $ACCOUNT_ID --project-id $PROJECT_ID | jq -r .id)
 echo "Analysis requested the id is $ANALYSIS_ID"
 #Get the Analysis
 TIMEOUT=1200

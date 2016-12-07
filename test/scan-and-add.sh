@@ -16,7 +16,7 @@
 PROJECT_ID=c11d5730e1725dcea5b591c27035e70b
 
 #RUN Analysis
-ANALYSIS_ID=$(IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ ion-connect scanner analyze-project --account-id account_id --project-id $PROJECT_ID $BUILD_NUMBER | jq -r .id)
+ANALYSIS_ID=$(IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ ion-connect scanner analyze-project --account-id account_id --project-id $PROJECT_ID | jq -r .id)
 
 #Get the Analysis
 TIMEOUT=120
