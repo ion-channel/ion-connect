@@ -38,7 +38,7 @@ var _ = Describe("Params", func() {
 		context = cli.NewContext(nil, set, nil)
 		context.Command = command
 
-		config, _ = GetConfig().FindSubCommandConfig("scanner", "analyze-project")
+		config, _ = GetConfig().FindSubCommandConfig("test", "analyze-project")
 	})
 
 	Context("When generating Post Params", func() {
