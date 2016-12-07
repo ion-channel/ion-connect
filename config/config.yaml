@@ -897,7 +897,7 @@
               required: True
               type: string
           args:
-            - name: build-number
+            - name: ruleset-id
               value:
-              usage: BUILDNUMBER
+              usage: RULESETID
               required: False
