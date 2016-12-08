@@ -37,11 +37,7 @@
               usage: The id of the project the analysis resides
               required: True
               type: string
-          args:
-            - name: build-number
-              value:
-              usage: BUILDNUMBER
-              required: True
+
         - name: get-analysis-status
           url: /scanner/getAnalysisStatus
           usage: returns the status data for a given analysis [id]
@@ -377,6 +373,7 @@
               usage: The id of the project
               required: True
               type: string
+
 
         - name: get-projects
           url: /analysis/getProjects
@@ -716,21 +713,7 @@
               usage: The id of the project the analysis resides
               required: True
               type: string
-        - name: get-latest-analysis
-          url: /animal/getLatestAnalysis
-          usage: get analyses for the provided account and project ids
-          method: get
-          flags:
-            - name: account-id
-              value:
-              usage: The id of the account the analysis and project reside
-              required: True
-              type: string
-            - name: project-id
-              value:
-              usage: The id of the project the analysis resides
-              required: True
-              type: string
+
     # vulnerability
     - name: vulnerability
       usage: set of commands for querying vulnerabilities
@@ -897,3 +880,24 @@
               usage: RULES
               type: array
               required: True
+
+        - name: analyze-project
+          url: /scanner/analyzeProject
+          usage: run an analysis on an Ion Channel project
+          method: post
+          flags:
+            - name: account-id
+              value:
+              usage: The id of the account the analysis and project reside
+              required: True
+              type: string
+            - name: project-id
+              value:
+              usage: The id of the project the analysis resides
+              required: True
+              type: string
+          args:
+            - name: ruleset-id
+              value:
+              usage: RULESETID
+              required: False

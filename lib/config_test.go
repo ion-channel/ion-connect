@@ -54,8 +54,8 @@ var _ = Describe("Config", func() {
 		})
 		It("should have commands with subcommands and args", func() {
 			Expect(len(config.Commands[0].Subcommands)).To(Equal(5))
-			Expect(config.Commands[0].Subcommands[0].Name).To(Equal("analyze-project"))
-			Expect(config.Commands[0].Subcommands[0].Args[0].Name).To(Equal("build-number"))
+			Expect(config.Commands[0].Subcommands[1].Name).To(Equal("get-analysis-status"))
+			Expect(config.Commands[0].Subcommands[1].Args[0].Name).To(Equal("id"))
 		})
 	})
 
