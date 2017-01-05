@@ -36,18 +36,18 @@ Feature: Do some metadata parsing
    ]
    """
 
-   Scenario: Get languages
-     When I successfully run `ion-connect metadata get-languages "Hola como estas"`
-     Then the output should contain:
-     """
-     [
-       {
-         "code": "es",
-         "name": "Spanish",
-         "reliable": true
-       }
-     ]
-     """
+#   Scenario: Get languages
+#     When I successfully run `ion-connect metadata get-languages "Hola como estas"`
+#     Then the output should contain:
+#     """
+#     [
+#       {
+#         "code": "es",
+#         "name": "Spanish",
+#         "reliable": true
+#       }
+#     ]
+#     """
 
    Scenario: Get sentiment
      When I successfully run `ion-connect metadata get-sentiment "I love cucumber"`

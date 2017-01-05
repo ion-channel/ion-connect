@@ -198,15 +198,15 @@
               value:
               usage: TEXT
               required: True
-        - name: get-languages
-          url: /metadata/getLanguages
-          usage: returns the languages parsed from the [text] input
-          method: post
-          args:
-            - name: text
-              value:
-              usage: TEXT
-              required: True
+        # - name: get-languages
+        #   url: /metadata/getLanguages
+        #   usage: returns the languages parsed from the [text] input
+        #   method: post
+        #   args:
+        #     - name: text
+        #       value:
+        #       usage: TEXT
+        #       required: True
         - name: get-licenses
           url: /metadata/getLicenses
           usage: returns the licenses parsed from the [text] input
