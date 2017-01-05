@@ -45,7 +45,7 @@ script:
 notifications:
   slack:
     rooms:
-      - ionchannel:$SLACK_TOKEN#build
+      - ionchannel:${SLACK_TOKEN}#build
 
 before_deploy:
   - mkdir -p ion-connect/$TRAVIS_TAG
