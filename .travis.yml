@@ -10,64 +10,67 @@ addons:
     - jq
 language: go
 go:
-- 1.6.2
+  - 1.6.2
 install:
-- bundle
-- go get github.com/GeertJohan/go.rice
-- go get github.com/GeertJohan/go.rice/rice
-- go get -v github.com/Masterminds/glide
-- cd $GOPATH/src/github.com/Masterminds/glide && git checkout 8460774 && go install
-  && cd -
-- glide install
-- gem install fpm
+  - bundle
+  - go get github.com/GeertJohan/go.rice
+  - go get github.com/GeertJohan/go.rice/rice
+  - go get -v github.com/Masterminds/glide
+  - cd $GOPATH/src/github.com/Masterminds/glide && git checkout 8460774 && go install
+    && cd -
+  - glide install
+  - gem install fpm
 script:
-- export GOBIN=$GOPATH/bin
-- IONCHANNEL_SECRET_KEY="" go test -v ./lib
-- GOOS=windows go build -o ion-connect/windows/bin/ion-connect.exe ./
-- rice append --exec ion-connect/windows/bin/ion-connect.exe -i ./lib
-- GOOS=linux go build -o ion-connect/linux/bin/ion-connect ./
-- rice append --exec ion-connect/linux/bin/ion-connect -i ./lib
-- GOOS=darwin go build -o ion-connect/darwin/bin/ion-connect ./
-- rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
-- cp ion-connect/$(echo "$(uname)" | perl -ne 'print lc')/bin/ion-connect $GOPATH/bin
-- IONCHANNEL_ENDPOINT_URL=$CI_ENDPOINT_URL cucumber -t ~@expected_failure
-- VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi`
-- FILE_NAME=ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER
-- cp bin/process-ion-job.sh ion-connect/linux/bin/
-- cp bin/process-ion-job.sh ion-connect/darwin/bin/
-- tar cfvz $FILE_NAME.tar.gz ion-connect
-- ls -l
-- fpm -s dir -t rpm -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C
-  ion-connect/linux
-- fpm -s dir -t deb -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C
-  ion-connect/linux
+  - export GOBIN=$GOPATH/bin
+  - IONCHANNEL_SECRET_KEY="" go test -v ./lib
+  - GOOS=windows go build -o ion-connect/windows/bin/ion-connect.exe ./
+  - rice append --exec ion-connect/windows/bin/ion-connect.exe -i ./lib
+  - GOOS=linux go build -o ion-connect/linux/bin/ion-connect ./
+  - rice append --exec ion-connect/linux/bin/ion-connect -i ./lib
+  - GOOS=darwin go build -o ion-connect/darwin/bin/ion-connect ./
+  - rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
+  - cp ion-connect/$(echo "$(uname)" | perl -ne 'print lc')/bin/ion-connect $GOPATH/bin
+  - IONCHANNEL_ENDPOINT_URL=$CI_ENDPOINT_URL cucumber -t ~@expected_failure
+  - VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi`
+  - FILE_NAME=ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER
+  - cp bin/process-ion-job.sh ion-connect/linux/bin/
+  - cp bin/process-ion-job.sh ion-connect/darwin/bin/
+  - tar cfvz $FILE_NAME.tar.gz ion-connect
+  - ls -l
+  - fpm -s dir -t rpm -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C
+    ion-connect/linux
+  - fpm -s dir -t deb -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C
+    ion-connect/linux
 before_deploy:
-- mkdir -p ion-connect/$TRAVIS_TAG
-- cp $FILE_NAME.tar.gz ion-connect/$TRAVIS_TAG/
-- cp $FILE_NAME.tar.gz ion-connect/ion-connect-latest.tar.gz
+  - mkdir -p ion-connect/$TRAVIS_TAG
+  - cp $FILE_NAME.tar.gz ion-connect/$TRAVIS_TAG/
+  - cp $FILE_NAME.tar.gz ion-connect/ion-connect-latest.tar.gz
 deploy:
-- provider: releases
-  api_key:
-    secure: r8yesBzPR5Xbe3i0sidr2ivrVOGv5EV38iW0kU/p6FSBgH6Y5v9ZR98p1vDh87tRoUCYjczTtsT4lWPA9nTqHmBKXTqwwrOkL0jyObhz51P3oOdpRuWacj18IyLKro97xuXllnrNdFqbDqt2wmvz70LQyMVwORPTkhgZcmgD66qE+yWqC0v8QHx17An2lXRoMpAurgnWkrMES7t1kKmkLFn7WL3s1zRk9NguUR7eLWTH4xuDw/FHT/05Tt5He6wlnd6KM1NDkepLtCx4JfJQ865ljvKok+SHLw3RQqAmoHE5aoZg3ZVV0Upv2pQz2XPKZ/xWDCQDnyJyVvAGefXQYWdHtkNLLFwP84LmxTWHv3zM3uwxqy0MyS7J7GrwKDPg0Fx/lytiTR6aN1soc9d2FxvcbFfOJnlqDRhjbBLoo6eOrcImrSwaSHTqFANwnuu6w93KleuSNifqXWVV8Qu9/yVekU2QYRnSf5pxgJrXRGmpHFlnUD33bImEf9ZnvWbbx3c7/Xs7b8qhz7KRa1Dnb5PENsKrTRoTExYWxd6U7nN1YyCZiZwWfHSOSXWV2xH7ePt6kVIPv0DMsq2+xWCTlzhPEXnmRiV2/WbEuni99EQkFozcDHJ2tfNMTArLImXYNL33X4vKqXT4n4DEU2rOdA0Zb8hyAho573ZKcGdxf3o=
-  file: "$FILE_NAME.tar.gz"
-  on:
-    tags: true
-- provider: s3
-  bucket: public.ionchannel.io
-  region: us-east-1
-  skip_cleanup: true
-  access_key_id:
-    secure: sLZzLDK2xrGRLo7EqYsLXXs3nQxOKzgOoLy1Jn9lTkFkGvHcsNIQArOWJAyUkLlY3atbtmIfm5yMYf+IvkvvLOQyJwFSav1RtO3WZFBq03/6HjSTOdWilL9poZxeRHwkOKraMBHDCRAVs1QEwc2I9n/iyofGJwGDlBEL8clF0D9fste3bLw0G6CFoPu7XZzbAxUvS/1+6E3kw5J3qKyWmdnET46jYoQuKydBsZfxiypQ3fRvZZr2RkyDSu57WBHSfDn4h6PyKTVTy6h+OHTDe0+vqeQAcGDYHpiBGPJFe83JwpqrX3eRQ2HfXk6nky1OvGx8feAtkD483rVslyQRLaUqTqt4fb0luG9obfZenk13mb3jQ0KHHm+vaaZqJqZ+RFtldYMGQrCH8y1a4knx1WUChenEvgaxt1EVn5l7xYBBzHwpXkme8NgttO+TliAM+o/Z1EsSs8s/H4ePPwkwxf/g0n0PhYfRgLl6wrR4z3BwnLDyzV7Kha3UByG8dcbeCH/EAsAj6lW0vYeU1useirBPwhCAayhObRWz3HNbRrNMkAdn1sb9Vq/AOhggNJzCuUKazAxoJOQKnbgt9gjtT/xEaeUvQWc7+lkD5xuvz1OeWaKzC1VJY7zmNjbNFsM6qep4SNYz9MOksBqjoEkW4+pn7auHTnQ4hqY9iYw8igc=
-  secret_access_key:
-    secure: hgOlJr7Ddo14jeU4QirYtXkK49olcG5lglHZudJeh3QR1g5HMu6Z4/FXnN/F8ITsb97FHs+4itVMNR39Oe9lDDgeRDRQFWsZG2y2KX8cLZ9XlBeaBQDHloK0g4Tr5dWvdllZIN7wQvjx8SX9f5TomIRTJixEilOM0+33hq+dbjiHRrNSdU9N/4aLwjTUG2LRNSrDEiJI6tTnLOhfn99tJSogPR8qy/mMBX5rdtgljXIYzaYZZMR3DLuEAqFkGGBxCaN5cr3Qd4pVTIXKqTORLLkWK08r7JSWbRJhbSSTx0v/nuOdA78V8a31Ll63f+O/ZHTCqoxIUsxx1dMzb+KA/63ol5xemztZZzMQCUe65AvN9FxHg4zUU5lv9EIR1NIy8dcK5A2D32ctBKTMDM+MrHO1jP31lkciaOjukP4jJqx8pljfuJRvyHREmM1HDmhS5lWBwuxqq+3e9m3Kw121NDfb5YZRJb4jamOlhTaTySRtkJpYcndgpHlzmZPbh4gAWw4ATqVvfOVfPU34TM22PFEX/AAwyBIx3tMFDckSHQ7iGGeS3cj+wYlGEiAzg9bzD7a/++PSbi4dJLXE+aSk0u6GxNn2bYUnByPsOCjiBNU3bidB55zVvkKeYmeTwEUKTMJnKVRNigbI6awdPPCKq/LK4cYwbAwQncRUPo2c7MQ=
-  upload-dir: files/ion-connect
-  local_dir: ion-connect
-  on:
-    tags: true
+  - provider: releases
+    api_key:
+      secure: r8yesBzPR5Xbe3i0sidr2ivrVOGv5EV38iW0kU/p6FSBgH6Y5v9ZR98p1vDh87tRoUCYjczTtsT4lWPA9nTqHmBKXTqwwrOkL0jyObhz51P3oOdpRuWacj18IyLKro97xuXllnrNdFqbDqt2wmvz70LQyMVwORPTkhgZcmgD66qE+yWqC0v8QHx17An2lXRoMpAurgnWkrMES7t1kKmkLFn7WL3s1zRk9NguUR7eLWTH4xuDw/FHT/05Tt5He6wlnd6KM1NDkepLtCx4JfJQ865ljvKok+SHLw3RQqAmoHE5aoZg3ZVV0Upv2pQz2XPKZ/xWDCQDnyJyVvAGefXQYWdHtkNLLFwP84LmxTWHv3zM3uwxqy0MyS7J7GrwKDPg0Fx/lytiTR6aN1soc9d2FxvcbFfOJnlqDRhjbBLoo6eOrcImrSwaSHTqFANwnuu6w93KleuSNifqXWVV8Qu9/yVekU2QYRnSf5pxgJrXRGmpHFlnUD33bImEf9ZnvWbbx3c7/Xs7b8qhz7KRa1Dnb5PENsKrTRoTExYWxd6U7nN1YyCZiZwWfHSOSXWV2xH7ePt6kVIPv0DMsq2+xWCTlzhPEXnmRiV2/WbEuni99EQkFozcDHJ2tfNMTArLImXYNL33X4vKqXT4n4DEU2rOdA0Zb8hyAho573ZKcGdxf3o=
+    file: "$FILE_NAME.tar.gz"
+    on:
+      tags: true
+  - provider: s3
+    bucket: public.ionchannel.io
+    region: us-east-1
+    skip_cleanup: true
+    access_key_id:
+      secure: sLZzLDK2xrGRLo7EqYsLXXs3nQxOKzgOoLy1Jn9lTkFkGvHcsNIQArOWJAyUkLlY3atbtmIfm5yMYf+IvkvvLOQyJwFSav1RtO3WZFBq03/6HjSTOdWilL9poZxeRHwkOKraMBHDCRAVs1QEwc2I9n/iyofGJwGDlBEL8clF0D9fste3bLw0G6CFoPu7XZzbAxUvS/1+6E3kw5J3qKyWmdnET46jYoQuKydBsZfxiypQ3fRvZZr2RkyDSu57WBHSfDn4h6PyKTVTy6h+OHTDe0+vqeQAcGDYHpiBGPJFe83JwpqrX3eRQ2HfXk6nky1OvGx8feAtkD483rVslyQRLaUqTqt4fb0luG9obfZenk13mb3jQ0KHHm+vaaZqJqZ+RFtldYMGQrCH8y1a4knx1WUChenEvgaxt1EVn5l7xYBBzHwpXkme8NgttO+TliAM+o/Z1EsSs8s/H4ePPwkwxf/g0n0PhYfRgLl6wrR4z3BwnLDyzV7Kha3UByG8dcbeCH/EAsAj6lW0vYeU1useirBPwhCAayhObRWz3HNbRrNMkAdn1sb9Vq/AOhggNJzCuUKazAxoJOQKnbgt9gjtT/xEaeUvQWc7+lkD5xuvz1OeWaKzC1VJY7zmNjbNFsM6qep4SNYz9MOksBqjoEkW4+pn7auHTnQ4hqY9iYw8igc=
+    secret_access_key:
+      secure: hgOlJr7Ddo14jeU4QirYtXkK49olcG5lglHZudJeh3QR1g5HMu6Z4/FXnN/F8ITsb97FHs+4itVMNR39Oe9lDDgeRDRQFWsZG2y2KX8cLZ9XlBeaBQDHloK0g4Tr5dWvdllZIN7wQvjx8SX9f5TomIRTJixEilOM0+33hq+dbjiHRrNSdU9N/4aLwjTUG2LRNSrDEiJI6tTnLOhfn99tJSogPR8qy/mMBX5rdtgljXIYzaYZZMR3DLuEAqFkGGBxCaN5cr3Qd4pVTIXKqTORLLkWK08r7JSWbRJhbSSTx0v/nuOdA78V8a31Ll63f+O/ZHTCqoxIUsxx1dMzb+KA/63ol5xemztZZzMQCUe65AvN9FxHg4zUU5lv9EIR1NIy8dcK5A2D32ctBKTMDM+MrHO1jP31lkciaOjukP4jJqx8pljfuJRvyHREmM1HDmhS5lWBwuxqq+3e9m3Kw121NDfb5YZRJb4jamOlhTaTySRtkJpYcndgpHlzmZPbh4gAWw4ATqVvfOVfPU34TM22PFEX/AAwyBIx3tMFDckSHQ7iGGeS3cj+wYlGEiAzg9bzD7a/++PSbi4dJLXE+aSk0u6GxNn2bYUnByPsOCjiBNU3bidB55zVvkKeYmeTwEUKTMJnKVRNigbI6awdPPCKq/LK4cYwbAwQncRUPo2c7MQ=
+    upload-dir: files/ion-connect
+    local_dir: ion-connect
+    on:
+      tags: true
 after_deploy:
-- curl -v -F package=@ion-connect_$VERSION-${TRAVIS_BUILD_NUMBER}_amd64.deb https://push.fury.io/$GEMFURY_TOKEN/
-- curl -v -F package=@ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER.x86_64.rpm https://push.fury.io/$GEMFURY_TOKEN/
+  - curl -v -F package=@ion-connect_$VERSION-${TRAVIS_BUILD_NUMBER}_amd64.deb https://push.fury.io/$GEMFURY_TOKEN/
+  - curl -v -F package=@ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER.x86_64.rpm https://push.fury.io/$GEMFURY_TOKEN/
 notifications:
   slack:
     rooms:
       secure: H4/dc+yBvYYEO/4JdCiMsjCYkffi/87Wfz0/Xe5cyYXUHmYjO9129T7qJgBXbudB/leVWhxe1EgejwQz6o91i7hqpSJjMC2fB+KJcWjqkdM8xxX/hsbyfFAXpq4sPfdxAgikVHfjrg8pktuZZt8wJuTH0kVpRCsRIP/T0qRREYhOA+CUK5rlP1/ewl6p3RIsSTJkLPNNraGEgPeBfQcTWxRmbFqCPmbAZ0AOBtZiNRjyuaS4BxF59Hezv2UkPpamL+X8bZXVpik4F/wYvqnoKnm9IT0DAys5I4LgPWICCdJnMfK2dLPR90QFAkIleh8JhtVOj3QVhWCdHXZjAYJzuw/PFz3peuQ853xfF0zexwSwqx0IOO4en7w4HoyLkX2USerfKtzIqiLIoV26AqA35K/i0YKmYMDhFTIAm6wl1rh8BXKblK5llkker2JhVqTin/VEvuj6yAEY/oIXM3lNiH2jbh0RGWYf3U7qOoFFebV7rdsmZ61B3qZwKCuKFjAnNe8xBBMNuZmU4el0WRVFMdljRUspt3ydhWnoGpXFDquPdU16zz9osnG9mOmub73pH8/dQLrJFspd1VbMTEZmQ/L53QXHtaAaWwGbYjeVte/rYGnu0Wi854SatfaoumJmfWT0IsidKu0wWBMU7Q+NJMi1SSV/4yMJNdBessfD5xs=
+branches:
+  only:
+    - auto
