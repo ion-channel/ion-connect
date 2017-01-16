@@ -1,8 +1,8 @@
-hash: 989a6eb3846f4297014b00748771263d77350ce1f36a1cbb51b5fb49f8be08f6
-updated: 2016-10-06T14:26:42.608713343-07:00
+hash: 0789683084c8340fec6e59b7f420ec6b1659072b364cb876a9f7cd430b9a183f
+updated: 2017-01-16T09:20:56.714799461-08:00
 imports:
 - name: github.com/aws/aws-sdk-go
-  version: 74a703abb31ea9faf7622930e5daba1559b01b37
+  version: 63ce630574a5ec05ecd8e8de5cea16332a5a684d
   subpackages:
   - aws
   - aws/awserr
@@ -16,6 +16,7 @@ imports:
   - aws/credentials/stscreds
   - aws/defaults
   - aws/ec2metadata
+  - aws/endpoints
   - aws/request
   - aws/session
   - aws/signer/v4
@@ -43,7 +44,7 @@ imports:
   subpackages:
   - embedded
 - name: github.com/go-ini/ini
-  version: 6e4869b434bd001f6983749881c7ead3545887d8
+  version: 6f66b0e091edb3c7b380f7c4f0f884274d550b67
 - name: github.com/google/go-querystring
   version: 2a60fc2ba6c19de80291203597d752e9ba58e4c0
   subpackages:
@@ -52,6 +53,8 @@ imports:
   version: 0b12d6b521d83fc7f755e7cfc1b1fbdd35a01a74
 - name: github.com/kardianos/osext
   version: 6e7f843663477789fac7c02def0d0909e969b4e5
+- name: github.com/urfave/cli
+  version: 0bdeddeeb0f650497d603c4ad7b20cfe685682f6
 - name: golang.org/x/crypto
   version: 346896d57731cb5670b36c6178fc5519f3225980
   subpackages:
