@@ -41,13 +41,13 @@ crosscompile:  ## Build the binaries for the primary OS'
 	GOOS=windows $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP)-windows .
 
 dockerize:  ## Create a docker image of the project
-	-@rm $(APP)
+	-@rm -rf $(APP)
 	GOOS=linux make build
 	$(GOPATH)/bin/rice append --exec ion-connect -i ./lib
 	docker build \
 		--build-arg BUILD_DATE=$(DATE) \
 		--build-arg VERSION=$(BUILD_VERSION) \
-		-t $(APP) .
+		-t ion-channel/$(APP):latest .
 
 help:  ## Show This Help
 	@for line in $$(cat Makefile | grep "##" | grep -v "grep" | sed  "s/:.*##/:/g" | sed "s/\ /!/g"); do verb=$$(echo $$line | cut -d ":" -f 1); desc=$$(echo $$line | cut -d ":" -f 2 | sed "s/!/\ /g"); printf "%-30s--%s\n" "$$verb" "$$desc"; done
