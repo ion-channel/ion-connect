@@ -41,7 +41,7 @@ crosscompile:  ## Build the binaries for the primary OS'
 	GOOS=windows $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP)-windows .
 
 dockerize:  ## Create a docker image of the project
-	-@rm $(APP)
+	-@rm -rf $(APP)
 	GOOS=linux make build
 	$(GOPATH)/bin/rice append --exec ion-connect -i ./lib
 	docker build \
