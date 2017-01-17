@@ -16,7 +16,13 @@
 PROJECT_ID=$1
 ACCOUNT_ID=$2
 
-[ -z "$3" ] && BRANCH=" --branch $3" || BRANCH=''
+if [ -z "$3" ]; then
+  BRANCH=''
+else
+  BRANCH=" --branch $3"
+fi
+
+echo $BRANCH
 
 function cool_echo {
 # local x=$1

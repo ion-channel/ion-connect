@@ -26,6 +26,7 @@ When(/^I successfully run ion `(.*)`$/) do |command|
 end
 
 When(/^I successfully run with '(.*)' `(.*)`$/) do |variables, command|
+  @project_id = $project_id if instance_variable_get("@project_id").nil?
   variables.split(',').each do |variable|
     command = command.gsub(/\s#{variable}\s*/, " #{instance_variable_get("@#{variable}")} ")
   end
@@ -45,9 +46,17 @@ Given(/^an Ion Channel account id '(.*)'/) do |account_id|
   @account_id = account_id
 end
 
+Given(/a branch named (.*)/) do |branch|
+  @branch = branch
+end
+
 Given(/^a variable '(.*)' is set from the previous output from location '(.*)'$/) do |variable, location|
-  json = JSON.parse($output)
-  instance_variable_set("@#{variable}", json[location])
+  begin
+     json = JSON.parse($output)
+     instance_variable_set("@#{variable}", json[location])
+     $project_id = json[location] if variable == 'project_id'
+  rescue
+  end
 end
 
 Given(/^previous output/) do
