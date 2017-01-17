@@ -109,8 +109,18 @@ func ExampleCloudFront_CreateDistribution() {
 						Quantity: aws.Int64(1), // Required
 					},
 				},
-				Compress:        aws.Bool(true),
-				DefaultTTL:      aws.Int64(1),
+				Compress:   aws.Bool(true),
+				DefaultTTL: aws.Int64(1),
+				LambdaFunctionAssociations: &cloudfront.LambdaFunctionAssociations{
+					Quantity: aws.Int64(1), // Required
+					Items: []*cloudfront.LambdaFunctionAssociation{
+						{ // Required
+							EventType:         aws.String("EventType"),
+							LambdaFunctionARN: aws.String("string"),
+						},
+						// More values...
+					},
+				},
 				MaxTTL:          aws.Int64(1),
 				SmoothStreaming: aws.Bool(true),
 			},
@@ -215,8 +225,18 @@ func ExampleCloudFront_CreateDistribution() {
 								Quantity: aws.Int64(1), // Required
 							},
 						},
-						Compress:        aws.Bool(true),
-						DefaultTTL:      aws.Int64(1),
+						Compress:   aws.Bool(true),
+						DefaultTTL: aws.Int64(1),
+						LambdaFunctionAssociations: &cloudfront.LambdaFunctionAssociations{
+							Quantity: aws.Int64(1), // Required
+							Items: []*cloudfront.LambdaFunctionAssociation{
+								{ // Required
+									EventType:         aws.String("EventType"),
+									LambdaFunctionARN: aws.String("string"),
+								},
+								// More values...
+							},
+						},
 						MaxTTL:          aws.Int64(1),
 						SmoothStreaming: aws.Bool(true),
 					},
@@ -237,6 +257,7 @@ func ExampleCloudFront_CreateDistribution() {
 			},
 			DefaultRootObject: aws.String("string"),
 			HttpVersion:       aws.String("HttpVersion"),
+			IsIPV6Enabled:     aws.Bool(true),
 			Logging: &cloudfront.LoggingConfig{
 				Bucket:         aws.String("string"), // Required
 				Enabled:        aws.Bool(true),       // Required
@@ -346,8 +367,18 @@ func ExampleCloudFront_CreateDistributionWithTags() {
 							Quantity: aws.Int64(1), // Required
 						},
 					},
-					Compress:        aws.Bool(true),
-					DefaultTTL:      aws.Int64(1),
+					Compress:   aws.Bool(true),
+					DefaultTTL: aws.Int64(1),
+					LambdaFunctionAssociations: &cloudfront.LambdaFunctionAssociations{
+						Quantity: aws.Int64(1), // Required
+						Items: []*cloudfront.LambdaFunctionAssociation{
+							{ // Required
+								EventType:         aws.String("EventType"),
+								LambdaFunctionARN: aws.String("string"),
+							},
+							// More values...
+						},
+					},
 					MaxTTL:          aws.Int64(1),
 					SmoothStreaming: aws.Bool(true),
 				},
@@ -452,8 +483,18 @@ func ExampleCloudFront_CreateDistributionWithTags() {
 									Quantity: aws.Int64(1), // Required
 								},
 							},
-							Compress:        aws.Bool(true),
-							DefaultTTL:      aws.Int64(1),
+							Compress:   aws.Bool(true),
+							DefaultTTL: aws.Int64(1),
+							LambdaFunctionAssociations: &cloudfront.LambdaFunctionAssociations{
+								Quantity: aws.Int64(1), // Required
+								Items: []*cloudfront.LambdaFunctionAssociation{
+									{ // Required
+										EventType:         aws.String("EventType"),
+										LambdaFunctionARN: aws.String("string"),
+									},
+									// More values...
+								},
+							},
 							MaxTTL:          aws.Int64(1),
 							SmoothStreaming: aws.Bool(true),
 						},
@@ -474,6 +515,7 @@ func ExampleCloudFront_CreateDistributionWithTags() {
 				},
 				DefaultRootObject: aws.String("string"),
 				HttpVersion:       aws.String("HttpVersion"),
+				IsIPV6Enabled:     aws.Bool(true),
 				Logging: &cloudfront.LoggingConfig{
 					Bucket:         aws.String("string"), // Required
 					Enabled:        aws.Bool(true),       // Required
@@ -1252,8 +1294,18 @@ func ExampleCloudFront_UpdateDistribution() {
 						Quantity: aws.Int64(1), // Required
 					},
 				},
-				Compress:        aws.Bool(true),
-				DefaultTTL:      aws.Int64(1),
+				Compress:   aws.Bool(true),
+				DefaultTTL: aws.Int64(1),
+				LambdaFunctionAssociations: &cloudfront.LambdaFunctionAssociations{
+					Quantity: aws.Int64(1), // Required
+					Items: []*cloudfront.LambdaFunctionAssociation{
+						{ // Required
+							EventType:         aws.String("EventType"),
+							LambdaFunctionARN: aws.String("string"),
+						},
+						// More values...
+					},
+				},
 				MaxTTL:          aws.Int64(1),
 				SmoothStreaming: aws.Bool(true),
 			},
@@ -1358,8 +1410,18 @@ func ExampleCloudFront_UpdateDistribution() {
 								Quantity: aws.Int64(1), // Required
 							},
 						},
-						Compress:        aws.Bool(true),
-						DefaultTTL:      aws.Int64(1),
+						Compress:   aws.Bool(true),
+						DefaultTTL: aws.Int64(1),
+						LambdaFunctionAssociations: &cloudfront.LambdaFunctionAssociations{
+							Quantity: aws.Int64(1), // Required
+							Items: []*cloudfront.LambdaFunctionAssociation{
+								{ // Required
+									EventType:         aws.String("EventType"),
+									LambdaFunctionARN: aws.String("string"),
+								},
+								// More values...
+							},
+						},
 						MaxTTL:          aws.Int64(1),
 						SmoothStreaming: aws.Bool(true),
 					},
@@ -1380,6 +1442,7 @@ func ExampleCloudFront_UpdateDistribution() {
 			},
 			DefaultRootObject: aws.String("string"),
 			HttpVersion:       aws.String("HttpVersion"),
+			IsIPV6Enabled:     aws.Bool(true),
 			Logging: &cloudfront.LoggingConfig{
 				Bucket:         aws.String("string"), // Required
 				Enabled:        aws.Bool(true),       // Required

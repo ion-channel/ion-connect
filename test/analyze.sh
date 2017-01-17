@@ -16,6 +16,13 @@
 PROJECT_ID=$1
 ACCOUNT_ID=$2
 
+if [ -z "$3" ]; then
+  BRANCH=''
+else
+  BRANCH=" --branch $3"
+fi
+
+echo $BRANCH
 
 function cool_echo {
 # local x=$1
@@ -26,7 +33,7 @@ echo
 
 #RUN Analysis
 cool_echo "Begining compliance analysis of project ($PROJECT_ID)."
-ANALYSIS_ID=$(ion-connect scanner analyze-project --account-id $ACCOUNT_ID --project-id $PROJECT_ID | jq -r .id)
+ANALYSIS_ID=$(ion-connect scanner analyze-project --account-id $ACCOUNT_ID --project-id $PROJECT_ID $BRANCH | jq -r .id)
 echo "Analysis requested the id is $ANALYSIS_ID"
 #Get the Analysis
 TIMEOUT=1200
@@ -51,6 +58,7 @@ cool_echo "Evaluating analysis for compliance."
 #Get the results of the analysis
 ANALYSIS=$(ion-connect analysis get-analysis --account-id $ACCOUNT_ID --project-id $PROJECT_ID $ANALYSIS_ID)
 PASSED="$(echo $ANALYSIS | jq -r .passed)"
+ANALYZED_BRANCH="$(echo $ANALYSIS | jq -r .branch)"
 OUTPUT=$(echo $ANALYSIS | jq -r .scan_summaries[].summary)
 while read -r LINE; do
 cool_echo "$LINE"
@@ -61,4 +69,4 @@ if [ "$PASSED" == "false" ]; then
 cool_echo "Compliance analysis failed, your project is not compliant :("
 exit 1
 fi
-cool_echo "Compliance analysis completed successfully, your project is compliant!"
+cool_echo "Compliance analysis completed successfully, your project at $ANALYZED_BRANCH is compliant!"

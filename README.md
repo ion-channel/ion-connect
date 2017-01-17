@@ -129,14 +129,11 @@ GLOBAL OPTIONS:
 Commands that are only supported in test by supplying the Ion Channel API endpoint url using an environment variable, similar to the following:
 
 ```
-$ IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ ion-connect metadata get-languages "hello, how are you"
-[
-  {
-    "code": "en",
-    "name": "English",
-    "reliable": true
-  }
-]
+$ IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ ion-connect metadata get-sentiment 'I love governance'
+{
+  "score": 0.925,
+  "sentiment": "positive"
+}
 ```
 
 That's it! You are well on your way to world domination.

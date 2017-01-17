@@ -58,5 +58,24 @@ Feature: Projects
     """
     Then the ion output should contain:
     """
-    Compliance analysis completed successfully, your project is compliant!
+    Compliance analysis completed successfully, your project at master is compliant!
+    """
+
+  Scenario: Analyze the project with branch/hash
+    Given previous output
+    And a variable 'project_id' is set from the previous output from location 'id'
+    And an Ion Channel account id 'test-account'
+    And a branch named b979b868ab320e0236b1e7c5f1530ae2401083ab
+    When I successfully run with 'account_id,project_id,branch' `./test/analyze.sh project_id account_id branch`
+    Then the ion output should contain:
+    """
+    b979b868ab320e0236b1e7c5f1530ae2401083ab
+    """
+    Then the ion output should contain:
+    """
+    Finished about_yml scan for sonar-auth-geoaxis, valid .about.yml found.
+    """
+    Then the ion output should contain:
+    """
+    Compliance analysis completed successfully, your project at b979b868ab320e0236b1e7c5f1530ae2401083ab is compliant!
     """

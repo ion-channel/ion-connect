@@ -37,7 +37,11 @@
               usage: The id of the project the analysis resides
               required: True
               type: string
-
+            - name: branch
+              value:
+              usage: "[Optional] branch value that will be used during the analysis"
+              required: False
+              type: string
         - name: get-analysis-status
           url: /scanner/getAnalysisStatus
           usage: returns the status data for a given analysis [id]
