@@ -47,7 +47,7 @@ dockerize:  ## Create a docker image of the project
 	docker build \
 		--build-arg BUILD_DATE=$(DATE) \
 		--build-arg VERSION=$(BUILD_VERSION) \
-		-t ion-channel/$(APP):latest .
+		-t ionchannel/$(APP):latest .
 
 help:  ## Show This Help
 	@for line in $$(cat Makefile | grep "##" | grep -v "grep" | sed  "s/:.*##/:/g" | sed "s/\ /!/g"); do verb=$$(echo $$line | cut -d ":" -f 1); desc=$$(echo $$line | cut -d ":" -f 2 | sed "s/!/\ /g"); printf "%-30s--%s\n" "$$verb" "$$desc"; done
