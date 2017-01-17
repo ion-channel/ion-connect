@@ -51,7 +51,7 @@ after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     make dockerize;
     docker login -e="$HUB_DOCKER_EMAIL" -u="$HUB_DOCKER_USER" -p="$HUB_DOCKER_PASSWORD";
-    docker push ion-channel/ion-connect;
+    docker push ionchannel/ion-connect;
     fi
 deploy:
   - provider: releases
