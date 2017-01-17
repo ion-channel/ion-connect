@@ -42,7 +42,7 @@ crosscompile:  ## Build the binaries for the primary OS'
 
 dockerize:  ## Create a docker image of the project
 	-@rm -rf $(APP)
-	GOOS=linux make build
+	CGO_ENABLED=0 GOOS=linux make build
 	$(GOPATH)/bin/rice append --exec ion-connect -i ./lib
 	docker build \
 		--build-arg BUILD_DATE=$(DATE) \
