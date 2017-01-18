@@ -26,6 +26,7 @@ GEM
     diff-lcs (1.2.5)
     ffi (1.9.14)
     gherkin (3.2.0)
+    json (2.0.2)
     multi_json (1.12.1)
     multi_test (0.1.2)
     rspec-expectations (3.5.0)
@@ -40,6 +41,7 @@ PLATFORMS
 DEPENDENCIES
   aruba (= 0.14.1)
   cucumber (= 2.3.3)
+  json (= 2.0.2)
 
 BUNDLED WITH
-   1.12.5
+   1.13.7
