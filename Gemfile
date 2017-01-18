@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'json'
+gem 'json', '2.0.2'
 
 group :test do
   gem 'cucumber', '2.3.3'
