@@ -63,8 +63,8 @@ deploy:
     on:
       tags: true
 after_deploy:
-  - curl -v -F package=@ion-connect_$VERSION-${TRAVIS_BUILD_NUMBER}_amd64.deb https://push.fury.io/$GEMFURY_TOKEN/
-  - curl -v -F package=@ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER.x86_64.rpm https://push.fury.io/$GEMFURY_TOKEN/
+  - curl -v -F package=@ion-connect_$VERSION-${TRAVIS_BUILD_NUMBER}_amd64.deb https://$GEMFURY_TOKEN@push.fury.io/ionchannel/
+  - curl -v -F package=@ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER.x86_64.rpm https://$GEMFURY_TOKEN@push.fury.io/ionchannel/
 notifications:
   slack:
     rooms:
