@@ -9,6 +9,23 @@ CLI tool for interacting with the Ion Channel Service/API
 
 [https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/ion-connect-latest.tar.gz](https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/ion-connect-latest.tar.gz)
 
+### Install on RHEL OS types with yum/dnf
+Add the following to /etc/yum.repos.d/ion-channel.repo
+
+```sh
+[ion-channel]
+name=Ion Channel Repo
+baseurl=https://yum.fury.io/ionchannel/
+enabled=1
+gpgcheck=0
+```
+
+Then run:
+
+```sh
+sudo dnf clean all; sudo dnf install ion-connect
+```
+
 ## License
 
 [Apache Software License 2.0](LICENSE.txt)
