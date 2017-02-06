@@ -14,29 +14,24 @@
 
 Feature: Do some metadata parsing
  Scenario: Get locations
-   When I successfully run `ion-connect metadata get-locations "portland,or"`
+   When I successfully run `ion-connect metadata get-locations "portland"`
    Then the output should contain:
    """
    [
      {
-       "boundingbox": [
-         "45.4325354",
-         "45.6528812",
-         "-122.8367488",
-         "-122.4720251"
-       ],
-       "city": "Portland",
-       "class": "place",
-       "country": "United States of America",
-       "country_code": "us",
-       "county": "Multnomah County",
-       "display_name": "Portland, Multnomah County, Oregon, United States of America",
-       "id": "158085381",
-       "importance": 0.84871254875742,
-       "latitude": 0,
-       "longitude": 0,
-       "state": "Oregon",
-       "type": "city"
+       "boundingbox": [],
+       "city": "",
+       "class": "city, village, etc.",
+       "country": "United States",
+       "country_code": "US",
+       "county": "",
+       "display_name": "Portland",
+       "id": "5746545",
+       "importance": 1,
+       "latitude": 45.52345,
+       "longitude": -122.67621,
+       "state": "",
+       "type": ""
      }
    ]
    """
@@ -69,19 +64,15 @@ Feature: Do some metadata parsing
      Given a file named "LICENSE.txt" with:
      """
      The MIT License (MIT)
-
      Copyright (c) 2015 Selection Pressure LLC
-
      Permission is hereby granted, free of charge, to any person obtaining a copy
      of this software and associated documentation files (the "Software"), to deal
      in the Software without restriction, including without limitation the rights
      to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
      copies of the Software, and to permit persons to whom the Software is
      furnished to do so, subject to the following conditions:
-
      The above copyright notice and this permission notice shall be included in all
      copies or substantial portions of the Software.
-
      THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
      IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
      FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
