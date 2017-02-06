@@ -14,24 +14,29 @@
 
 Feature: Do some metadata parsing
  Scenario: Get locations
-   When I successfully run `ion-connect metadata get-locations "portland"`
+   When I successfully run `ion-connect metadata get-locations "portland,or"`
    Then the output should contain:
    """
    [
      {
-       "boundingbox": [],
-       "city": "",
-       "class": "city, village, etc.",
-       "country": "United States",
-       "country_code": "US",
-       "county": "",
-       "display_name": "Portland",
-       "id": "5746545",
-       "importance": 1,
-       "latitude": 45.52345,
-       "longitude": -122.67621,
-       "state": "",
-       "type": ""
+       "boundingbox": [
+         "45.4325354",
+         "45.6528812",
+         "-122.8367488",
+         "-122.4720251"
+       ],
+       "city": "Portland",
+       "class": "place",
+       "country": "United States of America",
+       "country_code": "us",
+       "county": "Multnomah County",
+       "display_name": "Portland, Multnomah County, Oregon, United States of America",
+       "id": "158085381",
+       "importance": 0.84871254875742,
+       "latitude": 0,
+       "longitude": 0,
+       "state": "Oregon",
+       "type": "city"
      }
    ]
    """
