@@ -2,7 +2,12 @@
 
 CLI tool for interacting with the Ion Channel Service/API
 
+Master Branch
 [![Build Status](https://travis-ci.org/ion-channel/ion-connect.svg?branch=master)](https://travis-ci.org/ion-channel/ion-connect)
+
+Release Branch
+[![Build Status](https://travis-ci.org/ion-channel/ion-connect.svg?branch=release)](https://travis-ci.org/ion-channel/ion-connect)
+
 [![Join the chat at https://gitter.im/ion-channel/ion-connect](https://badges.gitter.im/ion-channel/ion-connect.svg)](https://gitter.im/ion-channel/ion-connect?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Latest Build
