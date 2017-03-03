@@ -94,6 +94,131 @@ var _ = Describe("Main", func() {
 		})
 	})
 
+	Context("when flags for a command are configured", func() {
+		It("should generate command line flags for a string", func() {
+			expectedFlag := cli.StringFlag{
+				Name:        "someflag",
+				Value:       "somevalue",
+				Usage:       "someusage",
+				EnvVar:      "",
+				Destination: nil,
+				Hidden:      false,
+			}
+
+			flag := ionconnect.Flag{
+				Name:     "someflag",
+				Value:    "somevalue",
+				Usage:    "someusage",
+				Type:     "string",
+				Required: true,
+			}
+			flags := getFlags([]ionconnect.Flag{flag})
+			Expect(flags[0]).To(Equal(expectedFlag))
+		})
+
+		It("should generate command line flags for a boolean", func() {
+			expectedFlag := cli.BoolFlag{
+				Name:        "someflag",
+				Usage:       "someusage",
+				EnvVar:      "",
+				Destination: nil,
+				Hidden:      false,
+			}
+
+			flag := ionconnect.Flag{
+				Name:     "someflag",
+				Value:    "",
+				Usage:    "someusage",
+				Type:     "bool",
+				Required: true,
+			}
+			flags := getFlags([]ionconnect.Flag{flag})
+			Expect(flags[0]).To(Equal(expectedFlag))
+		})
+	})
+
+	Context("when a subcommand is configured", func() {
+		It("should generate a cli subcommand with flags", func() {
+			expectedCommand := cli.Command{
+				Name:        "somecommand",
+				ShortName:   "",
+				Aliases:     nil,
+				Usage:       "someusage",
+				UsageText:   "",
+				Description: "",
+				ArgsUsage:   "",
+				Subcommands: nil,
+				Flags:       []cli.Flag{cli.StringFlag{Name: "someflag", Usage: "someusage"}},
+			}
+
+			flag := ionconnect.Flag{
+				Name:     "someflag",
+				Value:    "",
+				Usage:    "someusage",
+				Type:     "string",
+				Required: true,
+			}
+
+			command := ionconnect.Command{
+				Name:   "somecommand",
+				Usage:  "someusage",
+				Method: "POST",
+				Url:    "/some/url",
+				Flags:  []ionconnect.Flag{flag},
+			}
+
+			Expect(getSubcommands([]ionconnect.Command{command}, nil)).To(Equal([]cli.Command{expectedCommand}))
+		})
+
+		It("should generate a cli subcommand without flags", func() {
+			expectedCommand := cli.Command{
+				Name:        "somecommand",
+				ShortName:   "",
+				Aliases:     nil,
+				Usage:       "someusage",
+				UsageText:   "",
+				Description: "",
+				ArgsUsage:   "",
+				Subcommands: nil,
+				Flags:       []cli.Flag{},
+			}
+
+			command := ionconnect.Command{
+				Name:   "somecommand",
+				Usage:  "someusage",
+				Method: "POST",
+				Url:    "/some/url",
+			}
+
+			Expect(getSubcommands([]ionconnect.Command{command}, nil)).To(Equal([]cli.Command{expectedCommand}))
+		})
+	})
+
+
+	Context("when a command is configured", func() {
+    It("should generate a cli command without flags", func(){
+      expectedCommand := cli.Command{
+        Name:        "somecommand",
+        ShortName:   "",
+        Aliases:     nil,
+        Usage:       "someusage",
+        UsageText:   "",
+        Description: "",
+        ArgsUsage:   "",
+        Subcommands: []cli.Command{},
+        Flags:       nil,
+        Action: nil,
+      }
+
+      command := ionconnect.Command{
+        Name:   "somecommand",
+        Usage:  "someusage",
+        Method: "POST",
+        Url:    "/some/url",
+      }
+      Expect(getCommands([]ionconnect.Command{command}, nil, nil)[0]).To(Equal(expectedCommand))
+    })
+  })
 	AfterEach(func() {
 	})
 })

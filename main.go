@@ -81,7 +81,7 @@ func getFlags(flagConfigs []ionconnect.Flag) []cli.Flag {
 	return flags
 }
 
-func getSubcommands(subcommands []ionconnect.Command, api ionconnect.Api) []cli.Command {
+func getSubcommands(subcommands []ionconnect.Command, handler interface{}) []cli.Command {
 	subs := make([]cli.Command, len(subcommands))
 	for commandIndex, subcommand := range subcommands {
 
@@ -90,7 +90,7 @@ func getSubcommands(subcommands []ionconnect.Command, api ionconnect.Api) []cli.
 		subs[commandIndex] = cli.Command{
 			Name:      subcommand.Name,
 			Usage:     subcommand.Usage,
-			Action:    api.HandleCommand,
+			Action:    handler,
 			ArgsUsage: subcommand.GetArgsUsage(),
 			Flags:     flags,
 		}
@@ -98,15 +98,15 @@ func getSubcommands(subcommands []ionconnect.Command, api ionconnect.Api) []cli.
 	return subs
 }
 
-func getCommands(api ionconnect.Api) []cli.Command {
-	commands := make([]cli.Command, len(api.Config.Commands)+1)
+func getCommands(configCommands []ionconnect.Command, noop interface{}, handler interface{}) []cli.Command {
+	commands := make([]cli.Command, len(configCommands)+1)
 
-	for index, configCommand := range api.Config.Commands {
-		subcommands := getSubcommands(configCommand.Subcommands, api)
+	for index, configCommand := range configCommands {
+		subcommands := getSubcommands(configCommand.Subcommands, handler)
 		commands[index] = cli.Command{
 			Name:        configCommand.Name,
 			Usage:       configCommand.Usage,
-			Action:      api.Noop,
+			Action:      noop,
 			Subcommands: subcommands,
 		}
 	}
@@ -114,7 +114,7 @@ func getCommands(api ionconnect.Api) []cli.Command {
 	commands[len(commands)-1] = cli.Command{
 		Name:   "configure",
 		Usage:  "setup the Ion Channel secret key for later use",
-		Action: ionconnect.HandleConfigure,
+		Action: handler,
 	}
 	return commands
 }
@@ -134,7 +134,7 @@ func main() {
 
 	app.Before = before
 
-	app.Commands = getCommands(api)
+	app.Commands = getCommands(api.Config.Commands, api.Noop, api.HandleCommand)
 
 	defer deferer()
 	app.Run(os.Args)
