@@ -24,14 +24,15 @@ import (
 	"github.com/ion-channel/ion-connect/lib"
 )
 
-func main() {
+func getApp() *cli.App {
 	app := cli.NewApp()
 	app.Name = "ion-connect"
 	app.Usage = "Interact with Ion Channel"
-	app.Version = "0.8.0"
+	app.Version = "0.8.1"
+	return app
+}
 
-	var api = ionconnect.Api{ionconnect.GetConfig()}
-
+func setFlags(app *cli.App) *cli.App {
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
 			Name:  "debug",
@@ -42,56 +43,70 @@ func main() {
 			Usage: "allow for insecure https connections",
 		},
 	}
-	app.Before = func(c *cli.Context) error {
-		if c.Bool("debug") {
-			ionconnect.Debug = true
-			ionconnect.Debugln("Turning debug on.")
-		}
 
-		if c.Bool("insecure") {
-			ionconnect.Insecure = true
-			ionconnect.Debugln("Turning insecure on.")
-		}
+	return app
+}
 
-		return nil
+func before(c *cli.Context) error {
+	if c.Bool("debug") {
+		ionconnect.Debug = true
+		ionconnect.Debugln("Turning debug on.")
 	}
 
-	commands := make([]cli.Command, len(api.Config.Commands)+1)
+	if c.Bool("insecure") {
+		ionconnect.Insecure = true
+		ionconnect.Debugln("Turning insecure on.")
+	}
 
-	for index, configCommand := range api.Config.Commands {
-		subcommands := make([]cli.Command, len(configCommand.Subcommands))
-		for jndex, subcommand := range configCommand.Subcommands {
+	return nil
+}
 
-			flags := make([]cli.Flag, len(subcommand.Flags))
-			for kndex, flag := range subcommand.Flags {
-				switch flag.Type {
-				case "bool":
-					flags[kndex] = cli.BoolFlag{
-						Name:  flag.Name,
-						Usage: flag.Usage,
-					}
-				case "string":
-					flags[kndex] = cli.StringFlag{
-						Name:  flag.Name,
-						Value: flag.Value,
-						Usage: flag.Usage,
-					}
-				}
-
+func getFlags(flagConfigs []ionconnect.Flag) []cli.Flag {
+	flags := make([]cli.Flag, len(flagConfigs))
+	for flagIndex, flag := range flagConfigs {
+		switch flag.Type {
+		case "bool":
+			flags[flagIndex] = cli.BoolFlag{
+				Name:  flag.Name,
+				Usage: flag.Usage,
 			}
-
-			subcommands[jndex] = cli.Command{
-				Name:      subcommand.Name,
-				Usage:     subcommand.Usage,
-				Action:    api.HandleCommand,
-				ArgsUsage: subcommand.GetArgsUsage(),
-				Flags:     flags,
+		case "string":
+			flags[flagIndex] = cli.StringFlag{
+				Name:  flag.Name,
+				Value: flag.Value,
+				Usage: flag.Usage,
 			}
 		}
+	}
+	return flags
+}
+
+func getSubcommands(subcommands []ionconnect.Command, handler interface{}) []cli.Command {
+	subs := make([]cli.Command, len(subcommands))
+	for commandIndex, subcommand := range subcommands {
+
+		flags := getFlags(subcommand.Flags)
+
+		subs[commandIndex] = cli.Command{
+			Name:      subcommand.Name,
+			Usage:     subcommand.Usage,
+			Action:    handler,
+			ArgsUsage: subcommand.GetArgsUsage(),
+			Flags:     flags,
+		}
+	}
+	return subs
+}
+
+func getCommands(configCommands []ionconnect.Command, noop interface{}, handler interface{}) []cli.Command {
+	commands := make([]cli.Command, len(configCommands)+1)
+
+	for index, configCommand := range configCommands {
+		subcommands := getSubcommands(configCommand.Subcommands, handler)
 		commands[index] = cli.Command{
 			Name:        configCommand.Name,
 			Usage:       configCommand.Usage,
-			Action:      api.Noop,
+			Action:      noop,
 			Subcommands: subcommands,
 		}
 	}
@@ -99,15 +114,28 @@ func main() {
 	commands[len(commands)-1] = cli.Command{
 		Name:   "configure",
 		Usage:  "setup the Ion Channel secret key for later use",
-		Action: ionconnect.HandleConfigure,
+		Action: handler,
 	}
+	return commands
+}
 
-	app.Commands = commands
+func deferer() {
+	if r := recover(); r != nil {
+		fmt.Println(r)
+	}
+}
 
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println(r)
-		}
-	}()
+func main() {
+	app := getApp()
+
+	var api = ionconnect.Api{ionconnect.GetConfig()}
+
+	app = setFlags(app)
+
+	app.Before = before
+
+	app.Commands = getCommands(api.Config.Commands, api.Noop, api.HandleCommand)
+
+	defer deferer()
 	app.Run(os.Args)
 }
