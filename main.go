@@ -62,30 +62,30 @@ func before(c *cli.Context) error {
 }
 
 func getFlags(flagConfigs []ionconnect.Flag) []cli.Flag {
-  flags := make([]cli.Flag, len(flagConfigs))
-  for flagIndex, flag := range flagConfigs {
-    switch flag.Type {
-    case "bool":
-      flags[flagIndex] = cli.BoolFlag{
-        Name:  flag.Name,
-        Usage: flag.Usage,
-      }
-    case "string":
-      flags[flagIndex] = cli.StringFlag{
-        Name:  flag.Name,
-        Value: flag.Value,
-        Usage: flag.Usage,
-      }
-    }
-  }
-  return flags
+	flags := make([]cli.Flag, len(flagConfigs))
+	for flagIndex, flag := range flagConfigs {
+		switch flag.Type {
+		case "bool":
+			flags[flagIndex] = cli.BoolFlag{
+				Name:  flag.Name,
+				Usage: flag.Usage,
+			}
+		case "string":
+			flags[flagIndex] = cli.StringFlag{
+				Name:  flag.Name,
+				Value: flag.Value,
+				Usage: flag.Usage,
+			}
+		}
+	}
+	return flags
 }
 
 func getSubcommands(subcommands []ionconnect.Command, api ionconnect.Api) []cli.Command {
 	subs := make([]cli.Command, len(subcommands))
 	for commandIndex, subcommand := range subcommands {
 
-    flags := getFlags(subcommand.Flags)
+		flags := getFlags(subcommand.Flags)
 
 		subs[commandIndex] = cli.Command{
 			Name:      subcommand.Name,

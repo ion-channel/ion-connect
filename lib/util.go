@@ -34,18 +34,20 @@ import (
 	"gopkg.in/mattes/go-expand-tilde.v1"
 )
 
-var Debug bool = false
-var Insecure bool = false
-var Test bool = false
-var ION_HOME string = "~/.ionchannel/"
-var CREDENTIALS_FILE string = "~/.ionchannel/credentials"
-var CREDENTIALS_KEY_FIELD string = "secret_key"
-var CONFIGURE_API_ENDPOINT_FIELD string = "endpoint"
-var CREDENTIALS_ENVIRONMENT_VARIABLE string = "IONCHANNEL_SECRET_KEY"
-var ENDPOINT_ENVIRONMENT_VARIABLE string = "IONCHANNEL_ENDPOINT_URL"
-var DROPBUCKET_ENVIRONMENT_VARIABLE string = "IONCHANNEL_DROPBUCKET_NAME"
-var DEFAUL_WRITE_BUCKET string = "files.ionchannel.io"
-var DEFAUL_WRITE_FOLDER string = "/files/upload/"
+var (
+Debug bool = false
+Insecure bool = false
+Test bool = false
+ION_HOME string = "~/.ionchannel/"
+CREDENTIALS_FILE string = "~/.ionchannel/credentials"
+CREDENTIALS_KEY_FIELD string = "secret_key"
+CONFIGURE_API_ENDPOINT_FIELD string = "endpoint"
+CREDENTIALS_ENVIRONMENT_VARIABLE string = "IONCHANNEL_SECRET_KEY"
+ENDPOINT_ENVIRONMENT_VARIABLE string = "IONCHANNEL_ENDPOINT_URL"
+DROPBUCKET_ENVIRONMENT_VARIABLE string = "IONCHANNEL_DROPBUCKET_NAME"
+DEFAUL_WRITE_BUCKET string = "files.ionchannel.io"
+DEFAUL_WRITE_FOLDER string = "/files/upload/"
+)
 
 func IsDebug() bool {
 	return Debug
