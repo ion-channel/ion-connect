@@ -194,31 +194,30 @@ var _ = Describe("Main", func() {
 		})
 	})
 
-
 	Context("when a command is configured", func() {
-    It("should generate a cli command without flags", func(){
-      expectedCommand := cli.Command{
-        Name:        "somecommand",
-        ShortName:   "",
-        Aliases:     nil,
-        Usage:       "someusage",
-        UsageText:   "",
-        Description: "",
-        ArgsUsage:   "",
-        Subcommands: []cli.Command{},
-        Flags:       nil,
-        Action: nil,
-      }
+		It("should generate a cli command without flags", func() {
+			expectedCommand := cli.Command{
+				Name:        "somecommand",
+				ShortName:   "",
+				Aliases:     nil,
+				Usage:       "someusage",
+				UsageText:   "",
+				Description: "",
+				ArgsUsage:   "",
+				Subcommands: []cli.Command{},
+				Flags:       nil,
+				Action:      nil,
+			}
 
-      command := ionconnect.Command{
-        Name:   "somecommand",
-        Usage:  "someusage",
-        Method: "POST",
-        Url:    "/some/url",
-      }
-      Expect(getCommands([]ionconnect.Command{command}, nil, nil)[0]).To(Equal(expectedCommand))
-    })
-  })
+			command := ionconnect.Command{
+				Name:   "somecommand",
+				Usage:  "someusage",
+				Method: "POST",
+				Url:    "/some/url",
+			}
+			Expect(getCommands([]ionconnect.Command{command}, nil, nil)[0]).To(Equal(expectedCommand))
+		})
+	})
 	AfterEach(func() {
 	})
 })
