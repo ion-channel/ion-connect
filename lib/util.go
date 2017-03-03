@@ -35,18 +35,18 @@ import (
 )
 
 var (
-Debug bool = false
-Insecure bool = false
-Test bool = false
-ION_HOME string = "~/.ionchannel/"
-CREDENTIALS_FILE string = "~/.ionchannel/credentials"
-CREDENTIALS_KEY_FIELD string = "secret_key"
-CONFIGURE_API_ENDPOINT_FIELD string = "endpoint"
-CREDENTIALS_ENVIRONMENT_VARIABLE string = "IONCHANNEL_SECRET_KEY"
-ENDPOINT_ENVIRONMENT_VARIABLE string = "IONCHANNEL_ENDPOINT_URL"
-DROPBUCKET_ENVIRONMENT_VARIABLE string = "IONCHANNEL_DROPBUCKET_NAME"
-DEFAUL_WRITE_BUCKET string = "files.ionchannel.io"
-DEFAUL_WRITE_FOLDER string = "/files/upload/"
+	Debug                            bool   = false
+	Insecure                         bool   = false
+	Test                             bool   = false
+	ION_HOME                         string = "~/.ionchannel/"
+	CREDENTIALS_FILE                 string = "~/.ionchannel/credentials"
+	CREDENTIALS_KEY_FIELD            string = "secret_key"
+	CONFIGURE_API_ENDPOINT_FIELD     string = "endpoint"
+	CREDENTIALS_ENVIRONMENT_VARIABLE string = "IONCHANNEL_SECRET_KEY"
+	ENDPOINT_ENVIRONMENT_VARIABLE    string = "IONCHANNEL_ENDPOINT_URL"
+	DROPBUCKET_ENVIRONMENT_VARIABLE  string = "IONCHANNEL_DROPBUCKET_NAME"
+	DEFAUL_WRITE_BUCKET              string = "files.ionchannel.io"
+	DEFAUL_WRITE_FOLDER              string = "/files/upload/"
 )
 
 func IsDebug() bool {
