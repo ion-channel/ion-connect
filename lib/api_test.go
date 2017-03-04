@@ -18,10 +18,11 @@ package ionconnect
 
 import (
 	"flag"
-
 	"github.com/codegangsta/cli"
+	"github.com/gomicro/penname"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/sirupsen/logrus"
 )
 
 var _ = Describe("Api", func() {
@@ -29,6 +30,24 @@ var _ = Describe("Api", func() {
 
 	BeforeEach(func() {
 		Debug = true
+	})
+
+	Context("If a command is run with Noop", func() {
+		It("should not operate", func() {
+			Debug = true
+			mockwriter := penname.New()
+			Logger.Out = mockwriter
+			Logger.Level = logrus.DebugLevel
+			app := cli.NewApp()
+			command := cli.Command{Name: "metadata", Usage: "ss"}
+			context := cli.NewContext(nil, nil, nil)
+			context.Command = command
+			context.App = app
+			api := Api{}
+			api.Noop(context)
+
+			Expect(string(mockwriter.Written)).To(ContainSubstring("Noop"))
+		})
 	})
 
 	Context("If we have a command request", func() {

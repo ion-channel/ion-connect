@@ -1,8 +1,8 @@
-hash: 0789683084c8340fec6e59b7f420ec6b1659072b364cb876a9f7cd430b9a183f
-updated: 2017-01-16T09:20:56.714799461-08:00
+hash: 5b53bad7abbe654dec970ab25e5dd05fcd4425a305ef3fad2a5a932ca55c356a
+updated: 2017-03-03T15:23:04.704779559-08:00
 imports:
 - name: github.com/aws/aws-sdk-go
-  version: 63ce630574a5ec05ecd8e8de5cea16332a5a684d
+  version: 6669bce73b4e3bc922ff5ea3a3983ede26e02b39
   subpackages:
   - aws
   - aws/awserr
@@ -44,7 +44,9 @@ imports:
   subpackages:
   - embedded
 - name: github.com/go-ini/ini
-  version: 6f66b0e091edb3c7b380f7c4f0f884274d550b67
+  version: 74bdc99692c3408cb103221e38675ce8fda0a718
+- name: github.com/gomicro/penname
+  version: c640305eb19d651fe8516aadbcf9bd3e50a5a152
 - name: github.com/google/go-querystring
   version: 2a60fc2ba6c19de80291203597d752e9ba58e4c0
   subpackages:
@@ -53,6 +55,8 @@ imports:
   version: 0b12d6b521d83fc7f755e7cfc1b1fbdd35a01a74
 - name: github.com/kardianos/osext
   version: 6e7f843663477789fac7c02def0d0909e969b4e5
+- name: github.com/sirupsen/logrus
+  version: 0208149b40d863d2c1a2f8fe5753096a9cf2cc8b
 - name: github.com/urfave/cli
   version: 0bdeddeeb0f650497d603c4ad7b20cfe685682f6
 - name: golang.org/x/crypto
