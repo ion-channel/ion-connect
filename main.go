@@ -22,6 +22,7 @@ import (
 
 	"github.com/codegangsta/cli"
 	"github.com/ion-channel/ion-connect/lib"
+	"github.com/sirupsen/logrus"
 )
 
 func getApp() *cli.App {
@@ -48,6 +49,10 @@ func setFlags(app *cli.App) *cli.App {
 }
 
 func before(c *cli.Context) error {
+	ionconnect.Logger.Out = os.Stdout
+	ionconnect.Logger.Level = logrus.DebugLevel
+	ionconnect.Logger.Formatter = &logrus.TextFormatter{}
+
 	if c.Bool("debug") {
 		ionconnect.Debug = true
 		ionconnect.Debugln("Turning debug on.")

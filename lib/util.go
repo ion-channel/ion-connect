@@ -31,22 +31,24 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/sirupsen/logrus"
 	"gopkg.in/mattes/go-expand-tilde.v1"
 )
 
 var (
-	Debug                            bool   = false
-	Insecure                         bool   = false
-	Test                             bool   = false
-	ION_HOME                         string = "~/.ionchannel/"
-	CREDENTIALS_FILE                 string = "~/.ionchannel/credentials"
-	CREDENTIALS_KEY_FIELD            string = "secret_key"
-	CONFIGURE_API_ENDPOINT_FIELD     string = "endpoint"
-	CREDENTIALS_ENVIRONMENT_VARIABLE string = "IONCHANNEL_SECRET_KEY"
-	ENDPOINT_ENVIRONMENT_VARIABLE    string = "IONCHANNEL_ENDPOINT_URL"
-	DROPBUCKET_ENVIRONMENT_VARIABLE  string = "IONCHANNEL_DROPBUCKET_NAME"
-	DEFAUL_WRITE_BUCKET              string = "files.ionchannel.io"
-	DEFAUL_WRITE_FOLDER              string = "/files/upload/"
+	Logger                           *logrus.Logger = logrus.New()
+	Debug                            bool           = false
+	Insecure                         bool           = false
+	Test                             bool           = false
+	ION_HOME                         string         = "~/.ionchannel/"
+	CREDENTIALS_FILE                 string         = "~/.ionchannel/credentials"
+	CREDENTIALS_KEY_FIELD            string         = "secret_key"
+	CONFIGURE_API_ENDPOINT_FIELD     string         = "endpoint"
+	CREDENTIALS_ENVIRONMENT_VARIABLE string         = "IONCHANNEL_SECRET_KEY"
+	ENDPOINT_ENVIRONMENT_VARIABLE    string         = "IONCHANNEL_ENDPOINT_URL"
+	DROPBUCKET_ENVIRONMENT_VARIABLE  string         = "IONCHANNEL_DROPBUCKET_NAME"
+	DEFAUL_WRITE_BUCKET              string         = "files.ionchannel.io"
+	DEFAUL_WRITE_FOLDER              string         = "/files/upload/"
 )
 
 func IsDebug() bool {
@@ -55,14 +57,13 @@ func IsDebug() bool {
 
 func Debugln(str string) {
 	if Debug {
-		fmt.Printf("DEBUG: %v\n", str)
+		Logger.Debug(str)
 	}
 }
 
 func Debugf(str string, args ...interface{}) {
 	if Debug {
-		var format = fmt.Sprintf(str, args...)
-		fmt.Printf("DEBUG: %v\n", format)
+		Logger.Debugf(str, args...)
 	}
 }
 

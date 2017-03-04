@@ -39,8 +39,8 @@ type Api struct {
 }
 
 func (api Api) Noop(ctx *cli.Context) {
-	cli.ShowCommandHelp(ctx, ctx.Command.Name)
 	Debugln("Noop")
+	cli.ShowCommandHelp(ctx, ctx.Command.Name)
 }
 
 func (api Api) HandleCommand(ctx *cli.Context) {
