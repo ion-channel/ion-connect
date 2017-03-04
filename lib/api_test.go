@@ -18,11 +18,11 @@ package ionconnect
 
 import (
 	"flag"
-	"github.com/sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/gomicro/penname"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/sirupsen/logrus"
 )
 
 var _ = Describe("Api", func() {
@@ -37,7 +37,7 @@ var _ = Describe("Api", func() {
 			Debug = true
 			mockwriter := penname.New()
 			Logger.Out = mockwriter
-      Logger.Level = logrus.DebugLevel
+			Logger.Level = logrus.DebugLevel
 			app := cli.NewApp()
 			command := cli.Command{Name: "metadata", Usage: "ss"}
 			context := cli.NewContext(nil, nil, nil)
