@@ -25,8 +25,8 @@ install:
 script:
   - export GOBIN=$GOPATH/bin
   - IONCHANNEL_SECRET_KEY="" make test
-  - go test -cover $(go list ./... | grep -v '/vendor/')
-  - make coverage
+  - IONCHANNEL_SECRET_KEY="" go test -cover $(go list ./... | grep -v '/vendor/')
+  - IONCHANNEL_SECRET_KEY="" make coverage
   - GOOS=windows go build -o ion-connect/windows/bin/ion-connect.exe ./
   - rice append --exec ion-connect/windows/bin/ion-connect.exe -i ./lib
   - GOOS=linux go build -o ion-connect/linux/bin/ion-connect ./
