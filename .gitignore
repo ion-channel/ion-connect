@@ -7,3 +7,4 @@ tmp
 .vscode
 debug
 coverage.out
+.idea
