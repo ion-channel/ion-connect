@@ -1,3 +1,5 @@
+SHELL=bash
+
 # Go Commands
 GOCMD=go
 GOBUILD=$(GOCMD) build
@@ -34,7 +36,7 @@ coverage:  ## Generates the code coverage from all the tests
 
 coverage_compfriendly:  ## Generates the code coverage in a computer friendly manner
 	@echo `make coverage | cut -d " " -f 3 | tr -d "%"`
-	
+
 crosscompile:  ## Build the binaries for the primary OS'
 	GOOS=linux $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP)-linux .
 	GOOS=darwin $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP)-darwin .
