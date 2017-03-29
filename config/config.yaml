@@ -418,7 +418,7 @@
             - name: type
               value: git
               required: True
-              usage: Type of project to create, supported values are currently [git|file].  Defaults to 'git'
+              usage: Type of project to create, supported values are currently [git|file|svn].  Defaults to 'git'
               type: string
             - name: branch
               value: master
