@@ -46,7 +46,7 @@ var _ = Describe("Params", func() {
 			args := []string{"ernie"}
 			params := PostParams{}.Generate(args, config.Args)
 			Expect(params).To(Equal(PostParams{RulesetId: "ernie"}))
-			Expect(params.String()).To(Equal("List=[], Project=, Url=, Type=, Checksum=, Id=, Text=, Version=, File="))
+			Expect(params.String()).To(Equal("List=[], Project=, Url=, Type=, Checksum=, Id=, Text=, Version=, File=, Username=, Password="))
 		})
 
 		It("should populate the fields from json data", func() {
