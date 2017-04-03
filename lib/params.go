@@ -92,6 +92,8 @@ type GetParams struct {
 	Active      bool                   `url:"active,omitempty"`
 	Flatten     bool                   `url:"flatten,omitempty"`
 	UseProxy    bool                   `url:"use_proxy,omitempty"`
+	Username    string                 `url:"username,omitempty"`
+	Password    string                 `url:"password,omitempty"`
 	Rules       []interface{}          `url:"rules,omitempty"`
 	RuleIds     []interface{}          `url:"rule_ids,omitempty"`
 	List        []interface{}          `url:"data,omitempty"`
@@ -145,7 +147,7 @@ func (params GetParams) UpdateFromMap(paramMap map[string]string) GetParams {
 }
 
 func (params PostParams) String() string {
-	return fmt.Sprintf("List=%s, Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, File=%s", params.List, params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version, params.File)
+	return fmt.Sprintf("List=%s, Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, File=%s, Username=%s, Password=%s", params.List, params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version, params.File, params.Username, params.Password)
 }
 
 func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {

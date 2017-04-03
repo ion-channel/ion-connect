@@ -392,12 +392,12 @@
               usage: Branch of project to create.  Defaults to 'master'
               type: string
             - name: username
-              value: 
+              value:
               required: False
               usage: Username for basic auth
               type: string
             - name: password
-              value: 
+              value:
               required: False
               usage: Password for basic auth
               type: string
@@ -716,7 +716,7 @@
               usage: set the start index of the vulnerabilities returned, defaults to 0
               required: False
               type: string
-              
+
           args:
             - name: product
               value:
