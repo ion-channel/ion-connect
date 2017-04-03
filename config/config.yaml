@@ -125,31 +125,6 @@
               value:
               usage: ID
               required: True
-        # - name: scan-dependencies
-        #   url: /scanner/scanDependencies
-        #   usage: scan a file for a list of dependencies
-        #   method: post
-        #   flags:
-        #     - name: type
-        #       value:
-        #       usage: The type of dependency file the file contents represents [gemfile|gemspec|package]
-        #       required: True
-        #       type: string
-        #   args:
-        #     - name: file
-        #       type: file
-        #       value:
-        #       usage: path/to/dependency/file
-        #       required: True
-        # - name: get-dependencies
-        #   url: /scanner/getDependencies
-        #   usage: returns the dependencies data for a given [id]
-        #   method: get
-        #   args:
-        #     - name: id
-        #       value:
-        #       usage: ID
-        #       required: True
 
     # airgap
     - name: airgap
@@ -202,15 +177,6 @@
               value:
               usage: TEXT
               required: True
-        # - name: get-languages
-        #   url: /metadata/getLanguages
-        #   usage: returns the languages parsed from the [text] input
-        #   method: post
-        #   args:
-        #     - name: text
-        #       value:
-        #       usage: TEXT
-        #       required: True
         - name: get-licenses
           url: /metadata/getLicenses
           usage: returns the licenses parsed from the [text] input
@@ -425,6 +391,16 @@
               required: True
               usage: Branch of project to create.  Defaults to 'master'
               type: string
+            - name: username
+              value: 
+              required: False
+              usage: Username for basic auth
+              type: string
+            - name: password
+              value: 
+              required: False
+              usage: Password for basic auth
+              type: string
           args:
             - name: name
               value:
@@ -465,34 +441,6 @@
               usage: The id of the account the projects are in
               required: True
               type: string
-
-    # mulch
-    # - name: repository
-    #   usage: set of commands for querying source repository data
-    #   subcommands:
-    #     - name: get-repository
-    #       url: /repository/getRepository
-    #       usage: get data surrounding a source repository specified by the NAME argument
-    #       method: get
-    #       args:
-    #         - name: name
-    #           value:
-    #           usage: NAME
-    #           required: True
-    #
-    #     - name: get-repository-by-dependency
-    #       url: /repository/getRepositoryByDependency
-    #       usage: get data surrounding a source repository by dependency specified by the NAME and TYPE arguments. Where TYPE can be one of [maven]
-    #       method: get
-    #       args:
-    #         - name: name
-    #           value:
-    #           usage: NAME
-    #           required: True
-    #         - name: type
-    #           value:
-    #           usage: TYPE
-    #           required: True
 
     - name: dependency
       usage: set of commands for querying dependency data
@@ -651,7 +599,6 @@
               usage: PROJECT
               required: True
 
-
     # animal
     - name: raw
       usage: set of commands for querying raw analysis and scan data
@@ -769,16 +716,7 @@
               usage: set the start index of the vulnerabilities returned, defaults to 0
               required: False
               type: string
-            #
-            # - name: text
-            #   usage: query vulnerabilities using [TEXT]
-            #   required: False
-            #   type: bool
-            #   args:
-            #     - name: text
-            #       value:
-            #       usage: TEXT
-            #       required: True
+              
           args:
             - name: product
               value:

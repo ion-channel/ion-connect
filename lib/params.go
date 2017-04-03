@@ -53,6 +53,8 @@ type PostParams struct {
 	Description string                 `json:"description,omitempty"`
 	Branch      string                 `json:"branch,omitempty"`
 	Source      string                 `json:"source,omitempty"`
+	Username    string                 `json:"username,omitempty"`
+	Password    string                 `json:"password,omitempty"`
 	Active      bool                   `json:"active,omitempty"`
 	Flatten     bool                   `json:"flatten,omitempty"`
 	UseProxy    bool                   `json:"use_proxy,omitempty"`
