@@ -41,7 +41,7 @@ type PostParams struct {
 	Version     string                 `json:"version,omitempty"`
 	File        string                 `json:"file,omitempty"`
 	ProjectId   string                 `json:"project_id,omitempty"`
-	AccountId   string                 `json:"account_id,omitempty"`
+	TeamId      string                 `json:"team_id,omitempty"`
 	AnalysisId  string                 `json:"analysis_id,omitempty"`
 	ScanId      string                 `json:"scan_id,omitempty"`
 	RulesetId   string                 `json:"ruleset_id,omitempty"`
@@ -77,7 +77,7 @@ type GetParams struct {
 	Offset      string                 `url:"offset,omitempty"`
 	File        string                 `url:"file,omitempty"`
 	ProjectId   string                 `url:"project_id,omitempty"`
-	AccountId   string                 `url:"account_id,omitempty"`
+	TeamId      string                 `url:"team_id,omitempty"`
 	AnalysisId  string                 `url:"analysis_id,omitempty"`
 	ScanId      string                 `url:"scan_id,omitempty"`
 	RulesetId   string                 `url:"ruleset_id,omitempty"`

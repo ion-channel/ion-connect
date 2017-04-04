@@ -131,7 +131,7 @@ COMMANDS:
    metadata    		set of commands for parsing metadata from text
    ruleset     		set of commands for managing rulesets
    analysis    		set of commands for querying for projects analysis scan results
-   project     		set of commands for manipulating projects for your account
+   project     		set of commands for manipulating projects for your team
    repository  		set of commands for querying source repository data
    dependency  		set of commands for querying dependency data
    mail			      set of commands for querying mail message data
