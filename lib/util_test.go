@@ -38,7 +38,7 @@ var _ = Describe("Util", func() {
 		It("should return MD5 if the file exists", func() {
 			md5, err := ComputeMd5("../test/analysisstatus.json")
 			Expect(err).To(BeNil())
-			Expect(md5).To(Equal("29803548a0cf1281078bb9d88621ddb8"))
+			Expect(md5).To(Equal("dc8f02f8d1bd65675a609b6a2b93a943"))
 		})
 	})
 
