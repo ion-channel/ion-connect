@@ -42,8 +42,8 @@ Then(/^the ion output should contain:$/) do |string|
   expect(@output).to include(string)
 end
 
-Given(/^an Ion Channel account id '(.*)'/) do |account_id|
-  @account_id = account_id
+Given(/^an Ion Channel team id '(.*)'/) do |team_id|
+  @team_id = team_id
 end
 
 Given(/a branch named (.*)/) do |branch|

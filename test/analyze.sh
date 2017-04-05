@@ -14,7 +14,7 @@
 # limitations under the License.
 
 PROJECT_ID=$1
-ACCOUNT_ID=$2
+TEAM_ID=$2
 
 if [ -z "$3" ]; then
   BRANCH=''
@@ -33,18 +33,18 @@ echo
 
 #RUN Analysis
 cool_echo "Begining compliance analysis of project ($PROJECT_ID)."
-ANALYSIS_ID=$(ion-connect scanner analyze-project --account-id $ACCOUNT_ID --project-id $PROJECT_ID $BRANCH | jq -r .id)
+ANALYSIS_ID=$(ion-connect scanner analyze-project --team-id $TEAM_ID --project-id $PROJECT_ID $BRANCH | jq -r .id)
 echo "Analysis requested the id is $ANALYSIS_ID"
 #Get the Analysis
 TIMEOUT=1200
 COUNTER=10
-STATUS=$(ion-connect scanner get-analysis-status --account-id $ACCOUNT_ID --project-id $PROJECT_ID $ANALYSIS_ID | jq -r .status)
+STATUS=$(ion-connect scanner get-analysis-status --team-id $TEAM_ID --project-id $PROJECT_ID $ANALYSIS_ID | jq -r .status)
 while [[ $STATUS = "accepted" ]]; do
 echo -n '.'
 COUNTER=$((COUNTER+10))
 if [[ $COUNTER -lt $TIMEOUT ]]; then
 sleep 5
-STATUS=$(ion-connect scanner get-analysis-status --account-id $ACCOUNT_ID --project-id $PROJECT_ID $ANALYSIS_ID | jq -r .status)
+STATUS=$(ion-connect scanner get-analysis-status --team-id $TEAM_ID --project-id $PROJECT_ID $ANALYSIS_ID | jq -r .status)
 else
 cool_echo "ERROR: ion-connect has timed out waiting for analysis to finish"
 exit 1
@@ -56,7 +56,7 @@ cool_echo "All project scans have finished."
 cool_echo "Evaluating analysis for compliance."
 
 #Get the results of the analysis
-ANALYSIS=$(ion-connect analysis get-analysis --account-id $ACCOUNT_ID --project-id $PROJECT_ID $ANALYSIS_ID)
+ANALYSIS=$(ion-connect analysis get-analysis --team-id $TEAM_ID --project-id $PROJECT_ID $ANALYSIS_ID)
 PASSED="$(echo $ANALYSIS | jq -r .passed)"
 ANALYZED_BRANCH="$(echo $ANALYSIS | jq -r .branch)"
 OUTPUT=$(echo $ANALYSIS | jq -r .scan_summaries[].summary)
