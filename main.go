@@ -119,7 +119,7 @@ func getCommands(configCommands []ionconnect.Command, noop interface{}, handler 
 	commands[len(commands)-1] = cli.Command{
 		Name:   "configure",
 		Usage:  "setup the Ion Channel secret key for later use",
-		Action: handler,
+		Action: ionconnect.HandleConfigure,
 	}
 	return commands
 }
