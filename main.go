@@ -29,7 +29,7 @@ func getApp() *cli.App {
 	app := cli.NewApp()
 	app.Name = "ion-connect"
 	app.Usage = "Interact with Ion Channel"
-	app.Version = "0.9.0"
+	app.Version = "0.9.1"
 	return app
 }
 
@@ -119,7 +119,7 @@ func getCommands(configCommands []ionconnect.Command, noop interface{}, handler 
 	commands[len(commands)-1] = cli.Command{
 		Name:   "configure",
 		Usage:  "setup the Ion Channel secret key for later use",
-		Action: handler,
+		Action: ionconnect.HandleConfigure,
 	}
 	return commands
 }
