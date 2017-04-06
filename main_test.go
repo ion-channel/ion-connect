@@ -17,7 +17,7 @@
 package main
 
 import (
-	// "fmt"
+	"fmt"
 	// "os"
 	"flag"
 	"github.com/codegangsta/cli"
@@ -196,6 +196,7 @@ var _ = Describe("Main", func() {
 
 	Context("when a command is configured", func() {
 		It("should generate a cli command without flags", func() {
+			expectedFunction := ionconnect.HandleConfigure
 			expectedCommand := cli.Command{
 				Name:        "somecommand",
 				ShortName:   "",
@@ -215,7 +216,12 @@ var _ = Describe("Main", func() {
 				Method: "POST",
 				Url:    "/some/url",
 			}
-			Expect(getCommands([]ionconnect.Command{command}, nil, nil)[0]).To(Equal(expectedCommand))
+			commands := getCommands([]ionconnect.Command{command}, nil, nil)
+			Expect(len(commands)).To(Equal(2))
+			function := commands[1].Action
+
+			Expect(fmt.Sprintf("%p", function)).To(Equal(fmt.Sprintf("%p", expectedFunction)))
+			Expect(commands[0]).To(Equal(expectedCommand))
 		})
 	})
 	AfterEach(func() {
