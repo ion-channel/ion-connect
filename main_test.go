@@ -196,7 +196,6 @@ var _ = Describe("Main", func() {
 
 	Context("when a command is configured", func() {
 		It("should generate a cli command without flags", func() {
-			expectedFunction := ionconnect.HandleConfigure
 			expectedCommand := cli.Command{
 				Name:        "somecommand",
 				ShortName:   "",
@@ -218,10 +217,24 @@ var _ = Describe("Main", func() {
 			}
 			commands := getCommands([]ionconnect.Command{command}, nil, nil)
 			Expect(len(commands)).To(Equal(2))
+			Expect(commands[0]).To(Equal(expectedCommand))
+		})
+
+		It("have the default command for handling configure", func() {
+			expectedFunction := ionconnect.HandleConfigure
+
+			command := ionconnect.Command{
+				Name:   "somecommand",
+				Usage:  "someusage",
+				Method: "POST",
+				Url:    "/some/url",
+			}
+
+			commands := getCommands([]ionconnect.Command{command}, nil, nil)
+			Expect(len(commands)).To(Equal(2))
 			function := commands[1].Action
 
 			Expect(fmt.Sprintf("%p", function)).To(Equal(fmt.Sprintf("%p", expectedFunction)))
-			Expect(commands[0]).To(Equal(expectedCommand))
 		})
 	})
 	AfterEach(func() {
