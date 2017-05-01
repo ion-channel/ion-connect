@@ -1,5 +1,7 @@
 # Ion Connect
 
+[![Join the chat at https://gitter.im/ion-channel/ion-connect](https://badges.gitter.im/ion-channel/ion-connect.svg)](https://gitter.im/ion-channel/ion-connect?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 CLI tool for interacting with the Ion Channel Service/API
 
 Master Branch
