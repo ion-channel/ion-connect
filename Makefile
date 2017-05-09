@@ -1,22 +1,25 @@
-SHELL=bash
+# System Setup
+SHELL = bash
 
-# Go Commands
+# Go Stuff
 GOCMD=go
 GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test -v $(shell $(GOCMD) list ./... | grep -v /vendor/)
 GOFMT=go fmt
-
-# Optional User Provided Parameters
 CGO_ENABLED ?= 0
 GOOS ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
+
+# General Vars
+APP := $(shell basename $(PWD) | tr '[:upper:]' '[:lower:]')
+DATE := $(shell date -u +%Y-%m-%d%Z%H:%M:%S)
+VERSION := 0.0.1
+COVERAGE_DIR=coverage
+
+# Build System Vars
 TRAVIS_BUILD_NUMBER ?= 1
 BUILD_NUMBER ?= $(TRAVIS_BUILD_NUMBER)
-
-# Calculated values for building
-DATE := $(shell date -u +%Y-%m-%d%Z%H:%M:%S)
-APP := $(shell basename $(PWD) | tr '[:upper:]' '[:lower:]')
-BUILD_VERSION := 0.0.1-$(BUILD_NUMBER)
+BUILD_VERSION := $(VERSION)-$(BUILD_NUMBER)
 
 .PHONY: all build clean test fmt
 
