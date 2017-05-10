@@ -1,49 +1,59 @@
-SHELL=bash
+# System Setup
+SHELL = bash
 
-# Go Commands
+# Go Stuff
 GOCMD=go
 GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test -v $(shell $(GOCMD) list ./... | grep -v /vendor/)
 GOFMT=go fmt
-
-# Optional User Provided Parameters
 CGO_ENABLED ?= 0
 GOOS ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
+
+# General Vars
+APP := $(shell basename $(PWD) | tr '[:upper:]' '[:lower:]')
+DATE := $(shell date -u +%Y-%m-%d%Z%H:%M:%S)
+VERSION := 0.0.1
+COVERAGE_DIR=coverage
+
+# Build System Vars
 TRAVIS_BUILD_NUMBER ?= 1
 BUILD_NUMBER ?= $(TRAVIS_BUILD_NUMBER)
+BUILD_VERSION := $(VERSION)-$(BUILD_NUMBER)
 
-# Calculated values for building
-DATE := $(shell date -u +%Y-%m-%d%Z%H:%M:%S)
-APP := $(shell basename $(PWD) | tr '[:upper:]' '[:lower:]')
-BUILD_VERSION := 0.0.1-$(BUILD_NUMBER)
-
-.PHONY: all build clean test fmt
-
+.PHONY: all
 all: test build
 
+.PHONY: build
 build: fmt ## Build the project
-	$(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP) .
+	CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP) .
 
+.PHONY: clean
 clean:  ## Clean out all generated files
 	-@$(GOCLEAN)
-	-@rm $(APP)-linux
-	-@rm $(APP)-darwin
-	-@rm $(APP)-windows
+	-@rm -f $(APP)-linux $(APP)-darwin $(APP)-windows
+	-@rm -rf coverage
 
+.PHONY: coverage
 coverage:  ## Generates the code coverage from all the tests
-	@numbers=0; sum=0; for j in $$(go test -cover $$(go list ./... | grep -v '/vendor/') 2>&1 | sed -e 's/\[no\ test\ files\]/0\.0s\ coverage:\ 0%/g' -e 's/[[:space:]]/\ /g' | tr -d "%" | cut -d ":" -f 2 | cut -d " " -f 2); do ((numbers+=1)) && sum=$$(echo $$sum + $$j | bc); done; avg=$$(echo "$$sum / $$numbers" | bc -l); printf "Total Coverage: %.1f%%\n" $$avg
+	@echo "Total Coverage: $$(make coverage_compfriendly)%"
 
+.PHONY: coverage_compfriendly
 coverage_compfriendly:  ## Generates the code coverage in a computer friendly manner
-	@echo `make coverage | cut -d " " -f 3 | tr -d "%"`
+	-@mkdir -p $(COVERAGE_DIR)
+	@for j in $$(go list ./... | grep -v '/vendor/' | grep -v '/ext/'); do go test -covermode=count -coverprofile=$(COVERAGE_DIR)/$$(basename $$j).out $$j > /dev/null 2>&1; done
+	@echo 'mode: count' > $(COVERAGE_DIR)/full.out
+	@tail -q -n +2 $(COVERAGE_DIR)/*.out >> $(COVERAGE_DIR)/full.out
+	@$(GOCMD) tool cover -func=coverage/full.out | tail -n 1 | sed -e 's/^.*statements)[[:space:]]*//' -e 's/%//'
 
+.PHONY: crosscompile
 crosscompile:  ## Build the binaries for the primary OS'
 	GOOS=linux $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP)-linux .
 	GOOS=darwin $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP)-darwin .
 	GOOS=windows $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP)-windows .
 
-dockerize:  ## Create a docker image of the project
-	-@rm -rf $(APP)
+.PHONY: dockerize
+dockerize: clean  ## Create a docker image of the project
 	CGO_ENABLED=0 GOOS=linux make build
 	$(GOPATH)/bin/rice append --exec ion-connect -i ./lib
 	docker build \
@@ -51,13 +61,17 @@ dockerize:  ## Create a docker image of the project
 		--build-arg VERSION=$(BUILD_VERSION) \
 		-t ionchannel/$(APP):latest .
 
+.PHONY: help
 help:  ## Show This Help
 	@for line in $$(cat Makefile | grep "##" | grep -v "grep" | sed  "s/:.*##/:/g" | sed "s/\ /!/g"); do verb=$$(echo $$line | cut -d ":" -f 1); desc=$$(echo $$line | cut -d ":" -f 2 | sed "s/!/\ /g"); printf "%-30s--%s\n" "$$verb" "$$desc"; done
 
+.PHONY: test
 test: unit_test ## Run all available tests
 
+.PHONY: unit_test
 unit_test:  ## Run unit tests
 	$(GOTEST)
 
+.PHONY: fmt
 fmt:  ## Run go fmt
 	$(GOFMT)
