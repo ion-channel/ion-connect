@@ -26,7 +26,7 @@ all: test build
 
 .PHONY: build
 build: fmt ## Build the project
-	$(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP) .
+	CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP) .
 
 .PHONY: clean
 clean:  ## Clean out all generated files
@@ -53,8 +53,7 @@ crosscompile:  ## Build the binaries for the primary OS'
 	GOOS=windows $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP)-windows .
 
 .PHONY: dockerize
-dockerize:  ## Create a docker image of the project
-	-@rm -rf $(APP)
+dockerize: clean  ## Create a docker image of the project
 	CGO_ENABLED=0 GOOS=linux make build
 	$(GOPATH)/bin/rice append --exec ion-connect -i ./lib
 	docker build \
