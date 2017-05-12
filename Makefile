@@ -24,6 +24,14 @@ BUILD_VERSION := $(VERSION)-$(BUILD_NUMBER)
 .PHONY: all
 all: test build
 
+.PHONY: analyze
+analyze:  ## Perform an analysis of the project
+	@echo analysis tasks have not been added yet
+	curl -s https://s3.amazonaws.com/public.ionchannel.io/files/scripts/travis_analyze_project.sh | bash
+	curl -s https://s3.amazonaws.com/public.ionchannel.io/files/scripts/travis_add_go_coverage.sh | bash
+	curl -s https://s3.amazonaws.com/public.ionchannel.io/files/scripts/travis_compliance_check.sh | bash
+
+
 .PHONY: build
 build: fmt ## Build the project
 	CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP) .
