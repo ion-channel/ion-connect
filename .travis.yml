@@ -34,6 +34,7 @@ script:
   - rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
   - cp ion-connect/$(echo "$(uname)" | perl -ne 'print lc')/bin/ion-connect $GOPATH/bin
   - IONCHANNEL_ENDPOINT_URL=$CI_ENDPOINT_URL cucumber -t ~@expected_failure
+  - make analyze
   - VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi`
   - FILE_NAME=ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER
   - cp bin/process-ion-job.sh ion-connect/linux/bin/
