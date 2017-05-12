@@ -80,6 +80,10 @@ test: unit_test ## Run all available tests
 unit_test:  ## Run unit tests
 	$(GOTEST)
 
+.PHONY: integration_test
+integration_test:  ## Run integration tests
+	cucumber -t ~@expected_failure
+
 .PHONY: fmt
 fmt:  ## Run go fmt
 	$(GOFMT)
