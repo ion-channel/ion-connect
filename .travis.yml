@@ -37,9 +37,9 @@ script:
   - fpm -s dir -t deb -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C
     compiled/ion-connect/linux
 before_deploy:
-  - mkdir -p ion-connect/$TRAVIS_TAG
-  - cp $FILE_NAME.tar.gz ion-connect/$TRAVIS_TAG/
-  - cp $FILE_NAME.tar.gz ion-connect/ion-connect-latest.tar.gz
+  - mkdir -p deploy/$TRAVIS_TAG
+  - cp $FILE_NAME.tar.gz deploy/$TRAVIS_TAG/
+  - cp $FILE_NAME.tar.gz deploy/ion-connect-latest.tar.gz
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     make dockerize;
@@ -52,7 +52,7 @@ deploy:
     region: us-east-1
     skip_cleanup: true
     upload-dir: files/ion-connect
-    local_dir: ion-connect
+    local_dir: deploy
     on:
       tags: true
 after_deploy:
