@@ -23,28 +23,19 @@ install:
   - glide install
   - gem install fpm
 script:
-  - export GOBIN=$GOPATH/bin
-  - IONCHANNEL_SECRET_KEY="" make test
-  - IONCHANNEL_SECRET_KEY="" make coverage
-  - GOOS=windows go build -o ion-connect/windows/bin/ion-connect.exe ./
-  - rice append --exec ion-connect/windows/bin/ion-connect.exe -i ./lib
-  - GOOS=linux go build -o ion-connect/linux/bin/ion-connect ./
-  - rice append --exec ion-connect/linux/bin/ion-connect -i ./lib
-  - GOOS=darwin go build -o ion-connect/darwin/bin/ion-connect ./
-  - rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
-  - cp ion-connect/$(echo "$(uname)" | perl -ne 'print lc')/bin/ion-connect $GOPATH/bin
-  - IONCHANNEL_ENDPOINT_URL=$CI_ENDPOINT_URL cucumber -t ~@expected_failure
-  - make analyze
+  - IONCHANNEL_SECRET_KEY="" make unit_test
+  - IONCHANNEL_ENDPOINT_URL=$CI_ENDPOINT_URL make integration_test
+  - make crosscompile
+  - rice append --exec compiled/ion-connect/windows/ion-connect.exe -i ./lib
+  - rice append --exec compiled/ion-connect/darwin/ion-connect -i ./lib
+  - rice append --exec compiled/ion-connect/linux/ion-connect -i ./lib
   - VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi`
   - FILE_NAME=ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER
-  - cp bin/process-ion-job.sh ion-connect/linux/bin/
-  - cp bin/process-ion-job.sh ion-connect/darwin/bin/
-  - tar cfvz $FILE_NAME.tar.gz ion-connect
-  - ls -l
+  - tar cfvz $FILE_NAME.tar.gz compiled/ion-connect
   - fpm -s dir -t rpm -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C
-    ion-connect/linux
+    compiled/ion-connect/linux
   - fpm -s dir -t deb -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C
-    ion-connect/linux
+    compiled/ion-connect/linux
 before_deploy:
   - mkdir -p ion-connect/$TRAVIS_TAG
   - cp $FILE_NAME.tar.gz ion-connect/$TRAVIS_TAG/
