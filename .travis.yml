@@ -24,11 +24,12 @@ install:
   - gem install fpm
 script:
   - IONCHANNEL_SECRET_KEY="" make unit_test
-  - IONCHANNEL_ENDPOINT_URL=$CI_ENDPOINT_URL make integration_test
   - make crosscompile
   - rice append --exec compiled/ion-connect/windows/ion-connect.exe -i ./lib
   - rice append --exec compiled/ion-connect/darwin/ion-connect -i ./lib
   - rice append --exec compiled/ion-connect/linux/ion-connect -i ./lib
+  - cp compiled/ion-connect/$(echo "$(uname)" | perl -ne 'print lc')/bin/ion-connect $GOPATH/bin
+  - IONCHANNEL_ENDPOINT_URL=$CI_ENDPOINT_URL make integration_test
   - VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi`
   - FILE_NAME=ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER
   - tar cfvz $FILE_NAME.tar.gz compiled/ion-connect
