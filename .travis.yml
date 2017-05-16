@@ -30,6 +30,7 @@ script:
   - rice append --exec compiled/ion-connect/linux/ion-connect -i ./lib
   - go install
   - IONCHANNEL_ENDPOINT_URL=$CI_ENDPOINT_URL make integration_test
+  - make analyze
 before_deploy:
   - VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi`
   - FILE_NAME=ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER
