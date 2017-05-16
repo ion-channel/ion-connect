@@ -26,7 +26,6 @@ all: test build
 
 .PHONY: analyze
 analyze:  ## Perform an analysis of the project
-	@echo analysis tasks have not been added yet
 	curl -s https://s3.amazonaws.com/public.ionchannel.io/files/scripts/travis_analyze_project.sh | bash
 	curl -s https://s3.amazonaws.com/public.ionchannel.io/files/scripts/travis_add_go_coverage.sh | bash
 	curl -s https://s3.amazonaws.com/public.ionchannel.io/files/scripts/travis_compliance_check.sh | bash
