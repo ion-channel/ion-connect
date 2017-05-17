@@ -19,7 +19,7 @@ script:
   - rice append --exec compiled/ion-connect/linux/ion-connect -i ./lib
   - make dockerize
   - go install
-  - IONCHANNEL_ENDPOINT_URL=$CI_ENDPOINT_URL make integration_test
+  - IONCHANNEL_ENDPOINT_URL=$CI_ENDPOINT_URL IONCHANNEL_SECRET_KEY=$CI_SECRET_KEY make integration_test
   - make analyze
 
 before_deploy:
