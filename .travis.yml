@@ -17,6 +17,7 @@ script:
   - rice append --exec compiled/ion-connect/windows/ion-connect.exe -i ./lib
   - rice append --exec compiled/ion-connect/darwin/ion-connect -i ./lib
   - rice append --exec compiled/ion-connect/linux/ion-connect -i ./lib
+  - make dockerize
   - go install
   - IONCHANNEL_ENDPOINT_URL=$CI_ENDPOINT_URL make integration_test
   - make analyze
@@ -35,7 +36,6 @@ before_deploy:
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    make dockerize;
     docker login -e="$HUB_DOCKER_EMAIL" -u="$HUB_DOCKER_USER" -p="$HUB_DOCKER_PASSWORD";
     docker push ionchannel/ion-connect;
     fi
