@@ -24,6 +24,13 @@ BUILD_VERSION := $(VERSION)-$(BUILD_NUMBER)
 .PHONY: all
 all: test build
 
+.PHONY: analyze
+analyze:  ## Perform an analysis of the project
+	curl -s https://s3.amazonaws.com/public.ionchannel.io/files/scripts/travis_analyze_project.sh | bash
+	curl -s https://s3.amazonaws.com/public.ionchannel.io/files/scripts/travis_add_go_coverage.sh | bash
+	curl -s https://s3.amazonaws.com/public.ionchannel.io/files/scripts/travis_compliance_check.sh | bash
+
+
 .PHONY: build
 build: fmt ## Build the project
 	CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP) .
@@ -41,16 +48,16 @@ coverage:  ## Generates the code coverage from all the tests
 .PHONY: coverage_compfriendly
 coverage_compfriendly:  ## Generates the code coverage in a computer friendly manner
 	-@mkdir -p $(COVERAGE_DIR)
-	@for j in $$(go list ./... | grep -v '/vendor/' | grep -v '/ext/'); do go test -covermode=count -coverprofile=$(COVERAGE_DIR)/$$(basename $$j).out $$j > /dev/null 2>&1; done
+	@for j in $$(go list ./... | grep -v '/vendor/' | grep -v '/ext/'); do IONCHANNEL_SECRET_KEY="" go test -covermode=count -coverprofile=$(COVERAGE_DIR)/$$(basename $$j).out $$j > /dev/null 2>&1; done
 	@echo 'mode: count' > $(COVERAGE_DIR)/full.out
 	@tail -q -n +2 $(COVERAGE_DIR)/*.out >> $(COVERAGE_DIR)/full.out
 	@$(GOCMD) tool cover -func=coverage/full.out | tail -n 1 | sed -e 's/^.*statements)[[:space:]]*//' -e 's/%//'
 
 .PHONY: crosscompile
 crosscompile:  ## Build the binaries for the primary OS'
-	GOOS=linux $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP)-linux .
-	GOOS=darwin $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP)-darwin .
-	GOOS=windows $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP)-windows .
+	GOOS=linux $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o compiled/ion-connect/linux/$(APP) .
+	GOOS=darwin $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o compiled/ion-connect/darwin/$(APP) .
+	GOOS=windows $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o compiled/ion-connect/windows/$(APP).exe .
 
 .PHONY: dockerize
 dockerize: clean  ## Create a docker image of the project
@@ -72,6 +79,14 @@ test: unit_test ## Run all available tests
 unit_test:  ## Run unit tests
 	$(GOTEST)
 
+.PHONY: integration_test
+integration_test:  ## Run integration tests
+	cucumber -t ~@expected_failure
+
 .PHONY: fmt
 fmt:  ## Run go fmt
 	$(GOFMT)
+
+.PHONY: travis_setup
+travis_setup:  ## Setup the travis environment
+	@sudo apt-get install -y rpm alien dpkg-dev debhelper build-essential jq
