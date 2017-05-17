@@ -86,3 +86,7 @@ integration_test:  ## Run integration tests
 .PHONY: fmt
 fmt:  ## Run go fmt
 	$(GOFMT)
+
+.PHONY: travis_setup
+travis_setup:  ## Setup the travis environment
+	@sudo apt-get install -y rpm alien dpkg-dev debhelper build-essential jq
