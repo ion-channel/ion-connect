@@ -1,19 +1,11 @@
 sudo: false
 services:
   - docker
-addons:
-  apt:
-    packages:
-    - rpm
-    - alien
-    - dpkg-dev
-    - debhelper
-    - build-essential
-    - jq
 language: go
 go:
   - 1.6.2
 install:
+  - make travis_setup
   - bundle
   - go get github.com/GeertJohan/go.rice
   - go get github.com/GeertJohan/go.rice/rice
