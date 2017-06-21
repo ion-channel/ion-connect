@@ -88,7 +88,7 @@ var _ = Describe("Api", func() {
 			config, _ := GetConfig().FindSubCommandConfig("test", "test1")
 			response, body := api.sendRequest("test", "test1", context, config.Args, make(map[string]string), "get")
 			Expect(response.Status).To(Equal("404 Not Found"))
-			Expect(body["message"]).To(Equal("API not found with these values"))
+			Expect(body["message"]).To(Equal("no API found with those values"))
 		})
 
 		It("should process the response body", func() {
@@ -103,7 +103,7 @@ var _ = Describe("Api", func() {
 
 			config, _ := GetConfig().FindSubCommandConfig("test", "test1")
 			response, body := api.sendRequest("test", "test1", context, config.Args, make(map[string]string), "get")
-			Expect(api.processResponse(response, body)).To(ContainSubstring("API not found with these values"))
+			Expect(api.processResponse(response, body)).To(ContainSubstring("no API found with those values"))
 		})
 	})
 
