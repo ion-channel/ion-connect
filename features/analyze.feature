@@ -33,7 +33,7 @@ Feature: Projects
     Given previous output
     And a variable 'ruleset_id' is set from the previous output from location 'id'
     And an Ion Channel team id 'test-team'
-    When I successfully run with 'team_id,ruleset_id' `ion-connect project create-project --team-id team_id --ruleset-id ruleset_id --active sonar-auth-geoaxis "https://gitlab.devops.geointservices.io/DevOps/sonar-auth-geoaxis.git" "Sonar Plugin for auth with geoaxis"`
+    When I successfully run with 'team_id,ruleset_id' `ion-connect project create-project --team-id team_id --ruleset-id ruleset_id --active sonar-auth-geoaxis "git@gitlab.devops.geointservices.io:DevOps/sonar-auth-geoaxis.git" "Sonar Plugin for auth with geoaxis"`
     Then the ion output should contain:
     """
     "active": true
@@ -44,7 +44,7 @@ Feature: Projects
     """
     Then the ion output should contain:
     """
-    "source": "https://gitlab.devops.geointservices.io/DevOps/sonar-auth-geoaxis.git"
+    "source": "git@gitlab.devops.geointservices.io:DevOps/sonar-auth-geoaxis.git"
     """
 
   Scenario: Analyze the project
