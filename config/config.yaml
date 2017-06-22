@@ -356,7 +356,6 @@
               required: True
               type: string
 
-
     # projects
     - name: project
       usage: set of commands for manipulating projects for your team
@@ -440,6 +439,16 @@
               value:
               usage: The id of the team the projects are in
               required: True
+              type: string
+            - name: limit
+              value:
+              usage: The number of projects to return
+              required: False
+              type: string
+            - name: offset
+              value:
+              usage: The start offset of the list of projects to return
+              required: False
               type: string
 
     - name: dependency
