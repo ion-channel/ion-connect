@@ -33,7 +33,7 @@ Feature: Projects
     Given previous output
     And a variable 'ruleset_id' is set from the previous output from location 'id'
     And an Ion Channel team id 'test-team'
-    When I successfully run with 'team_id,ruleset_id' `ion-connect project create-project --team-id team_id --ruleset-id ruleset_id --active sonar-auth-geoaxis "git@gitlab.devops.geointservices.io:DevOps/sonar-auth-geoaxis.git" "Sonar Plugin for auth with geoaxis"`
+    When I successfully run with 'team_id,ruleset_id' `ion-connect project create-project --team-id team_id --ruleset-id ruleset_id --active java-lew "git@github.com:ion-channel/java-lew.git" "Java Lew"`
     Then the ion output should contain:
     """
     "active": true
@@ -44,7 +44,7 @@ Feature: Projects
     """
     Then the ion output should contain:
     """
-    "source": "git@gitlab.devops.geointservices.io:DevOps/sonar-auth-geoaxis.git"
+    "source": "git@github.com:ion-channel/java-lew.git"
     """
 
   Scenario: Analyze the project
@@ -54,7 +54,7 @@ Feature: Projects
     When I successfully run with 'team_id,project_id' `./test/analyze.sh project_id team_id`
     Then the ion output should contain:
     """
-    Finished about_yml scan for sonar-auth-geoaxis, valid .about.yml found.
+    Finished about_yml scan for java-lew, valid .about.yml found.
     """
     Then the ion output should contain:
     """
@@ -65,17 +65,17 @@ Feature: Projects
     Given previous output
     And a variable 'project_id' is set from the previous output from location 'id'
     And an Ion Channel team id 'test-team'
-    And a branch named b979b868ab320e0236b1e7c5f1530ae2401083ab
+    And a branch named a39b99095ddb9d6dd299f13cbcf9dd17fd5fb8c3
     When I successfully run with 'team_id,project_id,branch' `./test/analyze.sh project_id team_id branch`
     Then the ion output should contain:
     """
-    b979b868ab320e0236b1e7c5f1530ae2401083ab
+    a39b99095ddb9d6dd299f13cbcf9dd17fd5fb8c3
     """
     Then the ion output should contain:
     """
-    Finished about_yml scan for sonar-auth-geoaxis, valid .about.yml found.
+    Finished about_yml scan for java-lew, valid .about.yml found.
     """
     Then the ion output should contain:
     """
-    Compliance analysis completed successfully, your project at b979b868ab320e0236b1e7c5f1530ae2401083ab is compliant!
+    Compliance analysis completed successfully, your project at a39b99095ddb9d6dd299f13cbcf9dd17fd5fb8c3 is compliant!
     """
