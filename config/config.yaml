@@ -451,6 +451,31 @@
               required: False
               type: string
 
+        - name: add-tag
+          url: /project/addTag
+          usage: adds a tag value to the given project
+          method: post
+          flags:
+            - name: team-id
+              value:
+              usage: The id of the team the project is in
+              required: True
+              type: string
+            - name: project-id
+              value:
+              usage: The id of the project to add the tag
+              required: True
+              type: string
+          args:
+            - name: name
+              value:
+              usage: NAME
+              required: True
+            - name: version
+              value:
+              usage: VERSION
+              required: False
+
     - name: dependency
       usage: set of commands for querying dependency data
       subcommands:
