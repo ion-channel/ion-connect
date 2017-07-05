@@ -451,8 +451,8 @@
               required: False
               type: string
 
-        - name: add-tag
-          url: /project/addTag
+        - name: add-alias
+          url: /project/addAlias
           usage: adds a tag value to the given project
           method: post
           flags:
