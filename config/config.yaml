@@ -360,6 +360,21 @@
     - name: project
       usage: set of commands for manipulating projects for your team
       subcommands:
+        - name: create-projects-csv
+          url: /project/createProjectsCSV
+          usage: Upload a CSV formated list of projects to create
+          method: file
+          flags:
+            - name: team-id
+              value:
+              usage: The id of the team for the projects
+              required: True
+              type: string
+          args:
+            - name: file
+              value:
+              usage: FILE
+              required: True
         - name: create-project
           url: /project/createProject
           usage: Create a new project defined by the NAME SOURCE [BRANCH]
