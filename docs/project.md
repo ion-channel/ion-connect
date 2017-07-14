@@ -14,10 +14,32 @@ https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/ion-connect-late
 
 The package contains binaries compiled for linux, windows and mac os (darwin).
 
+## API Token
 
 Once you get `ion-connect` properly installed and in your `PATH` you are ready to run the `configure` command.
-The `configure` command will allow you to specify your api key (provided by Ion Channel along with your team id) and any default properties.
+The `configure` command will allow you to specify your api key which is generated inside the Ion Channel console and any default properties.
 
+You can get an api key by logging in to the Ion Channel console.
+
+![Login](login.png)
+
+
+Once you have logged in you then click the user button that is denoted with the first letter of your username.
+
+![User Settings](user-settings.png)
+
+From the users setting select the `Tokens` tab and click `Add Token` button.
+
+![New Token](new-token.png)
+
+You will now be presented with a dialog containing your new token. From here you can either click `Copy`
+button or highlight the token text and copy.
+
+![Copy Token](copy-token.png)
+
+## Ion Connect Configure
+
+With your token copied to the clipboard open a terminal app and run command `ion-connect configure`.  You will presented with a prompt to enter your Api Key (Token).  At this point you will paste the token into the terminal (on macOS command+v works) and hit enter.
 
 ```
 $ ion-connect configure
