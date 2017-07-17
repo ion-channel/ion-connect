@@ -117,31 +117,30 @@ NAME:
    ion-connect - Interact with Ion Channel
 
 USAGE:
-   ./ion-connect [global options] command [command options] [arguments...]
-
+   ion-connect [global options] command [command options] [arguments...]
+   
 VERSION:
-   0.7.0
-
+   0.10.2
+   
 COMMANDS:
-   scanner     		set of commands for effecting artifacts or source code
-   airgap      		set of commands for moving artifacts or source code
-   metadata    		set of commands for parsing metadata from text
-   ruleset     		set of commands for managing rulesets
-   analysis    		set of commands for querying for projects analysis scan results
-   project     		set of commands for manipulating projects for your team
-   repository  		set of commands for querying source repository data
-   dependency  		set of commands for querying dependency data
-   mail			      set of commands for querying mail message data
-   community   		set of commands for querying a project's community data
-   raw      		  set of commands for querying raw analysis and scan data
-   vulnerability  set of commands for querying vulnerabilities
-   configure   		setup the Ion Channel secret key for later use
-   help, h     		Shows a list of commands or help for one command
+     scanner        set of commands for effecting artifacts or source code
+     airgap         set of commands for moving artifacts or source code
+     metadata       set of commands for parsing metadata from text
+     ruleset        set of commands for managing rulesets
+     analysis       set of commands for querying for projects analysis scan results
+     project        set of commands for manipulating projects for your team
+     dependency     set of commands for querying dependency data
+     mail           set of commands for querying mail message data
+     community      set of commands for querying a project's community data
+     raw            set of commands for querying raw analysis and scan data
+     vulnerability  set of commands for querying vulnerabilities
+     configure      setup the Ion Channel secret key for later use
+     help, h        Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --debug     		display debug logging
-   --insecure  		allow for insecure https connections
-   --help, -h  		show help
+   --debug        display debug logging
+   --insecure     allow for insecure https connections
+   --help, -h     show help
    --version, -v  print the version
 ```
 
