@@ -20,7 +20,7 @@
   commands:
     # scanner
     - name: scanner
-      usage: set of commands for effecting artifacts or source code
+      usage: set of commands for affecting artifacts or source code
       subcommands:
         - name: analyze-project
           url: /scanner/analyzeProject
