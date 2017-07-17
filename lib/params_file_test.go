@@ -17,38 +17,27 @@
 package ionconnect
 
 import (
-	"flag"
-
-	"github.com/codegangsta/cli"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Params_Files", func() {
 	var (
-		context *cli.Context
 		config  Command
-		set     *flag.FlagSet
 	)
 
 	BeforeEach(func() {
 		Debug = true
-		set = flag.NewFlagSet("set", 0)
-		command := cli.Command{Name: "scan-artifact-url"}
-		context = cli.NewContext(nil, set, nil)
-		context.Command = command
-
-		config, _ = GetConfig().FindSubCommandConfig("scanner", "scan-artifact-url")
+		config, _ = GetConfig().FindSubCommandConfig("test", "url")
 	})
 
 	Context("When scanning a file", func() {
 		It("should populate the checksum based on the file automatically, and populate the checksum param", func() {
-			args := []string{"fart", "file://../test/analysisstatus.json"}
-			//args := []string{"{\"project\":\"fart\"}", "[\"url\",\"file://../test/analysisstatus.json\"]"}
+			args := []string{"test", "file://../test/analysisstatus.json"}
 			Debugf("Params_Files_Test post args : %s", args)
 			params := PostParams{}.Generate(args, config.Args)
 			Debugf("Params_Files_Test : %s", params)
-			Expect(params.String()).To(Equal("List=[], Project=fart, Url=https://s3.amazonaws.com/files.ionchannel.io/files/upload/analysisstatus.json, Type=, Checksum=dc8f02f8d1bd65675a609b6a2b93a943, Id=, Text=, Version=, File=, Username=, Password="))
+			Expect(params.String()).To(Equal("List=[], Project=, Url=https://s3.amazonaws.com/files.ionchannel.io/files/upload/analysisstatus.json, Type=, Checksum=dc8f02f8d1bd65675a609b6a2b93a943, Id=, Text=, Version=, File=, Username=, Password="))
 		})
 	})
 

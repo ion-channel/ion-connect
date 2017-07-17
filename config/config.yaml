@@ -773,6 +773,19 @@
     - name: test
       usage: set of commands testing
       subcommands:
+        - name: url
+          url: /url
+          method: post
+          args:
+            - name: name
+              value:
+              usage: NAME
+              required: True
+            - name: url
+              value:
+              usage: URL
+              type: url
+              required: True
         - name: test1
           url: /
           usage: tests only
