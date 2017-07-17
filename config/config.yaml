@@ -96,36 +96,7 @@
               value:
               usage: SCAN_TYPE
               required: True
-        - name: scan-artifact-url
-          url: /scanner/scanArtifactUrl
-          usage: scan an artifact from a remote url
-          method: post
-          flags:
-            - name: checksum
-              value:
-              usage: CHECKSUM
-              required: false
-              type: string
-          args:
-            - name: project
-              value:
-              usage: PROJECT
-              required: True
-            - name: url
-              value:
-              usage: URL
-              type: url
-              required: True
-        - name: get-scan
-          url: /scanner/getScan
-          usage: returns the status data for a given [id]
-          method: get
-          args:
-            - name: id
-              value:
-              usage: ID
-              required: True
-
+    #TODO: Add the ability to create a project from a url (local or remote)
     # airgap
     - name: airgap
       usage: set of commands for moving artifacts or source code
@@ -802,6 +773,19 @@
     - name: test
       usage: set of commands testing
       subcommands:
+        - name: url
+          url: /url
+          method: post
+          args:
+            - name: name
+              value:
+              usage: NAME
+              required: True
+            - name: url
+              value:
+              usage: URL
+              type: url
+              required: True
         - name: test1
           url: /
           usage: tests only
