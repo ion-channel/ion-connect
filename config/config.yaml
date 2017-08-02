@@ -684,6 +684,16 @@
               usage: The id of the project the analysis resides
               required: True
               type: string
+            - name: limit
+              value:
+              usage: The number of analyses to return
+              required: False
+              type: string
+            - name: offset
+              value:
+              usage: The start offset of the list of analyses to return
+              required: False
+              type: string
 
     # vulnerability
     - name: vulnerability
