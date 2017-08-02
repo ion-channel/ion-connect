@@ -46,6 +46,7 @@ deploy:
     region: us-east-1
     skip_cleanup: true
     upload-dir: files/ion-connect
+    acl: public_read
     local_dir: deploy
     on:
       tags: true
