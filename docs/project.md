@@ -313,7 +313,7 @@ ion-connect scanner get-analysis-status --team-id <your-team-id> --project-id <s
 You can see from the above output, the analysis finished with several scans also completing.  Once the analysis is finished you can request the evaluated analysis results with an additional command.  The details below show that the analysis completed:
 
 ```
-$ ion-connect analysis get-analysis --team-id <your-team-id> --project-id <some-project-id> <some-analysis-id>
+$ ion-connect report get-analysis --team-id <your-team-id> --project-id <some-project-id> <some-analysis-id>
 {
   "team_id": "<your-team-id>",
   "branch": "master",
