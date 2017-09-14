@@ -29,17 +29,17 @@ end
 When(/^I run the command to analyze a project$/) do
   team = 'test-team'
 
-  @output = `./test/analyze.sh #{@project_id} #{team}`.chomp
+  @output = `./test/analyze.sh #{@project_id} #{team} #{@branch}`.chomp
 end
 
 When(/^I run the command to create a project$/) do
   team = 'test-team'
   project_name = 'java-lew'
-  branch = "master-#{Time.now.to_i.to_s + rand(1000).to_s}"
+  @branch = "master-#{Time.now.to_i.to_s + rand(1000).to_s}"
   source = 'git@github.com:ion-channel/java-lew.git'
   description = 'Java Lew'
 
-  @output = `ion-connect project create-project --team-id #{team} --ruleset-id #{@ruleset_id} --active --branch #{branch} #{project_name} "#{source}" "#{description}"`.chomp
+  @output = `ion-connect project create-project --team-id #{team} --ruleset-id #{@ruleset_id} --active --branch #{@branch} #{project_name} "#{source}" "#{description}"`.chomp
 end
 
 When(/^I run the command to create a ruleset$/) do
@@ -54,7 +54,8 @@ end
 
 Then(/^I see a response showing the project is analyzed$/) do
   expect(@output).to include('Finished about_yml scan for java-lew, valid .about.yml found.')
-  expect(@output).to include('Compliance analysis completed successfully, your project at master is compliant!')
+  expect(@output).to include('Compliance analysis completed successfully')
+  expect(@output).to include('is compliant!')
 
   # Only so the `Given previous output` step works. Once those are gone, remove this.
   $output = @output
