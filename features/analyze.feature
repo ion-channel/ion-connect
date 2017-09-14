@@ -1,35 +1,14 @@
-# Copyright [2016] [Selection Pressure]
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http:#www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 Feature: Projects
-  Scenario: Create a ruleset
-    Given an Ion Channel team id 'test-team'
-    When I successfully run with 'team_id' `ion-connect ruleset create-ruleset --team-id team_id test-ruleset "this is a test ruleset" '["c30b917956c3040daa2c571ef31dbe3a"]'`
-    Then the ion output should contain:
-    """
-    rules
-    """
-    Then the ion output should contain:
-    """
-    "name": "test-ruleset"
-    """
-    Then the ion output should contain:
-    """
-    "description": "The project source is required to include a valid .about.yml file.",
-    """
+  As a user
+  I want to perform actions on projects
+  So that I can manage my projects
 
-  Scenario: Create a project
+  Scenario: A user creates a ruleset
+    Given I have a set of rules
+    When I run the command to create a ruleset
+    Then I see a response showing the ruleset is created
+
+  Scenario: A users creates a project
     Given I have a ruleset id
     When I run the command to create a project
     Then I see a response showing the project is created
