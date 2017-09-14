@@ -14,7 +14,7 @@ end
 
 When(/^I run the command to create a project$/) do
   team = 'test-team'
-  project_name = 'java-lew'
+  project_name = "java-lew-#{Time.now.to_i.to_s + rand(1000).to_s}"
   source = 'git@github.com:ion-channel/java-lew.git'
   description = 'Java Lew'
 
