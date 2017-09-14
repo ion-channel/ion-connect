@@ -30,22 +30,9 @@ Feature: Projects
     """
 
   Scenario: Create a project
-    Given previous output
-    And a variable 'ruleset_id' is set from the previous output from location 'id'
-    And an Ion Channel team id 'test-team'
-    When I successfully run with 'team_id,ruleset_id' `ion-connect project create-project --team-id team_id --ruleset-id ruleset_id --active java-lew "git@github.com:ion-channel/java-lew.git" "Java Lew"`
-    Then the ion output should contain:
-    """
-    "active": true
-    """
-    Then the ion output should contain:
-    """
-    "branch": "master"
-    """
-    Then the ion output should contain:
-    """
-    "source": "git@github.com:ion-channel/java-lew.git"
-    """
+    Given I have a ruleset id
+    When I run the command to create a project
+    Then I see a response showing the project is created
 
   Scenario: Analyze the project
     Given previous output
