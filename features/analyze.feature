@@ -13,19 +13,10 @@ Feature: Projects
     When I run the command to create a project
     Then I see a response showing the project is created
 
-  Scenario: Analyze the project
-    Given previous output
-    And a variable 'project_id' is set from the previous output from location 'id'
-    And an Ion Channel team id 'test-team'
-    When I successfully run with 'team_id,project_id' `./test/analyze.sh project_id team_id`
-    Then the ion output should contain:
-    """
-    Finished about_yml scan for java-lew, valid .about.yml found.
-    """
-    Then the ion output should contain:
-    """
-    Compliance analysis completed successfully, your project at master is compliant!
-    """
+  Scenario: A user analyzes a project
+    Given I have a project
+    When I run the command to analyze a project
+    Then I see a response showing the project is analyzed
 
   Scenario: Analyze the project with branch/hash
     Given previous output

@@ -1,12 +1,22 @@
 # Givens
 
+Given(/^I have a project$/) do
+  steps %Q{
+    Given I have a ruleset id
+    When I run the command to create a project
+  }
+
+  json = JSON.parse(@output)
+  @project_id = json['id']
+end
+
 Given(/^I have a ruleset id$/) do
   steps %Q{
     Given I have a set of rules
     When I run the command to create a ruleset
   }
 
-  json = JSON.parse($output)
+  json = JSON.parse(@output)
   @ruleset_id = json['id']
 end
 
@@ -15,6 +25,12 @@ Given(/^I have a set of rules$/) do
 end
 
 # Whens
+
+When(/^I run the command to analyze a project$/) do
+  team = 'test-team'
+
+  @output = `./test/analyze.sh #{@project_id} #{team}`.chomp
+end
 
 When(/^I run the command to create a project$/) do
   team = 'test-team'
@@ -35,6 +51,14 @@ When(/^I run the command to create a ruleset$/) do
 end
 
 # Thens
+
+Then(/^I see a response showing the project is analyzed$/) do
+  expect(@output).to include('Finished about_yml scan for java-lew, valid .about.yml found.')
+  expect(@output).to include('Compliance analysis completed successfully, your project at master is compliant!')
+
+  # Only so the `Given previous output` step works. Once those are gone, remove this.
+  $output = @output
+end
 
 Then(/^I see a response showing the project is created$/) do
   expect(@output).to include('"active": true')
