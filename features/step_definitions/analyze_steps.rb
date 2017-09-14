@@ -24,7 +24,7 @@ end
 
 Then(/^I see a response showing the project is created$/) do
   expect(@output).to include('"active": true')
-  expect(@output).to include('"branch": "master"')
+  expect(@output).to include('"branch": "master-')
   expect(@output).to include('"source": "git@github.com:ion-channel/java-lew.git"')
   $output = @output
 end
