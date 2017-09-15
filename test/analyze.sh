@@ -56,7 +56,7 @@ cool_echo "All project scans have finished."
 cool_echo "Evaluating analysis for compliance."
 
 #Get the results of the analysis
-ANALYSIS=$(ion-connect analysis get-analysis --team-id $TEAM_ID --project-id $PROJECT_ID $ANALYSIS_ID)
+ANALYSIS=$(ion-connect report get-analysis --team-id $TEAM_ID --project-id $PROJECT_ID $ANALYSIS_ID)
 PASSED="$(echo $ANALYSIS | jq -r .passed)"
 ANALYZED_BRANCH="$(echo $ANALYSIS | jq -r .branch)"
 OUTPUT=$(echo $ANALYSIS | jq -r .scan_summaries[].summary)

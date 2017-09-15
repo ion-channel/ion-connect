@@ -249,12 +249,12 @@
               required: True
               type: string
 
-    # analysis
-    - name: analysis
-      usage: set of commands for querying for projects analysis scan results
+    # report
+    - name: report
+      usage: set of commands for querying for projects report results
       subcommands:
         - name: get-scan
-          url: /analysis/getScan
+          url: /report/getScan
           usage: get the values for a given scan id
           method: get
           flags:
@@ -279,7 +279,7 @@
               required: True
 
         - name: get-analysis
-          url: /analysis/getAnalysis
+          url: /report/getAnalysis
           usage: get the values for a given analysis id
           method: get
           flags:
@@ -300,7 +300,7 @@
               required: True
 
         - name: get-project
-          url: /analysis/getProject
+          url: /report/getProject
           usage: get the values for a given project id
           method: get
           flags:
@@ -317,7 +317,7 @@
 
 
         - name: get-projects
-          url: /analysis/getProjects
+          url: /report/getProjects
           usage: get the projects for an team
           method: get
           flags:
