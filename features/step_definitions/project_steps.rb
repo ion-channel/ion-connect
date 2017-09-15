@@ -42,7 +42,7 @@ end
 Then(/^I see the projects details$/) do
   expect(@output).to include('"active": true')
   expect(@output).to include('"branch": "master-')
-  expect(@output).to include('"source": "https://gitlab.devops.geointservices.io/DevOps/sonar-auth-geoaxis.git"')
+  expect(@output).to include('"source": "git@github.com:ion-channel/java-lew.git"')
 
   # Only so the `Given previous output` step works. Once those are gone, remove this.
   $output = @output
