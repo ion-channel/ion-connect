@@ -17,15 +17,17 @@ script:
   - rice append --exec compiled/ion-connect/windows/ion-connect.exe -i ./lib
   - rice append --exec compiled/ion-connect/darwin/ion-connect -i ./lib
   - rice append --exec compiled/ion-connect/linux/ion-connect -i ./lib
+  - VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi`
+  - FILE_NAME=ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER
+  - tar cfvz $FILE_NAME.tar.gz compiled/ion-connect
   - make dockerize
   - go install
   - IONCHANNEL_ENDPOINT_URL=$CI_ENDPOINT_URL IONCHANNEL_SECRET_KEY=$CI_SECRET_KEY make integration_test
   - make analyze
 
 before_deploy:
-  - VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi`
-  - FILE_NAME=ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER
-  - tar cfvz $FILE_NAME.tar.gz compiled/ion-connect
+  - rm -rf compiled
+  - tar xvf $FILE_NAME.tar.gz
   - fpm -s dir -t rpm -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C
     compiled/ion-connect/linux
   - fpm -s dir -t deb -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C
