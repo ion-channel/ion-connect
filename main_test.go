@@ -20,11 +20,12 @@ import (
 	"fmt"
 	// "os"
 	"flag"
+	"testing"
+
 	"github.com/codegangsta/cli"
 	"github.com/ion-channel/ion-connect/lib"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"testing"
 )
 
 func TestMain(t *testing.T) {
@@ -91,6 +92,7 @@ var _ = Describe("Main", func() {
 			before(c)
 			Expect(ionconnect.Insecure).To(BeFalse())
 			Expect(ionconnect.Debug).To(BeFalse())
+			Expect(1).To(Equal(2))
 		})
 	})
 
