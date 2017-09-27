@@ -92,7 +92,6 @@ var _ = Describe("Main", func() {
 			before(c)
 			Expect(ionconnect.Insecure).To(BeFalse())
 			Expect(ionconnect.Debug).To(BeFalse())
-			Expect(1).To(Equal(2))
 		})
 	})
 
