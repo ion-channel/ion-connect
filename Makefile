@@ -26,10 +26,9 @@ all: test build
 
 .PHONY: analyze
 analyze:  ## Perform an analysis of the project
-	curl -s https://s3.amazonaws.com/public.ionchannel.io/files/scripts/travis_analyze_project.sh | bash
-	curl -s https://s3.amazonaws.com/public.ionchannel.io/files/scripts/travis_add_go_coverage.sh | bash
-	curl -s https://s3.amazonaws.com/public.ionchannel.io/files/scripts/travis_compliance_check.sh | bash
-
+	echo "Downloading latest Ionize"
+	-@wget --quiet https://s3.amazonaws.com/public.ionchannel.io/files/ionize/linux/bin/ionize && chmod +x ionize
+	./ionize analyze
 
 .PHONY: build
 build: fmt ## Build the project
@@ -40,10 +39,11 @@ clean:  ## Clean out all generated files
 	-@$(GOCLEAN)
 	-@rm -f $(APP)-linux $(APP)-darwin $(APP)-windows
 	-@rm -rf coverage
+	-@rm coverage.txt
 
 .PHONY: coverage
 coverage:  ## Generates the code coverage from all the tests
-	@echo "Total Coverage: $$(make coverage_compfriendly)%"
+	@echo "Total Coverage: $$(make --no-print-directory coverage_compfriendly | tee coverage.txt)%"
 
 .PHONY: coverage_compfriendly
 coverage_compfriendly:  ## Generates the code coverage in a computer friendly manner

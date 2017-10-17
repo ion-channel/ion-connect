@@ -12,7 +12,7 @@ install:
   - gem install fpm
 
 script:
-  - IONCHANNEL_SECRET_KEY="" make unit_test && make crosscompile && rice append --exec compiled/ion-connect/windows/ion-connect.exe -i ./lib && rice append --exec compiled/ion-connect/darwin/ion-connect -i ./lib && rice append --exec compiled/ion-connect/linux/ion-connect -i ./lib && VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi` && FILE_NAME=ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER && tar cfvz $FILE_NAME.tar.gz compiled/ion-connect && make dockerize && go install && IONCHANNEL_ENDPOINT_URL=$CI_ENDPOINT_URL IONCHANNEL_SECRET_KEY=$CI_SECRET_KEY make integration_test && make analyze
+  - IONCHANNEL_SECRET_KEY="" make unit_test && make crosscompile && rice append --exec compiled/ion-connect/windows/ion-connect.exe -i ./lib && rice append --exec compiled/ion-connect/darwin/ion-connect -i ./lib && rice append --exec compiled/ion-connect/linux/ion-connect -i ./lib && VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi` && FILE_NAME=ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER && tar cfvz $FILE_NAME.tar.gz compiled/ion-connect && make dockerize && go install && IONCHANNEL_ENDPOINT_URL=$CI_ENDPOINT_URL IONCHANNEL_SECRET_KEY=$CI_SECRET_KEY make integration_test && make coverage analyze
 
 before_deploy:
   - rm -rf compiled
