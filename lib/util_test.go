@@ -72,7 +72,7 @@ var _ = Describe("Util", func() {
 
 	Context("When a param is a file type", func() {
 		It("should upload a file and change the param to a url", func() {
-			url := ConvertFileToUrl("file://./util.go")
+			url := ConvertFileToURL("file://./util.go")
 			Expect(url).To(Equal("https://s3.amazonaws.com/files.ionchannel.io/files/upload/util.go"))
 		})
 	})

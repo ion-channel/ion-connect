@@ -133,7 +133,7 @@ func deferer() {
 func main() {
 	app := getApp()
 
-	var api = ionconnect.Api{ionconnect.GetConfig()}
+	var api = ionconnect.API{Config: ionconnect.GetConfig()}
 
 	app = setFlags(app)
 

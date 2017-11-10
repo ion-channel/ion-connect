@@ -45,7 +45,7 @@ var _ = Describe("Params", func() {
 		It("should populate the fields from the context flags", func() {
 			args := []string{"ernie"}
 			params := PostParams{}.Generate(args, config.Args)
-			Expect(params).To(Equal(PostParams{RulesetId: "ernie"}))
+			Expect(params).To(Equal(PostParams{RulesetID: "ernie"}))
 			Expect(params.String()).To(Equal("List=[], Project=, Url=, Type=, Checksum=, Id=, Text=, Version=, File=, Username=, Password="))
 		})
 
@@ -72,7 +72,7 @@ var _ = Describe("Params", func() {
 				"offset": "105",
 			}
 			params := GetParams{}.Generate(args, config.Args).UpdateFromMap(options)
-			Expect(params).To(Equal(GetParams{RulesetId: "ernie", Limit: "22", Offset: "105"}))
+			Expect(params).To(Equal(GetParams{RulesetID: "ernie", Limit: "22", Offset: "105"}))
 			Expect(params.String()).To(Equal("limit=22&offset=105&ruleset_id=ernie"))
 		})
 	})

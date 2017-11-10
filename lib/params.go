@@ -27,24 +27,26 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
+//Params needs a comment
 type Params interface {
 }
 
+//PostParams needs a comment
 type PostParams struct {
 	Project     string                 `json:"project,omitempty"`
 	Product     string                 `json:"product,omitempty"`
-	Url         string                 `json:"url,omitempty"`
+	URL         string                 `json:"url,omitempty"`
 	Type        string                 `json:"type,omitempty"`
 	Checksum    string                 `json:"checksum,omitempty"`
-	Id          string                 `json:"id,omitempty"`
+	ID          string                 `json:"id,omitempty"`
 	Text        string                 `json:"text,omitempty"`
 	Version     string                 `json:"version,omitempty"`
 	File        string                 `json:"file,omitempty"`
-	ProjectId   string                 `json:"project_id,omitempty"`
-	TeamId      string                 `json:"team_id,omitempty"`
-	AnalysisId  string                 `json:"analysis_id,omitempty"`
-	ScanId      string                 `json:"scan_id,omitempty"`
-	RulesetId   string                 `json:"ruleset_id,omitempty"`
+	ProjectID   string                 `json:"project_id,omitempty"`
+	TeamID      string                 `json:"team_id,omitempty"`
+	AnalysisID  string                 `json:"analysis_id,omitempty"`
+	ScanID      string                 `json:"scan_id,omitempty"`
+	RulesetID   string                 `json:"ruleset_id,omitempty"`
 	BuildNumber string                 `json:"build_number,omitempty"`
 	Status      string                 `json:"status,omitempty"`
 	Results     map[string]interface{} `json:"results,omitempty"`
@@ -64,23 +66,24 @@ type PostParams struct {
 	SkipAck     bool                   `json:"skip_ack,omitempty"`
 }
 
+//GetParams needs a comment
 type GetParams struct {
 	Project     string                 `url:"project,omitempty"`
 	Product     string                 `url:"product,omitempty"`
-	Url         string                 `url:"url,omitempty"`
+	URL         string                 `url:"url,omitempty"`
 	Type        string                 `url:"type,omitempty"`
 	Checksum    string                 `url:"checksum,omitempty"`
-	Id          string                 `url:"id,omitempty"`
+	ID          string                 `url:"id,omitempty"`
 	Text        string                 `url:"text,omitempty"`
 	Version     string                 `url:"version,omitempty"`
 	Limit       string                 `url:"limit,omitempty"`
 	Offset      string                 `url:"offset,omitempty"`
 	File        string                 `url:"file,omitempty"`
-	ProjectId   string                 `url:"project_id,omitempty"`
-	TeamId      string                 `url:"team_id,omitempty"`
-	AnalysisId  string                 `url:"analysis_id,omitempty"`
-	ScanId      string                 `url:"scan_id,omitempty"`
-	RulesetId   string                 `url:"ruleset_id,omitempty"`
+	ProjectID   string                 `url:"project_id,omitempty"`
+	TeamID      string                 `url:"team_id,omitempty"`
+	AnalysisID  string                 `url:"analysis_id,omitempty"`
+	ScanID      string                 `url:"scan_id,omitempty"`
+	RulesetID   string                 `url:"ruleset_id,omitempty"`
 	BuildNumber string                 `url:"build_number,omitempty"`
 	Status      string                 `url:"status,omitempty"`
 	Results     map[string]interface{} `url:"results,omitempty"`
@@ -120,6 +123,7 @@ func (params GetParams) String() string {
 	return urlValues.Encode()
 }
 
+//Generate needs a comment
 func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
 	for index, arg := range args {
 		if argConfigs[index].Type != "object" && argConfigs[index].Type != "array" {
@@ -132,6 +136,7 @@ func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
 	return params
 }
 
+//UpdateFromMap needs a comment
 func (params GetParams) UpdateFromMap(paramMap map[string]string) GetParams {
 	for param, value := range paramMap {
 		Debugf("Setting %s to %s", strings.Replace(strings.Title(param), "-", "", -1), value)
@@ -147,9 +152,10 @@ func (params GetParams) UpdateFromMap(paramMap map[string]string) GetParams {
 }
 
 func (params PostParams) String() string {
-	return fmt.Sprintf("List=%s, Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, File=%s, Username=%s, Password=%s", params.List, params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version, params.File, params.Username, params.Password)
+	return fmt.Sprintf("List=%s, Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, File=%s, Username=%s, Password=%s", params.List, params.Project, params.URL, params.Type, params.Checksum, params.ID, params.Text, params.Version, params.File, params.Username, params.Password)
 }
 
+//Generate needs a comment
 func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
 	var md5hash string
 	for index, arg := range args {
@@ -189,7 +195,7 @@ func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
 					fmt.Printf("Failed to generate MD5 from url %s. Make sure the file exists and permissions are correct. (%s)", arg, err)
 					Exit(1)
 				}
-				arg = ConvertFileToUrl(arg)
+				arg = ConvertFileToURL(arg)
 			}
 			Debugf("Using string parser for (%s) = (%s)", argConfigs[index].Name, arg)
 			if arg == "" {

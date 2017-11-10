@@ -20,24 +20,27 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"log"
+	"os"
+
 	"github.com/GeertJohan/go.rice"
 	"github.com/codegangsta/cli"
 	"golang.org/x/crypto/ssh/terminal"
 	"gopkg.in/yaml.v2"
-	"log"
-	"os"
 )
 
+//Command needs a comment
 type Command struct {
 	Name        string
 	Usage       string
 	Method      string
-	Url         string
+	URL         string
 	Flags       []Flag
 	Args        Args
 	Subcommands []Command
 }
 
+//GetArgsUsage needs a comment
 func (command Command) GetArgsUsage() string {
 	var buffer bytes.Buffer
 	for _, arg := range command.Args {
@@ -57,6 +60,7 @@ func (command Command) GetArgsUsage() string {
 	return buffer.String()
 }
 
+//GetArgsForFlags needs a comment
 func (command Command) GetArgsForFlags(flagName string) Args {
 	for _, flag := range command.Flags {
 		if flag.Name == flagName {
@@ -67,6 +71,7 @@ func (command Command) GetArgsForFlags(flagName string) Args {
 	return []Arg{}
 }
 
+//GetFlagsWithArgs needs a comment
 func (command Command) GetFlagsWithArgs() []Flag {
 	flags := []Flag{}
 	for _, flag := range command.Flags {
@@ -78,6 +83,7 @@ func (command Command) GetFlagsWithArgs() []Flag {
 	return flags
 }
 
+//GetArgsUsageWithFlags needs a comment
 func (command Command) GetArgsUsageWithFlags(flagName string) string {
 	var buffer bytes.Buffer
 
@@ -101,6 +107,7 @@ func (command Command) GetArgsUsageWithFlags(flagName string) string {
 	return buffer.String()
 }
 
+//GetRequiredArgsCount needs a comment
 func (args Args) GetRequiredArgsCount() int {
 	var count int
 	for _, arg := range args {
@@ -113,10 +120,12 @@ func (args Args) GetRequiredArgsCount() int {
 	return count
 }
 
+//GetDefaultRequiredArgsCount needs a comment
 func (command Command) GetDefaultRequiredArgsCount() int {
 	return command.Args.GetRequiredArgsCount()
 }
 
+//Arg needs a comment
 type Arg struct {
 	Name     string
 	Value    string
@@ -125,8 +134,10 @@ type Arg struct {
 	Type     string
 }
 
+//Args needs a comment
 type Args []Arg
 
+//Flag  needs a comment
 type Flag struct {
 	Name     string
 	Value    string
@@ -136,6 +147,7 @@ type Flag struct {
 	Args     Args
 }
 
+//Config needs a comment
 type Config struct {
 	Version  string
 	Endpoint string
@@ -143,6 +155,7 @@ type Config struct {
 	Commands []Command
 }
 
+//GetConfig needs a comment
 func GetConfig() Config {
 	configBox, err := rice.FindBox("../config")
 	if err != nil {
@@ -168,6 +181,7 @@ func GetConfig() Config {
 	return config
 }
 
+//FindCommandConfig needs a comment
 func (config Config) FindCommandConfig(commandName string) (Command, error) {
 	for _, command := range config.Commands {
 		if command.Name == commandName {
@@ -178,14 +192,16 @@ func (config Config) FindCommandConfig(commandName string) (Command, error) {
 	return Command{}, errors.New("Command not found")
 }
 
-func (config Config) ProcessUrlFromConfig(commandName string, subcommandName string, params interface{}) (string, error) {
+//ProcessURLFromConfig needs a comment
+func (config Config) ProcessURLFromConfig(commandName string, subcommandName string, params interface{}) (string, error) {
 	subCommandConfig, err := config.FindSubCommandConfig(commandName, subcommandName)
 	if err != nil {
 		return "", err
 	}
-	return subCommandConfig.Url, nil
+	return subCommandConfig.URL, nil
 }
 
+//FindSubCommandConfig needs a comment
 func (config Config) FindSubCommandConfig(commandName string, subcommandName string) (Command, error) {
 	command, err := config.FindCommandConfig(commandName)
 	if err != nil {
@@ -201,18 +217,20 @@ func (config Config) FindSubCommandConfig(commandName string, subcommandName str
 	return Command{}, errors.New("Subcommand not found")
 }
 
+//LoadEndpoint needs a comment
 func (config Config) LoadEndpoint() string {
-	endpoint := os.Getenv(ENDPOINT_ENVIRONMENT_VARIABLE)
+	endpoint := os.Getenv(EndpointEnvironmentVariable)
 	if endpoint == "" {
 		Debugf("Endpoint env var not found returning from config file (%s)", config.Endpoint)
 
 		return config.Endpoint
-	} else {
-		Debugf("Credential env var found (%s)", endpoint)
-		return endpoint
 	}
+
+	Debugf("Credential env var found (%s)", endpoint)
+	return endpoint
 }
 
+//HandleConfigure needs a comment
 func HandleConfigure(context *cli.Context) {
 	currentSecretKey := LoadCredential()
 	truncatedSecretKey := currentSecretKey
@@ -230,29 +248,30 @@ func HandleConfigure(context *cli.Context) {
 	}
 }
 
+//LoadCredential needs a comment
 func LoadCredential() string {
-	credential := os.Getenv(CREDENTIALS_ENVIRONMENT_VARIABLE)
+	credential := os.Getenv(CredentialsEnvironmentVariable)
 	if credential == "" {
 		Debugln("Credential env var not found looking in file")
-		exists, _ := PathExists(ION_HOME)
+		exists, _ := PathExists(IonHome)
 		if exists {
-			bytes, _ := ReadBytesFromFile(CREDENTIALS_FILE)
+			bytes, _ := ReadBytesFromFile(CredentialsFile)
 			credentials := make(map[string]string)
 			yaml.Unmarshal([]byte(bytes), &credentials)
-			return credentials[CREDENTIALS_KEY_FIELD]
-		} else {
-			MkdirAll(ION_HOME, 0775)
-			return ""
+			return credentials[CredentialsKeyField]
 		}
-	} else {
-		Debugln("Credential env var found")
-		return credential
+
+		MkdirAll(IonHome, 0775)
+		return ""
 	}
+
+	Debugln("Credential env var found")
+	return credential
 }
 
 func saveCredentials(secretKey string) {
 	credentials := make(map[string]string)
-	credentials[CREDENTIALS_KEY_FIELD] = secretKey
+	credentials[CredentialsKeyField] = secretKey
 	yamlCredentials, _ := yaml.Marshal(&credentials)
-	WriteLinesToFile(CREDENTIALS_FILE, []string{string(yamlCredentials)}, 0600)
+	WriteLinesToFile(CredentialsFile, []string{string(yamlCredentials)}, 0600)
 }
