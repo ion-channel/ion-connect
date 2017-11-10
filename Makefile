@@ -87,7 +87,6 @@ unit_test:  ## Run unit tests
 integration_test:  ## Run integration tests
 	cucumber -t ~@expected_failure
 
-
 .PHONY: fmt
 fmt: ## Run gofmt
 	@echo "checking formatting..."
