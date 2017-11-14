@@ -33,18 +33,18 @@ import (
 	"github.com/dghubble/sling"
 )
 
-//API needs a comment
+//API representing a way of connecting to our API
 type API struct {
 	Config Config
 }
 
-//Noop needs a comment
+//Noop fulfills a requirement of 3rd party library functionality we don't wish to use at the moment
 func (api API) Noop(ctx *cli.Context) {
 	Debugln("Noop")
 	cli.ShowCommandHelp(ctx, ctx.Command.Name)
 }
 
-//HandleCommand needs a comment
+//HandleCommand loads, preps, runs, and provides output for a given command and arguments
 func (api API) HandleCommand(ctx *cli.Context) {
 	Debugf("Performing command %s", ctx.Command.FullName())
 	command := strings.Split(ctx.Command.FullName(), " ")[0]

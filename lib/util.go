@@ -53,26 +53,26 @@ var (
 	defaultWriteFolder             = "/files/upload/"
 )
 
-//IsDebug needs a comment
+//IsDebug is for verbose debugging
 func IsDebug() bool {
 	return Debug
 }
 
-//Debugln needs a comment
+//Debugln is deprecated; prefer to set log level and filter log output
 func Debugln(str string) {
 	if Debug {
 		Logger.Debug(str)
 	}
 }
 
-//Debugf needs a comment
+//Debugf is deprecated; prefer to set log level filter log output
 func Debugf(str string, args ...interface{}) {
 	if Debug {
 		Logger.Debugf(str, args...)
 	}
 }
 
-//WriteLinesToFile needs a comment
+//WriteLinesToFile flushes contents to file
 func WriteLinesToFile(filename string, lines []string, mode os.FileMode) {
 	filename, _ = tilde.Expand(filename)
 	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, mode)
@@ -91,14 +91,14 @@ func WriteLinesToFile(filename string, lines []string, mode os.FileMode) {
 	w.Flush()
 }
 
-//ReadBytesFromFile needs a comment
+//ReadBytesFromFile wraps ioutil.ReadFile
 func ReadBytesFromFile(filename string) ([]byte, error) {
 	filename, _ = tilde.Expand(filename)
 	bytes, err := ioutil.ReadFile(filename)
 	return bytes, err
 }
 
-//ComputeMd5 needs a comment
+//ComputeMd5 returns a hash of a URL or an error
 func ComputeMd5(path string) (string, error) {
 	u, err := url.Parse(path)
 	if err != nil {
@@ -118,7 +118,7 @@ func ComputeMd5(path string) (string, error) {
 	return s, nil
 }
 
-//ConvertFileToURL needs a comment
+//ConvertFileToURL possibly copies a path to an S3 bucket and returns the URL
 func ConvertFileToURL(path string) string {
 	u, err := url.Parse(path)
 	if err != nil {
@@ -159,7 +159,7 @@ func ConvertFileToURL(path string) string {
 	return path
 }
 
-//PathExists needs a comment
+//PathExists indicates if a path exists
 func PathExists(path string) (bool, error) {
 	path, _ = tilde.Expand(path)
 	_, err := os.Stat(path)
@@ -172,13 +172,13 @@ func PathExists(path string) (bool, error) {
 	return true, err
 }
 
-//MkdirAll needs a comment
+//MkdirAll creates all directories in a path
 func MkdirAll(path string, perm os.FileMode) error {
 	path, _ = tilde.Expand(path)
 	return os.MkdirAll(path, perm)
 }
 
-//Exit needs a comment
+//Exit wraps os.Exit for testing
 func Exit(code int) string {
 	if !test {
 		os.Exit(code)

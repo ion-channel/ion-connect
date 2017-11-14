@@ -27,11 +27,7 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
-//Params needs a comment
-type Params interface {
-}
-
-//PostParams needs a comment
+//PostParams represents the fields of an Ionize API HTTP POST method
 type PostParams struct {
 	Project     string                 `json:"project,omitempty"`
 	Product     string                 `json:"product,omitempty"`
@@ -66,7 +62,7 @@ type PostParams struct {
 	SkipAck     bool                   `json:"skip_ack,omitempty"`
 }
 
-//GetParams needs a comment
+//GetParams represents the fields of an Ionize API HTTP GET method
 type GetParams struct {
 	Project     string                 `url:"project,omitempty"`
 	Product     string                 `url:"product,omitempty"`
@@ -123,7 +119,7 @@ func (params GetParams) String() string {
 	return urlValues.Encode()
 }
 
-//Generate needs a comment
+//Generate takes a slice of arguments and their corresponding configs and returns an instantiated GetParams
 func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
 	for index, arg := range args {
 		if argConfigs[index].Type != "object" && argConfigs[index].Type != "array" {
@@ -136,7 +132,7 @@ func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
 	return params
 }
 
-//UpdateFromMap needs a comment
+//UpdateFromMap takes a map of arguments and their corresponding values and returns an instantiated GetParams
 func (params GetParams) UpdateFromMap(paramMap map[string]string) GetParams {
 	for param, value := range paramMap {
 		Debugf("Setting %s to %s", getFieldByArgumentName(param), value)
@@ -155,7 +151,7 @@ func (params PostParams) String() string {
 	return fmt.Sprintf("List=%s, Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, File=%s, Username=%s, Password=%s", params.List, params.Project, params.URL, params.Type, params.Checksum, params.ID, params.Text, params.Version, params.File, params.Username, params.Password)
 }
 
-//Generate needs a comment
+//Generate takes a slice of arguments and their corresponding configs and returns an instantiated PostParams
 func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
 	var md5hash string
 	for index, arg := range args {

@@ -29,7 +29,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-//Command needs a comment
+//Command represents a principle function of the command line tool
 type Command struct {
 	Name        string
 	Usage       string
@@ -40,7 +40,7 @@ type Command struct {
 	Subcommands []Command
 }
 
-//GetArgsUsage needs a comment
+//GetArgsUsage returns documentation for all command arguments
 func (command Command) GetArgsUsage() string {
 	var buffer bytes.Buffer
 	for _, arg := range command.Args {
@@ -60,7 +60,7 @@ func (command Command) GetArgsUsage() string {
 	return buffer.String()
 }
 
-//GetArgsForFlags needs a comment
+//GetArgsForFlags returns arguments for a given command flag
 func (command Command) GetArgsForFlags(flagName string) Args {
 	for _, flag := range command.Flags {
 		if flag.Name == flagName {
@@ -71,7 +71,7 @@ func (command Command) GetArgsForFlags(flagName string) Args {
 	return []Arg{}
 }
 
-//GetFlagsWithArgs needs a comment
+//GetFlagsWithArgs returns flags that take arguments
 func (command Command) GetFlagsWithArgs() []Flag {
 	flags := []Flag{}
 	for _, flag := range command.Flags {
@@ -83,7 +83,7 @@ func (command Command) GetFlagsWithArgs() []Flag {
 	return flags
 }
 
-//GetArgsUsageWithFlags needs a comment
+//GetArgsUsageWithFlags writes documentation for a given flag
 func (command Command) GetArgsUsageWithFlags(flagName string) string {
 	var buffer bytes.Buffer
 
@@ -107,7 +107,7 @@ func (command Command) GetArgsUsageWithFlags(flagName string) string {
 	return buffer.String()
 }
 
-//GetRequiredArgsCount needs a comment
+//GetRequiredArgsCount returns the number of args required
 func (args Args) GetRequiredArgsCount() int {
 	var count int
 	for _, arg := range args {
@@ -120,12 +120,12 @@ func (args Args) GetRequiredArgsCount() int {
 	return count
 }
 
-//GetDefaultRequiredArgsCount needs a comment
+//GetDefaultRequiredArgsCount returns the required arguments for a command
 func (command Command) GetDefaultRequiredArgsCount() int {
 	return command.Args.GetRequiredArgsCount()
 }
 
-//Arg needs a comment
+//Arg represents a field of a flag
 type Arg struct {
 	Name     string
 	Value    string
@@ -134,10 +134,10 @@ type Arg struct {
 	Type     string
 }
 
-//Args needs a comment
+//Args is a collection of command arguments
 type Args []Arg
 
-//Flag  needs a comment
+//Flag represents a parameter of a command
 type Flag struct {
 	Name     string
 	Value    string
@@ -147,7 +147,7 @@ type Flag struct {
 	Args     Args
 }
 
-//Config needs a comment
+//Config indicates the API interface and supported commands
 type Config struct {
 	Version  string
 	Endpoint string
@@ -155,7 +155,7 @@ type Config struct {
 	Commands []Command
 }
 
-//GetConfig needs a comment
+//GetConfig returns API config available on the filesystem
 func GetConfig() Config {
 	configBox, err := rice.FindBox("../config")
 	if err != nil {
@@ -181,7 +181,7 @@ func GetConfig() Config {
 	return config
 }
 
-//FindCommandConfig needs a comment
+//FindCommandConfig returns a Command based on name or an error
 func (config Config) FindCommandConfig(commandName string) (Command, error) {
 	for _, command := range config.Commands {
 		if command.Name == commandName {
@@ -192,7 +192,7 @@ func (config Config) FindCommandConfig(commandName string) (Command, error) {
 	return Command{}, errors.New("Command not found")
 }
 
-//ProcessURLFromConfig needs a comment
+//ProcessURLFromConfig returns the command URL
 func (config Config) ProcessURLFromConfig(commandName string, subcommandName string, params interface{}) (string, error) {
 	subCommandConfig, err := config.FindSubCommandConfig(commandName, subcommandName)
 	if err != nil {
@@ -201,7 +201,7 @@ func (config Config) ProcessURLFromConfig(commandName string, subcommandName str
 	return subCommandConfig.URL, nil
 }
 
-//FindSubCommandConfig needs a comment
+//FindSubCommandConfig returns a secondary Command based on a primary and secondary key or an error
 func (config Config) FindSubCommandConfig(commandName string, subcommandName string) (Command, error) {
 	command, err := config.FindCommandConfig(commandName)
 	if err != nil {
@@ -217,7 +217,7 @@ func (config Config) FindSubCommandConfig(commandName string, subcommandName str
 	return Command{}, errors.New("Subcommand not found")
 }
 
-//LoadEndpoint needs a comment
+//LoadEndpoint returns a string from configuration
 func (config Config) LoadEndpoint() string {
 	endpoint := os.Getenv(endpointEnvironmentVariable)
 	if endpoint == "" {
@@ -230,7 +230,7 @@ func (config Config) LoadEndpoint() string {
 	return endpoint
 }
 
-//HandleConfigure needs a comment
+//HandleConfigure loads API credentials
 func HandleConfigure(context *cli.Context) {
 	currentSecretKey := LoadCredential()
 	truncatedSecretKey := currentSecretKey
@@ -248,7 +248,7 @@ func HandleConfigure(context *cli.Context) {
 	}
 }
 
-//LoadCredential needs a comment
+//LoadCredential loads API credentials
 func LoadCredential() string {
 	credential := os.Getenv(credentialsEnvironmentVariable)
 	if credential == "" {
