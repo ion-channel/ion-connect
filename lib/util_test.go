@@ -61,7 +61,7 @@ var _ = Describe("Util", func() {
 
 	Context("When Running a test", func() {
 		It("should not exit", func() {
-			Test = true
+			test = true
 			Expect(PathExists("/aint/real")).To(BeFalse())
 		})
 		It("return true if it exists", func() {

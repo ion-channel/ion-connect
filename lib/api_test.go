@@ -52,7 +52,7 @@ var _ = Describe("Api", func() {
 
 	Context("If we have a command request", func() {
 		It("should fail if a required argument is missing", func() {
-			Test = true
+			test = true
 			api := API{Config: GetConfig()}
 			subCommand := cli.Command{Name: "get-languages"}
 			command := cli.Command{Name: "metadata", Subcommands: []cli.Command{subCommand}}
@@ -62,7 +62,7 @@ var _ = Describe("Api", func() {
 		})
 
 		It("should fail if an required flag is missing", func() {
-			Test = true
+			test = true
 			api := API{Config: GetConfig()}
 			set := flag.NewFlagSet("set", 0)
 			set.Parse([]string{"test", "test1"})
@@ -76,7 +76,7 @@ var _ = Describe("Api", func() {
 		})
 
 		It("should send the request if everything is there", func() {
-			Test = true
+			test = true
 			api := API{Config: GetConfig()}
 			set := flag.NewFlagSet("set", 0)
 
@@ -92,7 +92,7 @@ var _ = Describe("Api", func() {
 		})
 
 		It("should process the response body", func() {
-			Test = true
+			test = true
 			api := API{Config: GetConfig()}
 			set := flag.NewFlagSet("set", 0)
 

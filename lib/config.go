@@ -175,7 +175,7 @@ func GetConfig() Config {
 		log.Fatalf("error: %v", err)
 	}
 
-	if !Test {
+	if !test {
 		config.Commands = config.Commands[:len(config.Commands)-1]
 	}
 	return config
@@ -219,7 +219,7 @@ func (config Config) FindSubCommandConfig(commandName string, subcommandName str
 
 //LoadEndpoint needs a comment
 func (config Config) LoadEndpoint() string {
-	endpoint := os.Getenv(EndpointEnvironmentVariable)
+	endpoint := os.Getenv(endpointEnvironmentVariable)
 	if endpoint == "" {
 		Debugf("Endpoint env var not found returning from config file (%s)", config.Endpoint)
 
@@ -250,18 +250,18 @@ func HandleConfigure(context *cli.Context) {
 
 //LoadCredential needs a comment
 func LoadCredential() string {
-	credential := os.Getenv(CredentialsEnvironmentVariable)
+	credential := os.Getenv(credentialsEnvironmentVariable)
 	if credential == "" {
 		Debugln("Credential env var not found looking in file")
-		exists, _ := PathExists(IonHome)
+		exists, _ := PathExists(ionHome)
 		if exists {
-			bytes, _ := ReadBytesFromFile(CredentialsFile)
+			bytes, _ := ReadBytesFromFile(credentialsFile)
 			credentials := make(map[string]string)
 			yaml.Unmarshal([]byte(bytes), &credentials)
-			return credentials[CredentialsKeyField]
+			return credentials[credentialsKeyField]
 		}
 
-		MkdirAll(IonHome, 0775)
+		MkdirAll(ionHome, 0775)
 		return ""
 	}
 
@@ -271,7 +271,7 @@ func LoadCredential() string {
 
 func saveCredentials(secretKey string) {
 	credentials := make(map[string]string)
-	credentials[CredentialsKeyField] = secretKey
+	credentials[credentialsKeyField] = secretKey
 	yamlCredentials, _ := yaml.Marshal(&credentials)
-	WriteLinesToFile(CredentialsFile, []string{string(yamlCredentials)}, 0600)
+	WriteLinesToFile(credentialsFile, []string{string(yamlCredentials)}, 0600)
 }

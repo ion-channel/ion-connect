@@ -36,32 +36,21 @@ import (
 )
 
 var (
-	//Logger needs a comment
+	//Logger is a structured formatting logger we use for colored tty output.
 	Logger = logrus.New()
-	//Debug needs a comment
+	//Debug controls some debug level logging as well as printing debug statements to standard output.
 	Debug = false
-	//Insecure needs a comment
-	Insecure = false
-	//Test needs a comment
-	Test = false
-	//IonHome needs a comment
-	IonHome = "~/.ionchannel/"
-	//CredentialsFile needs a comment
-	CredentialsFile = "~/.ionchannel/credentials"
-	//CredentialsKeyField needs a comment
-	CredentialsKeyField = "secret_key"
-	//ConfigureAPIEndpointField needs a comment
-	ConfigureAPIEndpointField = "endpoint"
-	//CredentialsEnvironmentVariable needs a comment
-	CredentialsEnvironmentVariable = "IONCHANNEL_SECRET_KEY"
-	//EndpointEnvironmentVariable needs a comment
-	EndpointEnvironmentVariable = "IONCHANNEL_ENDPOINT_URL"
-	//DropBucketEnvironmentVariable needs a comment
-	DropBucketEnvironmentVariable = "IONCHANNEL_DROPBUCKET_NAME"
-	//DefaultWriteBucket needs a comment
-	DefaultWriteBucket = "files.ionchannel.io"
-	//DefaultWriteFolder needs a comment
-	DefaultWriteFolder = "/files/upload/"
+	//Insecure disables TLS verification.
+	Insecure                       = false
+	test                           = false
+	ionHome                        = "~/.ionchannel/"
+	credentialsFile                = "~/.ionchannel/credentials"
+	credentialsKeyField            = "secret_key"
+	credentialsEnvironmentVariable = "IONCHANNEL_SECRET_KEY"
+	endpointEnvironmentVariable    = "IONCHANNEL_ENDPOINT_URL"
+	dropBucketEnvironmentVariable  = "IONCHANNEL_DROPBUCKET_NAME"
+	defaultWriteBucket             = "files.ionchannel.io"
+	defaultWriteFolder             = "/files/upload/"
 )
 
 //IsDebug needs a comment
@@ -146,12 +135,12 @@ func ConvertFileToURL(path string) string {
 		}
 
 		var bucket string
-		if os.Getenv(DropBucketEnvironmentVariable) != "" {
-			bucket = os.Getenv(DropBucketEnvironmentVariable)
+		if os.Getenv(dropBucketEnvironmentVariable) != "" {
+			bucket = os.Getenv(dropBucketEnvironmentVariable)
 		} else {
-			bucket = DefaultWriteBucket
+			bucket = defaultWriteBucket
 		}
-		key := (DefaultWriteFolder + basePath)
+		key := (defaultWriteFolder + basePath)
 		sess := session.New(&aws.Config{Region: aws.String("us-east-1"), Credentials: credentials.AnonymousCredentials})
 		svc := s3.New(sess)
 		_, err = svc.PutObject(&s3.PutObjectInput{
@@ -191,7 +180,7 @@ func MkdirAll(path string, perm os.FileMode) error {
 
 //Exit needs a comment
 func Exit(code int) string {
-	if !Test {
+	if !test {
 		os.Exit(code)
 	}
 	return fmt.Sprintf("Exit(%d)", code)
