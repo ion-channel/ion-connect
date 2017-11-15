@@ -3,10 +3,13 @@ SHELL = bash
 
 # Go Stuff
 GOCMD=go
+GOLINTCMD=golint
 GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
+GOLIST=$(GOCMD) list
+GOVET=$(GOCMD) vet
 GOTEST=$(GOCMD) test -v $(shell $(GOCMD) list ./... | grep -v /vendor/)
-GOFMT=go fmt
+GOFMT=$(GOCMD) fmt
 CGO_ENABLED ?= 0
 GOOS ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
 
@@ -31,7 +34,7 @@ analyze:  ## Perform an analysis of the project
 	./ionize analyze
 
 .PHONY: build
-build: fmt ## Build the project
+build: ## Build the project
 	CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP) .
 
 .PHONY: clean
@@ -85,8 +88,19 @@ integration_test:  ## Run integration tests
 	cucumber -t ~@expected_failure
 
 .PHONY: fmt
-fmt:  ## Run go fmt
-	$(GOFMT)
+fmt: ## Run gofmt
+	@echo "checking formatting..."
+	@$(GOFMT) $(shell $(GOLIST) ./... | grep -v '/vendor/')
+
+.PHONY: vet
+vet: ## Run go vet
+	@echo "vetting..."
+	@$(GOVET) $(shell $(GOLIST) ./... | grep -v '/vendor/')
+
+.PHONY: lint
+lint: ## Run golint
+	@echo "linting..."
+	@$(GOLINTCMD) -set_exit_status $(shell $(GOLIST) ./... | grep -v '/vendor/')
 
 .PHONY: travis_setup
 travis_setup:  ## Setup the travis environment

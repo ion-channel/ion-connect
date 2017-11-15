@@ -164,7 +164,7 @@ var _ = Describe("Main", func() {
 				Name:   "somecommand",
 				Usage:  "someusage",
 				Method: "POST",
-				Url:    "/some/url",
+				URL:    "/some/url",
 				Flags:  []ionconnect.Flag{flag},
 			}
 
@@ -188,7 +188,7 @@ var _ = Describe("Main", func() {
 				Name:   "somecommand",
 				Usage:  "someusage",
 				Method: "POST",
-				Url:    "/some/url",
+				URL:    "/some/url",
 			}
 
 			Expect(getSubcommands([]ionconnect.Command{command}, nil)).To(Equal([]cli.Command{expectedCommand}))
@@ -214,7 +214,7 @@ var _ = Describe("Main", func() {
 				Name:   "somecommand",
 				Usage:  "someusage",
 				Method: "POST",
-				Url:    "/some/url",
+				URL:    "/some/url",
 			}
 			commands := getCommands([]ionconnect.Command{command}, nil, nil)
 			Expect(len(commands)).To(Equal(2))
@@ -228,7 +228,7 @@ var _ = Describe("Main", func() {
 				Name:   "somecommand",
 				Usage:  "someusage",
 				Method: "POST",
-				Url:    "/some/url",
+				URL:    "/some/url",
 			}
 
 			commands := getCommands([]ionconnect.Command{command}, nil, nil)

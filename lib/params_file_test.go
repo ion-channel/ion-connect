@@ -23,7 +23,7 @@ import (
 
 var _ = Describe("Params_Files", func() {
 	var (
-		config  Command
+		config Command
 	)
 
 	BeforeEach(func() {

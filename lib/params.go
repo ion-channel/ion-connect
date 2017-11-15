@@ -27,24 +27,22 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
-type Params interface {
-}
-
+//PostParams represents the fields of an Ionize API HTTP POST method
 type PostParams struct {
 	Project     string                 `json:"project,omitempty"`
 	Product     string                 `json:"product,omitempty"`
-	Url         string                 `json:"url,omitempty"`
+	URL         string                 `json:"url,omitempty"`
 	Type        string                 `json:"type,omitempty"`
 	Checksum    string                 `json:"checksum,omitempty"`
-	Id          string                 `json:"id,omitempty"`
+	ID          string                 `json:"id,omitempty"`
 	Text        string                 `json:"text,omitempty"`
 	Version     string                 `json:"version,omitempty"`
 	File        string                 `json:"file,omitempty"`
-	ProjectId   string                 `json:"project_id,omitempty"`
-	TeamId      string                 `json:"team_id,omitempty"`
-	AnalysisId  string                 `json:"analysis_id,omitempty"`
-	ScanId      string                 `json:"scan_id,omitempty"`
-	RulesetId   string                 `json:"ruleset_id,omitempty"`
+	ProjectID   string                 `json:"project_id,omitempty"`
+	TeamID      string                 `json:"team_id,omitempty"`
+	AnalysisID  string                 `json:"analysis_id,omitempty"`
+	ScanID      string                 `json:"scan_id,omitempty"`
+	RulesetID   string                 `json:"ruleset_id,omitempty"`
 	BuildNumber string                 `json:"build_number,omitempty"`
 	Status      string                 `json:"status,omitempty"`
 	Results     map[string]interface{} `json:"results,omitempty"`
@@ -64,23 +62,24 @@ type PostParams struct {
 	SkipAck     bool                   `json:"skip_ack,omitempty"`
 }
 
+//GetParams represents the fields of an Ionize API HTTP GET method
 type GetParams struct {
 	Project     string                 `url:"project,omitempty"`
 	Product     string                 `url:"product,omitempty"`
-	Url         string                 `url:"url,omitempty"`
+	URL         string                 `url:"url,omitempty"`
 	Type        string                 `url:"type,omitempty"`
 	Checksum    string                 `url:"checksum,omitempty"`
-	Id          string                 `url:"id,omitempty"`
+	ID          string                 `url:"id,omitempty"`
 	Text        string                 `url:"text,omitempty"`
 	Version     string                 `url:"version,omitempty"`
 	Limit       string                 `url:"limit,omitempty"`
 	Offset      string                 `url:"offset,omitempty"`
 	File        string                 `url:"file,omitempty"`
-	ProjectId   string                 `url:"project_id,omitempty"`
-	TeamId      string                 `url:"team_id,omitempty"`
-	AnalysisId  string                 `url:"analysis_id,omitempty"`
-	ScanId      string                 `url:"scan_id,omitempty"`
-	RulesetId   string                 `url:"ruleset_id,omitempty"`
+	ProjectID   string                 `url:"project_id,omitempty"`
+	TeamID      string                 `url:"team_id,omitempty"`
+	AnalysisID  string                 `url:"analysis_id,omitempty"`
+	ScanID      string                 `url:"scan_id,omitempty"`
+	RulesetID   string                 `url:"ruleset_id,omitempty"`
 	BuildNumber string                 `url:"build_number,omitempty"`
 	Status      string                 `url:"status,omitempty"`
 	Results     map[string]interface{} `url:"results,omitempty"`
@@ -120,36 +119,39 @@ func (params GetParams) String() string {
 	return urlValues.Encode()
 }
 
+//Generate takes a slice of arguments and their corresponding configs and returns an instantiated GetParams
 func (params GetParams) Generate(args []string, argConfigs []Arg) GetParams {
 	for index, arg := range args {
 		if argConfigs[index].Type != "object" && argConfigs[index].Type != "array" {
-			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetString(arg)
+			reflect.ValueOf(&params).Elem().FieldByName(getFieldByArgumentName(argConfigs[index].Name)).SetString(arg)
 		} else if argConfigs[index].Type == "bool" {
 			boolArg, _ := strconv.ParseBool(arg)
-			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetBool(boolArg)
+			reflect.ValueOf(&params).Elem().FieldByName(getFieldByArgumentName(argConfigs[index].Name)).SetBool(boolArg)
 		}
 	}
 	return params
 }
 
+//UpdateFromMap takes a map of arguments and their corresponding values and returns an instantiated GetParams
 func (params GetParams) UpdateFromMap(paramMap map[string]string) GetParams {
 	for param, value := range paramMap {
-		Debugf("Setting %s to %s", strings.Replace(strings.Title(param), "-", "", -1), value)
+		Debugf("Setting %s to %s", getFieldByArgumentName(param), value)
 		_, intErr := strconv.ParseInt(value, 10, 64)
 		boolValue, boolErr := strconv.ParseBool(value)
 		if boolErr == nil && intErr != nil {
-			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(param), "-", "", -1)).SetBool(boolValue)
+			reflect.ValueOf(&params).Elem().FieldByName(getFieldByArgumentName(param)).SetBool(boolValue)
 		} else {
-			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(param), "-", "", -1)).SetString(value)
+			reflect.ValueOf(&params).Elem().FieldByName(getFieldByArgumentName(param)).SetString(value)
 		}
 	}
 	return params
 }
 
 func (params PostParams) String() string {
-	return fmt.Sprintf("List=%s, Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, File=%s, Username=%s, Password=%s", params.List, params.Project, params.Url, params.Type, params.Checksum, params.Id, params.Text, params.Version, params.File, params.Username, params.Password)
+	return fmt.Sprintf("List=%s, Project=%s, Url=%s, Type=%s, Checksum=%s, Id=%s, Text=%s, Version=%s, File=%s, Username=%s, Password=%s", params.List, params.Project, params.URL, params.Type, params.Checksum, params.ID, params.Text, params.Version, params.File, params.Username, params.Password)
 }
 
+//Generate takes a slice of arguments and their corresponding configs and returns an instantiated PostParams
 func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
 	var md5hash string
 	for index, arg := range args {
@@ -163,7 +165,7 @@ func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
 			if err != nil {
 				panic(fmt.Sprintf("Error parsing json from %s - %s", argConfigs[index].Name, err.Error()))
 			}
-			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).Set(reflect.ValueOf(jsonArg))
+			reflect.ValueOf(&params).Elem().FieldByName(getFieldByArgumentName(argConfigs[index].Name)).Set(reflect.ValueOf(jsonArg))
 		} else if argConfigs[index].Type == "array" {
 			Debugln("Using array parser")
 			var jsonArray []interface{}
@@ -171,7 +173,7 @@ func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
 			if err != nil {
 				panic(fmt.Sprintf("Error parsing json from %s - %s", argConfigs[index].Name, err.Error()))
 			}
-			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).Set(reflect.ValueOf(jsonArray))
+			reflect.ValueOf(&params).Elem().FieldByName(getFieldByArgumentName(argConfigs[index].Name)).Set(reflect.ValueOf(jsonArray))
 		} else if argConfigs[index].Type == "bool" {
 			Debugf("Using bool parser for (%s) = (%s)", argConfigs[index].Name, arg)
 			if arg == "" {
@@ -179,7 +181,7 @@ func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
 				arg = argConfigs[index].Value
 			}
 			boolArg, _ := strconv.ParseBool(arg)
-			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetBool(boolArg)
+			reflect.ValueOf(&params).Elem().FieldByName(getFieldByArgumentName(argConfigs[index].Name)).SetBool(boolArg)
 		} else {
 			if argConfigs[index].Type == "url" {
 				Debugf("Handling url %s", arg)
@@ -189,14 +191,14 @@ func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
 					fmt.Printf("Failed to generate MD5 from url %s. Make sure the file exists and permissions are correct. (%s)", arg, err)
 					Exit(1)
 				}
-				arg = ConvertFileToUrl(arg)
+				arg = ConvertFileToURL(arg)
 			}
 			Debugf("Using string parser for (%s) = (%s)", argConfigs[index].Name, arg)
 			if arg == "" {
 				Debugf("Missing arg value (%s) using default (%s)", argConfigs[index].Name, argConfigs[index].Value)
 				arg = argConfigs[index].Value
 			}
-			reflect.ValueOf(&params).Elem().FieldByName(strings.Replace(strings.Title(argConfigs[index].Name), "-", "", -1)).SetString(arg)
+			reflect.ValueOf(&params).Elem().FieldByName(getFieldByArgumentName(argConfigs[index].Name)).SetString(arg)
 		}
 
 		Debugf("Finished %s", arg)
@@ -205,4 +207,19 @@ func (params PostParams) Generate(args []string, argConfigs []Arg) PostParams {
 		params.Checksum = md5hash
 	}
 	return params
+}
+
+func getFieldByArgumentName(argName string) string {
+	split := strings.Split(strings.ToLower(argName), "-")
+
+	for index, word := range split {
+		switch word {
+		case "id", "url":
+			split[index] = strings.ToUpper(word)
+		default:
+			split[index] = strings.Title(word)
+		}
+	}
+
+	return strings.Join(split, "")
 }

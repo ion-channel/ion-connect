@@ -36,37 +36,43 @@ import (
 )
 
 var (
-	Logger                           *logrus.Logger = logrus.New()
-	Debug                            bool           = false
-	Insecure                         bool           = false
-	Test                             bool           = false
-	ION_HOME                         string         = "~/.ionchannel/"
-	CREDENTIALS_FILE                 string         = "~/.ionchannel/credentials"
-	CREDENTIALS_KEY_FIELD            string         = "secret_key"
-	CONFIGURE_API_ENDPOINT_FIELD     string         = "endpoint"
-	CREDENTIALS_ENVIRONMENT_VARIABLE string         = "IONCHANNEL_SECRET_KEY"
-	ENDPOINT_ENVIRONMENT_VARIABLE    string         = "IONCHANNEL_ENDPOINT_URL"
-	DROPBUCKET_ENVIRONMENT_VARIABLE  string         = "IONCHANNEL_DROPBUCKET_NAME"
-	DEFAUL_WRITE_BUCKET              string         = "files.ionchannel.io"
-	DEFAUL_WRITE_FOLDER              string         = "/files/upload/"
+	//Logger is a structured formatting logger we use for colored tty output.
+	Logger = logrus.New()
+	//Debug controls some debug level logging as well as printing debug statements to standard output.
+	Debug = false
+	//Insecure disables TLS verification.
+	Insecure                       = false
+	test                           = false
+	ionHome                        = "~/.ionchannel/"
+	credentialsFile                = "~/.ionchannel/credentials"
+	credentialsKeyField            = "secret_key"
+	credentialsEnvironmentVariable = "IONCHANNEL_SECRET_KEY"
+	endpointEnvironmentVariable    = "IONCHANNEL_ENDPOINT_URL"
+	dropBucketEnvironmentVariable  = "IONCHANNEL_DROPBUCKET_NAME"
+	defaultWriteBucket             = "files.ionchannel.io"
+	defaultWriteFolder             = "/files/upload/"
 )
 
+//IsDebug is for verbose debugging
 func IsDebug() bool {
 	return Debug
 }
 
+//Debugln is deprecated; prefer to set log level and filter log output
 func Debugln(str string) {
 	if Debug {
 		Logger.Debug(str)
 	}
 }
 
+//Debugf is deprecated; prefer to set log level filter log output
 func Debugf(str string, args ...interface{}) {
 	if Debug {
 		Logger.Debugf(str, args...)
 	}
 }
 
+//WriteLinesToFile flushes contents to file
 func WriteLinesToFile(filename string, lines []string, mode os.FileMode) {
 	filename, _ = tilde.Expand(filename)
 	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, mode)
@@ -85,12 +91,14 @@ func WriteLinesToFile(filename string, lines []string, mode os.FileMode) {
 	w.Flush()
 }
 
+//ReadBytesFromFile wraps ioutil.ReadFile
 func ReadBytesFromFile(filename string) ([]byte, error) {
 	filename, _ = tilde.Expand(filename)
 	bytes, err := ioutil.ReadFile(filename)
 	return bytes, err
 }
 
+//ComputeMd5 returns a hash of a URL or an error
 func ComputeMd5(path string) (string, error) {
 	u, err := url.Parse(path)
 	if err != nil {
@@ -98,17 +106,20 @@ func ComputeMd5(path string) (string, error) {
 		return "", err
 	}
 	absolutePath, err := filepath.Abs(u.Host + u.Path)
-	if dat, err := ioutil.ReadFile(absolutePath); err != nil {
+	dat, err := ioutil.ReadFile(absolutePath)
+
+	if err != nil {
 		return "", err
-	} else {
-		data := []byte(dat)
-		var ba = md5.Sum(data)
-		s := hex.EncodeToString(ba[:])
-		return s, nil
 	}
+
+	data := []byte(dat)
+	var ba = md5.Sum(data)
+	s := hex.EncodeToString(ba[:])
+	return s, nil
 }
 
-func ConvertFileToUrl(path string) string {
+//ConvertFileToURL possibly copies a path to an S3 bucket and returns the URL
+func ConvertFileToURL(path string) string {
 	u, err := url.Parse(path)
 	if err != nil {
 		fmt.Printf("Invalid url string %s", path)
@@ -124,12 +135,12 @@ func ConvertFileToUrl(path string) string {
 		}
 
 		var bucket string
-		if os.Getenv(DROPBUCKET_ENVIRONMENT_VARIABLE) != "" {
-			bucket = os.Getenv(DROPBUCKET_ENVIRONMENT_VARIABLE)
+		if os.Getenv(dropBucketEnvironmentVariable) != "" {
+			bucket = os.Getenv(dropBucketEnvironmentVariable)
 		} else {
-			bucket = DEFAUL_WRITE_BUCKET
+			bucket = defaultWriteBucket
 		}
-		key := (DEFAUL_WRITE_FOLDER + basePath)
+		key := (defaultWriteFolder + basePath)
 		sess := session.New(&aws.Config{Region: aws.String("us-east-1"), Credentials: credentials.AnonymousCredentials})
 		svc := s3.New(sess)
 		_, err = svc.PutObject(&s3.PutObjectInput{
@@ -143,11 +154,12 @@ func ConvertFileToUrl(path string) string {
 			Exit(1)
 		}
 		return "https://s3.amazonaws.com/" + bucket + key
-	} else {
-		return path
 	}
+
+	return path
 }
 
+//PathExists indicates if a path exists
 func PathExists(path string) (bool, error) {
 	path, _ = tilde.Expand(path)
 	_, err := os.Stat(path)
@@ -160,14 +172,16 @@ func PathExists(path string) (bool, error) {
 	return true, err
 }
 
+//MkdirAll creates all directories in a path
 func MkdirAll(path string, perm os.FileMode) error {
 	path, _ = tilde.Expand(path)
 	return os.MkdirAll(path, perm)
 }
 
+//Exit wraps os.Exit for testing
 func Exit(code int) string {
-	if !Test {
+	if !test {
 		os.Exit(code)
 	}
-	return fmt.Sprintf("Exit(%i)", code)
+	return fmt.Sprintf("Exit(%d)", code)
 }

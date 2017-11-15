@@ -43,7 +43,7 @@ var _ = Describe("Api", func() {
 			context := cli.NewContext(nil, nil, nil)
 			context.Command = command
 			context.App = app
-			api := Api{}
+			api := API{}
 			api.Noop(context)
 
 			Expect(string(mockwriter.Written)).To(ContainSubstring("Noop"))
@@ -52,8 +52,8 @@ var _ = Describe("Api", func() {
 
 	Context("If we have a command request", func() {
 		It("should fail if a required argument is missing", func() {
-			Test = true
-			api := Api{Config: GetConfig()}
+			test = true
+			api := API{Config: GetConfig()}
 			subCommand := cli.Command{Name: "get-languages"}
 			command := cli.Command{Name: "metadata", Subcommands: []cli.Command{subCommand}}
 			context := cli.NewContext(nil, nil, nil)
@@ -62,8 +62,8 @@ var _ = Describe("Api", func() {
 		})
 
 		It("should fail if an required flag is missing", func() {
-			Test = true
-			api := Api{Config: GetConfig()}
+			test = true
+			api := API{Config: GetConfig()}
 			set := flag.NewFlagSet("set", 0)
 			set.Parse([]string{"test", "test1"})
 			Expect(set.Args()).To(Equal([]string{"test", "test1"}))
@@ -76,8 +76,8 @@ var _ = Describe("Api", func() {
 		})
 
 		It("should send the request if everything is there", func() {
-			Test = true
-			api := Api{Config: GetConfig()}
+			test = true
+			api := API{Config: GetConfig()}
 			set := flag.NewFlagSet("set", 0)
 
 			subCommand := cli.Command{Name: "test1"}
@@ -92,8 +92,8 @@ var _ = Describe("Api", func() {
 		})
 
 		It("should process the response body", func() {
-			Test = true
-			api := Api{Config: GetConfig()}
+			test = true
+			api := API{Config: GetConfig()}
 			set := flag.NewFlagSet("set", 0)
 
 			subCommand := cli.Command{Name: "test1"}

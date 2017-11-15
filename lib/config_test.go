@@ -29,8 +29,8 @@ var _ = Describe("Config", func() {
 
 	BeforeEach(func() {
 		Debug = false
-		ION_HOME = fmt.Sprintf("%s/ionchannel-test", os.TempDir())
-		CREDENTIALS_FILE = fmt.Sprintf("%s/credentials", ION_HOME)
+		ionHome = fmt.Sprintf("%s/ionchannel-test", os.TempDir())
+		credentialsFile = fmt.Sprintf("%s/credentials", ionHome)
 	})
 
 	Context("When the config.yaml file is loaded", func() {
@@ -62,14 +62,14 @@ var _ = Describe("Config", func() {
 	Context("When processing a url", func() {
 		config := GetConfig()
 		It("it should render template code", func() {
-			params := GetParams{Id: "test"}
-			url, err := config.ProcessUrlFromConfig("metadata", "get-locations", params)
+			params := GetParams{ID: "test"}
+			url, err := config.ProcessURLFromConfig("metadata", "get-locations", params)
 			Expect(url).To(Equal("/metadata/getLocations"))
 			Expect(err).To(BeNil())
 		})
 		It("it should not fail if it's just a string", func() {
-			params := GetParams{Id: "test"}
-			url, err := config.ProcessUrlFromConfig("metadata", "get-locations", params)
+			params := GetParams{ID: "test"}
+			url, err := config.ProcessURLFromConfig("metadata", "get-locations", params)
 			Expect(url).To(Equal("/metadata/getLocations"))
 			Expect(err).To(BeNil())
 		})
@@ -82,30 +82,30 @@ var _ = Describe("Config", func() {
 		})
 		It("should read the endpoint from the config", func() {
 			Expect(config.LoadEndpoint()).To(Equal(config.Endpoint))
-			os.Setenv(ENDPOINT_ENVIRONMENT_VARIABLE, "numbersandletters")
+			os.Setenv(endpointEnvironmentVariable, "numbersandletters")
 			Expect(config.LoadEndpoint()).To(Equal("numbersandletters"))
-			os.Unsetenv(ENDPOINT_ENVIRONMENT_VARIABLE)
+			os.Unsetenv(endpointEnvironmentVariable)
 		})
 
 	})
 
 	Context("When we need creds", func() {
-		It("should create the ION_HOME directory", func() {
+		It("should create the IonHome directory", func() {
 			Expect(LoadCredential()).To(Equal(""))
-			Expect(PathExists(ION_HOME)).To(BeTrue())
+			Expect(PathExists(ionHome)).To(BeTrue())
 		})
 		It("should save credentials to new file", func() {
 			Expect(LoadCredential()).To(Equal(""))
-			Expect(PathExists(ION_HOME)).To(BeTrue())
-			Expect(PathExists(CREDENTIALS_FILE)).To(BeFalse())
+			Expect(PathExists(ionHome)).To(BeTrue())
+			Expect(PathExists(credentialsFile)).To(BeFalse())
 			Expect(func() { saveCredentials("notarealkey") }).ShouldNot(Panic())
-			Expect(PathExists(CREDENTIALS_FILE)).To(BeTrue())
+			Expect(PathExists(credentialsFile)).To(BeTrue())
 			Expect(LoadCredential()).To(Equal("notarealkey"))
 		})
 		It("should read credentials from and environment variable", func() {
-			os.Setenv(CREDENTIALS_ENVIRONMENT_VARIABLE, "numbersandletters")
+			os.Setenv(credentialsEnvironmentVariable, "numbersandletters")
 			Expect(LoadCredential()).To(Equal("numbersandletters"))
-			os.Unsetenv(CREDENTIALS_ENVIRONMENT_VARIABLE)
+			os.Unsetenv(credentialsEnvironmentVariable)
 		})
 	})
 
@@ -143,7 +143,7 @@ var _ = Describe("Config", func() {
 	})
 
 	Context("If we need to generate an argument string", func() {
-		Test = true
+		test = true
 		config := GetConfig()
 		It("should include all required args", func() {
 			command, err := config.FindSubCommandConfig("test", "test1")
@@ -167,7 +167,7 @@ var _ = Describe("Config", func() {
 	})
 
 	Context("If a flag is supplied check for new args and apply", func() {
-		Test = true
+		test = true
 		config := GetConfig()
 		It("should include all required args", func() {
 			command, err := config.FindSubCommandConfig("test", "test1")
@@ -197,6 +197,6 @@ var _ = Describe("Config", func() {
 
 	AfterEach(func() {
 		Debug = false
-		os.RemoveAll(ION_HOME)
+		os.RemoveAll(ionHome)
 	})
 })

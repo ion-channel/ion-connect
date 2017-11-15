@@ -20,7 +20,6 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -34,16 +33,19 @@ import (
 	"github.com/dghubble/sling"
 )
 
-type Api struct {
+//API representing a way of connecting to our API
+type API struct {
 	Config Config
 }
 
-func (api Api) Noop(ctx *cli.Context) {
+//Noop fulfills a requirement of 3rd party library functionality we don't wish to use at the moment
+func (api API) Noop(ctx *cli.Context) {
 	Debugln("Noop")
 	cli.ShowCommandHelp(ctx, ctx.Command.Name)
 }
 
-func (api Api) HandleCommand(ctx *cli.Context) {
+//HandleCommand loads, preps, runs, and provides output for a given command and arguments
+func (api API) HandleCommand(ctx *cli.Context) {
 	Debugf("Performing command %s", ctx.Command.FullName())
 	command := strings.Split(ctx.Command.FullName(), " ")[0]
 	subcommand := strings.Split(ctx.Command.FullName(), " ")[1]
@@ -76,7 +78,7 @@ func (api Api) HandleCommand(ctx *cli.Context) {
 	fmt.Println(api.processResponse(response, body))
 }
 
-func (api Api) sendRequest(command string, subcommand string, context *cli.Context, args Args, options map[string]string, httpMethod string) (http.Response, map[string]interface{}) {
+func (api API) sendRequest(command string, subcommand string, context *cli.Context, args Args, options map[string]string, httpMethod string) (http.Response, map[string]interface{}) {
 	client := sling.New()
 	if Insecure {
 		transport := &http.Transport{
@@ -103,7 +105,7 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
 		Debugf("Sending params %b", params)
 	}
 
-	url, err := api.Config.ProcessUrlFromConfig(command, subcommand, GetParams{}.Generate(context.Args(), args))
+	url, err := api.Config.ProcessURLFromConfig(command, subcommand, GetParams{}.Generate(context.Args(), args))
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -126,7 +128,7 @@ func (api Api) sendRequest(command string, subcommand string, context *cli.Conte
 	return *response, responseBody
 }
 
-func (api Api) processResponse(response http.Response, body map[string]interface{}) string {
+func (api API) processResponse(response http.Response, body map[string]interface{}) string {
 	if IsDebug() {
 		jsonBytes, _ := json.MarshalIndent(body, "", "  ")
 		return string(jsonBytes)
@@ -152,16 +154,16 @@ func (api Api) processResponse(response http.Response, body map[string]interface
 	return strings.Replace(strings.Replace(strings.Replace(string(jsonBytes), "\\u003e", ">", -1), "\\u003c", "<", -1), "\\u0026", "&", -1)
 }
 
-func (api Api) validateArgs(args Args, ctx *cli.Context) error {
+func (api API) validateArgs(args Args, ctx *cli.Context) error {
 	if args.GetRequiredArgsCount() > len(ctx.Args()) {
 		Debugf("Missing required argument ")
-		return errors.New(fmt.Sprintf("Missing required argument"))
+		return fmt.Errorf("Missing required argument")
 	}
 
 	return nil
 }
 
-func (api Api) validateFlags(commandConfig Command, ctx *cli.Context) ([]Arg, map[string]string, error) {
+func (api API) validateFlags(commandConfig Command, ctx *cli.Context) ([]Arg, map[string]string, error) {
 	args := []Arg{}
 	params := make(map[string]string)
 	for _, flag := range commandConfig.Flags {
@@ -169,11 +171,11 @@ func (api Api) validateFlags(commandConfig Command, ctx *cli.Context) ([]Arg, ma
 		if !ctx.IsSet(flag.Name) && flag.Required {
 			if flag.Value == "" {
 				Debugf("Missing required option %s", flag.Name)
-				return args, params, errors.New(fmt.Sprintf("Missing required option %s", flag.Name))
-			} else {
-				Debugf("Found default value for flag %s: %s", flag.Name, flag.Value)
-				params[flag.Name] = flag.Value
+				return args, params, fmt.Errorf("Missing required option %s", flag.Name)
 			}
+
+			Debugf("Found default value for flag %s: %s", flag.Name, flag.Value)
+			params[flag.Name] = flag.Value
 		} else if len(flag.Args) > 0 && ctx.IsSet(flag.Name) {
 			Debugf("Getting args for flag %s", flag.Name)
 			args = flag.Args
@@ -191,12 +193,12 @@ func (api Api) validateFlags(commandConfig Command, ctx *cli.Context) ([]Arg, ma
 	return args, params, nil
 }
 
-func (api Api) postFile(command string, subcommand string, context *cli.Context, args Args, options map[string]string) (http.Response, map[string]interface{}) {
+func (api API) postFile(command string, subcommand string, context *cli.Context, args Args, options map[string]string) (http.Response, map[string]interface{}) {
 	params := GetParams{}.Generate(context.Args(), args).UpdateFromMap(options)
 	bodyParams := PostParams{}.Generate(context.Args(), args)
 	Debugf("Sending params %b", params)
 
-	url, err := api.Config.ProcessUrlFromConfig(command, subcommand, params)
+	url, err := api.Config.ProcessURLFromConfig(command, subcommand, params)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -241,15 +243,15 @@ func (api Api) postFile(command string, subcommand string, context *cli.Context,
 		log.Fatal(err.Error())
 	}
 	defer resp.Body.Close()
-	resp_body, err := ioutil.ReadAll(resp.Body)
+	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
 	var jsonResponse map[string]interface{}
-	err = json.Unmarshal([]byte(resp_body), &jsonResponse)
+	err = json.Unmarshal([]byte(respBody), &jsonResponse)
 	if err != nil {
-		panic(fmt.Sprintf("Error parsing json from %s - %s", resp_body, err.Error()))
+		panic(fmt.Sprintf("Error parsing json from %s - %s", respBody, err.Error()))
 	}
 	return *resp, jsonResponse
 }
