@@ -42,7 +42,7 @@ clean:  ## Clean out all generated files
 	-@$(GOCLEAN)
 	-@rm -f $(APP)-linux $(APP)-darwin $(APP)-windows
 	-@rm -rf coverage
-	-@rm coverage.txt
+	-@rm -f coverage.txt
 
 .PHONY: coverage
 coverage:  ## Generates the code coverage from all the tests
