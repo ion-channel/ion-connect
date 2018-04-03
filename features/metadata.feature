@@ -13,6 +13,8 @@
 # limitations under the License.
 
 Feature: Do some metadata parsing
+
+ @expected_failure
  Scenario: Get locations
    When I successfully run `ion-connect metadata get-locations "portland"`
    Then the output should contain:
