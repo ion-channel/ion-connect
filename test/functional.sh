@@ -38,13 +38,6 @@ if [ "$?" != "0" ]; then
   exit 1
 fi
 
-echo "It should geocode locations"
-OUTPUT=$(ion-connect --insecure metadata get-locations "portland")
-if [ "$?" != "0" ]; then
-  echo "Failed - $OUTPUT"
-  exit 1
-fi
-
 echo "It should get vulnerabilities for a project"
 OUTPUT=$(ion-connect --insecure vulnerability get-vulnerabilities --limit 1 --offset 0 "solr")
 if [ "$?" != "0" ]; then
@@ -54,13 +47,6 @@ fi
 
 echo "It should get vulnerabilities for text"
 OUTPUT=$(ion-connect --insecure vulnerability get-vulnerabilities --text --limit 12 --offset 10 "testing")
-if [ "$?" != "0" ]; then
-  echo "Failed - $OUTPUT"
-  exit 1
-fi
-
-echo "It should get sentiment for some text"
-OUTPUT=$(ion-connect --insecure metadata get-sentiment "I love Ion Channel")
 if [ "$?" != "0" ]; then
   echo "Failed - $OUTPUT"
   exit 1

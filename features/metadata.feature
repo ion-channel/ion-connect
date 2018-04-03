@@ -13,51 +13,6 @@
 # limitations under the License.
 
 Feature: Do some metadata parsing
- Scenario: Get locations
-   When I successfully run `ion-connect metadata get-locations "portland"`
-   Then the output should contain:
-   """
-   [
-     {
-       "boundingbox": [],
-       "city": "",
-       "class": "city, village, etc.",
-       "country": "United States",
-       "country_code": "US",
-       "county": "",
-       "display_name": "Portland",
-       "id": "5746545",
-       "importance": 1,
-       "latitude": 45.52345,
-       "longitude": -122.67621,
-       "state": "",
-       "type": ""
-     }
-   ]
-   """
-
-#   Scenario: Get languages
-#     When I successfully run `ion-connect metadata get-languages "Hola como estas"`
-#     Then the output should contain:
-#     """
-#     [
-#       {
-#         "code": "es",
-#         "name": "Spanish",
-#         "reliable": true
-#       }
-#     ]
-#     """
-
-   Scenario: Get sentiment
-     When I successfully run `ion-connect metadata get-sentiment "I love cucumber"`
-     Then the output should contain:
-     """
-     {
-       "score": 0.925,
-       "sentiment": "positive"
-     }
-     """
 
    # TODO: deploy fossology
    Scenario: Get licenses
