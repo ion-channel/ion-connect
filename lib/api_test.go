@@ -18,6 +18,7 @@ package ionconnect
 
 import (
 	"flag"
+
 	"github.com/codegangsta/cli"
 	"github.com/gomicro/penname"
 	. "github.com/onsi/ginkgo"
@@ -54,7 +55,7 @@ var _ = Describe("Api", func() {
 		It("should fail if a required argument is missing", func() {
 			test = true
 			api := API{Config: GetConfig()}
-			subCommand := cli.Command{Name: "get-languages"}
+			subCommand := cli.Command{Name: "get-licenses"}
 			command := cli.Command{Name: "metadata", Subcommands: []cli.Command{subCommand}}
 			context := cli.NewContext(nil, nil, nil)
 			context.Command = command

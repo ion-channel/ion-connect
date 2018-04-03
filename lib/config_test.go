@@ -63,14 +63,14 @@ var _ = Describe("Config", func() {
 		config := GetConfig()
 		It("it should render template code", func() {
 			params := GetParams{ID: "test"}
-			url, err := config.ProcessURLFromConfig("metadata", "get-locations", params)
-			Expect(url).To(Equal("/metadata/getLocations"))
+			url, err := config.ProcessURLFromConfig("metadata", "get-licenses", params)
+			Expect(url).To(Equal("/metadata/getLicenses"))
 			Expect(err).To(BeNil())
 		})
 		It("it should not fail if it's just a string", func() {
 			params := GetParams{ID: "test"}
-			url, err := config.ProcessURLFromConfig("metadata", "get-locations", params)
-			Expect(url).To(Equal("/metadata/getLocations"))
+			url, err := config.ProcessURLFromConfig("metadata", "get-licenses", params)
+			Expect(url).To(Equal("/metadata/getLicenses"))
 			Expect(err).To(BeNil())
 		})
 	})
@@ -126,8 +126,8 @@ var _ = Describe("Config", func() {
 	Context("If we are looking for a subcommand from the config", func() {
 		config := GetConfig()
 		It("should return the subcommand config if found", func() {
-			command, err := config.FindSubCommandConfig("metadata", "get-locations")
-			Expect(command.Name).To(Equal("get-locations"))
+			command, err := config.FindSubCommandConfig("metadata", "get-licenses")
+			Expect(command.Name).To(Equal("get-licenses"))
 			Expect(err).To(BeNil())
 		})
 		It("should return an error if subcommand not found", func() {
