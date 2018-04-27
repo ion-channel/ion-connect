@@ -44,6 +44,7 @@ func initConfig() {
 
 }
 
+//RootCmd - Root command container for ion-connect
 var RootCmd = &cobra.Command{
 	Use:   "ion-connect",
 	Short: "Ion Connect is awesome!",
