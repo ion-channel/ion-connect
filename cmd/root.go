@@ -11,11 +11,12 @@ import (
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	viper.BindPFlag("author", rootCmd.PersistentFlags().Lookup("author"))
-	viper.BindPFlag("projectbase", rootCmd.PersistentFlags().Lookup("projectbase"))
-	viper.BindPFlag("useViper", rootCmd.PersistentFlags().Lookup("viper"))
+	viper.BindPFlag("author", RootCmd.PersistentFlags().Lookup("author"))
+	viper.BindPFlag("projectbase", RootCmd.PersistentFlags().Lookup("projectbase"))
+	viper.BindPFlag("useViper", RootCmd.PersistentFlags().Lookup("viper"))
 	viper.SetDefault("author", "NAME HERE <EMAIL ADDRESS>")
 	viper.SetDefault("license", "apache")
+
 }
 
 func initConfig() {
@@ -40,21 +41,21 @@ func initConfig() {
 	// 	fmt.Println("Can't read config:", err)
 	// 	os.Exit(1)
 	// }
+
 }
 
-var rootCmd = &cobra.Command{
+var RootCmd = &cobra.Command{
 	Use:   "ion-connect",
 	Short: "Ion Connect is awesome!",
 	Long:  `Ion connect is awesome with more words`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// Do Stuff Here
-		fmt.Println("new stuff")
+		fmt.Printf("Inside rootCmd Run with args: %v\n", args)
 	},
 }
 
 // Execute runs the command defined for the root
 func Execute() {
-	if err := rootCmd.Execute(); err != nil {
+	if err := RootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
