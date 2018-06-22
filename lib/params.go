@@ -37,6 +37,7 @@ type PostParams struct {
 	ID          string                 `json:"id,omitempty"`
 	Text        string                 `json:"text,omitempty"`
 	Version     string                 `json:"version,omitempty"`
+	Group       string                 `json:"group,omitempty"`
 	File        string                 `json:"file,omitempty"`
 	ProjectID   string                 `json:"project_id,omitempty"`
 	TeamID      string                 `json:"team_id,omitempty"`
@@ -72,6 +73,7 @@ type GetParams struct {
 	ID          string                 `url:"id,omitempty"`
 	Text        string                 `url:"text,omitempty"`
 	Version     string                 `url:"version,omitempty"`
+	Group       string                 `url:"group,omitempty"`
 	Limit       string                 `url:"limit,omitempty"`
 	Offset      string                 `url:"offset,omitempty"`
 	File        string                 `url:"file,omitempty"`
