@@ -104,4 +104,5 @@ lint: ## Run golint
 
 .PHONY: travis_setup
 travis_setup:  ## Setup the travis environment
+	@sudo apt-get update -y
 	@sudo apt-get install -y rpm alien dpkg-dev debhelper build-essential jq
