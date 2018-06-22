@@ -36,7 +36,7 @@ var _ = Describe("Config", func() {
 	Context("When the config.yaml file is loaded", func() {
 		config := GetConfig()
 		It("should contain an 'api' section", func() {
-			Expect(len(config.Commands)).To(Equal(11))
+			Expect(len(config.Commands)).To(Equal(9))
 		})
 		It("should contain the api version", func() {
 			Expect(config.Version).To(Equal("v1"))
