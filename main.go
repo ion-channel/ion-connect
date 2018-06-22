@@ -29,7 +29,7 @@ func getApp() *cli.App {
 	app := cli.NewApp()
 	app.Name = "ion-connect"
 	app.Usage = "Interact with Ion Channel"
-	app.Version = "0.13.1"
+	app.Version = "0.14.0"
 	return app
 }
 

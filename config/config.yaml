@@ -502,23 +502,9 @@
             usage: TYPE
             required: True
 
-      - name: get-dependencies
-        url: /dependency/getDependencies
-        usage: get a list of dependencies for a versions of a project
-        method: get
-        args:
-          - name: name
-            value:
-            usage: NAME
-            required: True
-          - name: type
-            value:
-            usage: TYPE
-            required: True
-
       - name: get-resolved-dependencies
         url: /dependency/getResolvedDependencies
-        usage: get a list of resolved dependencies for a versions of a project
+        usage: get a list of resolved dependencies for a version of a project
         method: get
         flags:
           - name: flatten
@@ -526,15 +512,24 @@
             usage: format data flattened
             required: False
             type: bool
+          - name: type
+            value:
+            usage: dependency platform
+            required: True
+            type: string
         args:
           - name: name
             value:
             usage: NAME
             required: True
-          - name: type
+          - name: version
             value:
-            usage: TYPE
+            usage: VERSION
             required: True
+          - name: group
+            value:
+            usage: GROUP
+            required: False
 
       - name: get-resolved-version-for-dependency
         url: /dependency/getResolvedVersionForDependency
@@ -554,53 +549,6 @@
             usage: VERSION
             required: True
 
-
-    - name: mail
-      usage: set of commands for querying mail message data
-      subcommands:
-        - name: get-message-counts
-          url: /mail/getMessageCounts
-          usage: get message counts for a project
-          method: get
-          args:
-            - name: project
-              value:
-              usage: PROJECT
-              required: True
-
-
-    - name: community
-      usage: set of commands for querying a project's community data
-      subcommands:
-        - name: get-team-contributions
-          url: /community/getTeamContributions
-          usage: get team contribution data for a project [org/name]
-          method: get
-          args:
-            - name: project
-              value:
-              usage: PROJECT
-              required: True
-
-        - name: get-lead-activity
-          url: /community/getLeadActivity
-          usage: get team lead activity data for a project [org/name]
-          method: get
-          args:
-            - name: project
-              value:
-              usage: PROJECT
-              required: True
-
-        - name: get-project-activity
-          url: /community/getProjectActivity
-          usage: get project activity data for a project [org/name]
-          method: get
-          args:
-            - name: project
-              value:
-              usage: PROJECT
-              required: True
 
     # animal
     - name: raw
