@@ -502,23 +502,9 @@
             usage: TYPE
             required: True
 
-      - name: get-dependencies
-        url: /dependency/getDependencies
-        usage: get a list of dependencies for a versions of a project
-        method: get
-        args:
-          - name: name
-            value:
-            usage: NAME
-            required: True
-          - name: type
-            value:
-            usage: TYPE
-            required: True
-
       - name: get-resolved-dependencies
         url: /dependency/getResolvedDependencies
-        usage: get a list of resolved dependencies for a versions of a project
+        usage: get a list of resolved dependencies for a version of a project
         method: get
         flags:
           - name: flatten
@@ -530,6 +516,10 @@
           - name: name
             value:
             usage: NAME
+            required: True
+          - name: version
+            value:
+            usage: VERSION
             required: True
           - name: type
             value:
