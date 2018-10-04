@@ -11,26 +11,20 @@ Master Branch
 
 [https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/ion-connect-latest.tar.gz](https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/ion-connect-latest.tar.gz)
 
-### Install on RHEL OS types with yum/dnf
-Add the following to /etc/yum.repos.d/ion-channel.repo
-
-```sh
-[ion-channel]
-name=Ion Channel Repo
-baseurl=https://yum.fury.io/ionchannel/
-enabled=1
-gpgcheck=0
-```
-
-Then run:
-
-```sh
-sudo dnf clean all; sudo dnf install ion-connect
-```
-
 ## License
 
 [Apache Software License 2.0](LICENSE.txt)
+
+## With Docker
+
+```sh
+docker pull ionchannel/ion-connect
+```
+
+```sh
+docker run -it -e IONCHANNEL_SECRET_KEY=<secret> ionchannel/ion-connect help
+```
+
 
 ## Let's build it!
 
@@ -118,10 +112,10 @@ NAME:
 
 USAGE:
    ion-connect [global options] command [command options] [arguments...]
-   
+
 VERSION:
    0.10.2
-   
+
 COMMANDS:
      scanner        set of commands for effecting artifacts or source code
      airgap         set of commands for moving artifacts or source code
@@ -147,7 +141,7 @@ GLOBAL OPTIONS:
 Commands that are only supported in test by supplying the Ion Channel API endpoint url using an environment variable, similar to the following:
 
 ```
-$ IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ ion-connect metadata get-sentiment 'I love governance'
+$ ion-connect metadata get-sentiment 'I love governance'
 {
   "score": 0.925,
   "sentiment": "positive"
@@ -155,3 +149,22 @@ $ IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ ion-connect metadata g
 ```
 
 That's it! You are well on your way to world domination.
+
+
+
+### Install on RHEL OS types with yum/dnf
+Add the following to /etc/yum.repos.d/ion-channel.repo
+
+```sh
+[ion-channel]
+name=Ion Channel Repo
+baseurl=https://yum.fury.io/ionchannel/
+enabled=1
+gpgcheck=0
+```
+
+Then run:
+
+```sh
+sudo dnf clean all; sudo dnf install ion-connect
+```

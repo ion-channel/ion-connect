@@ -1,23 +1,38 @@
-FROM alpine:3.5
-
-MAINTAINER dev@ionchannel.io
-
-ARG BUILD_DATE
-ARG VERSION
-
-LABEL org.metadata.base.build-date=$BUILD_DATE \
-      org.metadata.base.version=$VERSION \
-      org.metadata.name="Ion Channel Alpine ion-connect Image" \
-      org.metadata.description="A base docker image for Ion Channel's ion-connect utility" \
-      org.metadata.url="https://ionchannel.io" \
-      org.metadata.vcs-url="https://github.com/ion-channel/ion-connect`"
+FROM golang:1.10.3-alpine3.8
 
 RUN apk update && \
     apk upgrade && \
     apk add \
-      bash jq wget && \
+      git && \
     rm -rf /var/cache/apk/*
 
-COPY ion-connect /usr/bin/ion-connect
+WORKDIR /go/src/github.com/ion-channel/ion-connect/
 
-CMD ["ion-connect", "-v"]
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo .
+RUN go get github.com/GeertJohan/go.rice
+RUN go get github.com/GeertJohan/go.rice/rice
+RUN rice append --exec ion-connect  -i ./lib
+
+FROM scratch
+
+ARG APP_NAME
+ARG BUILD_DATE
+ARG VERSION
+ARG GIT_COMMIT_HASH
+ARG ENVIRONMENT
+
+LABEL org.metadata.build-date=$BUILD_DATE \
+      org.metadata.version=$VERSION \
+      org.metadata.vcs-url="https://github.com/ion-channel/ion-connect" \
+      org.metadata.vcs-commit-id=$GIT_COMMIT_HASH \
+      org.metadata.name="Ion Connect" \
+      org.metadata.description="Ion Channel API Tool"
+
+WORKDIR /root/
+
+COPY --from=0 /etc/ssl /etc/ssl
+COPY --from=0 /go/src/github.com/ion-channel/ion-connect/ion-connect .
+
+ENTRYPOINT ["./ion-connect"]
