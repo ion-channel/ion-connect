@@ -1,0 +1,11 @@
+package: github.com/ion-channel/ion-connect
+import:
+- package: github.com/ion-channel/ionic
+  version: 14db2a9564a78a2b9230b024eb7976adc9f1cd3c
+  subpackages:
+  - projects
+  - scanner
+- package: github.com/spf13/cobra
+  version: 0.0.3
+- package: github.com/spf13/viper
+  version: 1.3.1

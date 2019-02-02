@@ -1,35 +1,44 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func init() {
-	fmt.Println("Adding command")
 	ProjectCmd.AddCommand(GetProjectCmd)
-	RootCmd.AddCommand(ProjectCmd)
+
+	GetProjectCmd.Flags().StringVarP(&teamID, "team-id", "t", "", "ID of the team for the project (required)")
+	GetProjectCmd.MarkFlagRequired("team-id")
+	GetProjectCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "ID of the project (required)")
+	GetProjectCmd.MarkFlagRequired("project-id")
 }
 
 // ProjectCmd - Container for holding project root and secondary commands
 var ProjectCmd = &cobra.Command{
 	Use:   "project",
-	Short: "Project anything to the screen",
-	Long: `project is for printing anything back to the screen.
-For many years people have printed back to the screen.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Inside ProjectCmd Run with args: %v\n", args)
-	},
+	Short: "Project resource",
+	Long:  `Project resource - access data relating to projects and their associations`,
 }
 
 // GetProjectCmd - Container for holding project root and secondary commands
 var GetProjectCmd = &cobra.Command{
 	Use:   "get-project",
-	Short: "Project anything to the screen",
-	Long: `project is for printing anything back to the screen.
-For many years people have printed back to the screen.`,
+	Short: "Get Project",
+	Long:  `Get the data for a project`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Inside GetProjectCmd Run with args: %v\n", args)
+		p, e := ion.GetProject(projectID, teamID, viper.GetString(secretKey))
+		if e != nil {
+			fmt.Println(e.Error())
+		}
+
+		j, e := json.Marshal(p)
+		if e != nil {
+			fmt.Println(e.Error())
+		}
+		fmt.Println(string(j))
 	},
 }

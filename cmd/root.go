@@ -2,62 +2,74 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 	"os"
 
+	"github.com/ion-channel/ionic"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
+const (
+	key       = "IONCHANNEL_SECRET_KEY"
+	api       = "IONCHANNEL_ENDPOINT_URL"
+	bucket    = "IONCHANNEL_DROP_BUCKET"
+	secretKey = "secret_key"
+)
+
+var (
+	output    io.Writer
+	cfgFile   string
+	ion       *ionic.IonClient
+	teamID    string
+	projectID string
+)
+
+// RootCmd represents the base command when called without any subcommands
+var RootCmd = &cobra.Command{
+	Use:   "ion-connect",
+	Short: "Provides a micro level interface for performing supply chain analysis of a project",
+	Long: `ion-connect is a CLI tool that allows for rich interaction with the Ion Channel API to
+perform supply chain analysis for a project.
+`,
+}
+
 func init() {
-	cobra.OnInitialize(initConfig)
+	output = os.Stdout
 
-	viper.BindPFlag("author", RootCmd.PersistentFlags().Lookup("author"))
-	viper.BindPFlag("projectbase", RootCmd.PersistentFlags().Lookup("projectbase"))
-	viper.BindPFlag("useViper", RootCmd.PersistentFlags().Lookup("viper"))
-	viper.SetDefault("author", "NAME HERE <EMAIL ADDRESS>")
-	viper.SetDefault("license", "apache")
+	cobra.OnInitialize(initDefaults, initEnvs, initConfig)
 
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $PWD/.ionize.yaml)")
+}
+
+func initDefaults() {
+	// viper.SetDefault("api", "https://api.ionchannel.io")
+}
+
+func initEnvs() {
+	viper.BindEnv(secretKey, key)
+	viper.BindEnv("api", api)
+	viper.BindEnv("bucket", bucket)
 }
 
 func initConfig() {
-	// Don't forget to read config either from cfgFile or from home directory!
-	// if cfgFile != "" {
-	// 	// Use config file from the flag.
-	// 	viper.SetConfigFile(cfgFile)
-	// } else {
-	// 	// Find home directory.
-	// 	home, err := homedir.Dir()
-	// 	if err != nil {
-	// 		fmt.Println(err)
-	// 		os.Exit(1)
-	// 	}
-	//
-	// 	// Search config in home directory with name ".cobra" (without extension).
-	// 	viper.AddConfigPath(home)
-	// 	viper.SetConfigName(".cobra")
-	// }
-	//
-	// if err := viper.ReadInConfig(); err != nil {
-	// 	fmt.Println("Can't read config:", err)
-	// 	os.Exit(1)
-	// }
+	viper.SetConfigType("yaml")
 
-}
+	viper.SetConfigName("credentials")
+	viper.AddConfigPath("/etc/ionchannel/")
+	viper.AddConfigPath("$HOME/.ionchannel/")
+	viper.AddConfigPath(".")
 
-//RootCmd - Root command container for ion-connect
-var RootCmd = &cobra.Command{
-	Use:   "ion-connect",
-	Short: "Ion Connect is awesome!",
-	Long:  `Ion connect is awesome with more words`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Inside rootCmd Run with args: %v\n", args)
-	},
-}
-
-// Execute runs the command defined for the root
-func Execute() {
-	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
+	err := viper.ReadInConfig()
+	if err != nil && (viper.GetString(secretKey) == "" || viper.GetString("api") == "") {
+		fmt.Println(err.Error())
 		os.Exit(1)
 	}
+
+	ion, _ = ionic.New(viper.GetString("api"))
+}
+
+func init() {
+
+	RootCmd.AddCommand(ProjectCmd)
 }
