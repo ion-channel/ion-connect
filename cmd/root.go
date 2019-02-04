@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/ion-channel/ionic"
 	"github.com/spf13/cobra"
@@ -11,10 +12,12 @@ import (
 )
 
 const (
-	key       = "IONCHANNEL_SECRET_KEY"
-	api       = "IONCHANNEL_ENDPOINT_URL"
-	bucket    = "IONCHANNEL_DROP_BUCKET"
-	secretKey = "secret_key"
+	key            = "IONCHANNEL_SECRET_KEY"
+	api            = "IONCHANNEL_ENDPOINT_URL"
+	bucket         = "IONCHANNEL_DROP_BUCKET"
+	secretKey      = "secret_key"
+	configPath     = "$HOME/.ionchannel/"
+	configFilePath = "~/.ionchannel/credentials.yaml"
 )
 
 var (
@@ -32,18 +35,27 @@ var RootCmd = &cobra.Command{
 	Long: `ion-connect is a CLI tool that allows for rich interaction with the Ion Channel API to
 perform supply chain analysis for a project.
 `,
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		viper.SetConfigType("yaml")
+		viper.SetConfigName("credentials")
+		viper.AddConfigPath(configPath)
+		// The configure command will be run before there is config
+		if !strings.Contains(cmd.CommandPath(), "configure") {
+			initConfig()
+		}
+	},
 }
 
 func init() {
 	output = os.Stdout
 
-	cobra.OnInitialize(initDefaults, initEnvs, initConfig)
+	cobra.OnInitialize(initDefaults, initEnvs)
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $PWD/.ionize.yaml)")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", fmt.Sprintf("config file (default is %s)", configFilePath))
 }
 
 func initDefaults() {
-	// viper.SetDefault("api", "https://api.ionchannel.io")
+	viper.SetDefault("api", "https://api.ionchannel.io/")
 }
 
 func initEnvs() {
@@ -53,13 +65,6 @@ func initEnvs() {
 }
 
 func initConfig() {
-	viper.SetConfigType("yaml")
-
-	viper.SetConfigName("credentials")
-	viper.AddConfigPath("/etc/ionchannel/")
-	viper.AddConfigPath("$HOME/.ionchannel/")
-	viper.AddConfigPath(".")
-
 	err := viper.ReadInConfig()
 	if err != nil && (viper.GetString(secretKey) == "" || viper.GetString("api") == "") {
 		fmt.Println(err.Error())
@@ -67,9 +72,4 @@ func initConfig() {
 	}
 
 	ion, _ = ionic.New(viper.GetString("api"))
-}
-
-func init() {
-
-	RootCmd.AddCommand(ProjectCmd)
 }

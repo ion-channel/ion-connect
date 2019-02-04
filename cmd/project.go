@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -9,12 +8,17 @@ import (
 )
 
 func init() {
+	RootCmd.AddCommand(ProjectCmd)
 	ProjectCmd.AddCommand(GetProjectCmd)
+	ProjectCmd.AddCommand(GetProjectsCmd)
 
 	GetProjectCmd.Flags().StringVarP(&teamID, "team-id", "t", "", "ID of the team for the project (required)")
 	GetProjectCmd.MarkFlagRequired("team-id")
 	GetProjectCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "ID of the project (required)")
 	GetProjectCmd.MarkFlagRequired("project-id")
+
+	GetProjectsCmd.Flags().StringVarP(&teamID, "team-id", "t", "", "ID of the team for the project (required)")
+	GetProjectsCmd.MarkFlagRequired("team-id")
 }
 
 // ProjectCmd - Container for holding project root and secondary commands
@@ -35,10 +39,21 @@ var GetProjectCmd = &cobra.Command{
 			fmt.Println(e.Error())
 		}
 
-		j, e := json.Marshal(p)
+		PPrint(p)
+	},
+}
+
+// GetProjectsCmd - Container for holding project root and secondary commands
+var GetProjectsCmd = &cobra.Command{
+	Use:   "get-projects",
+	Short: "Get Projects",
+	Long:  `Get the data for a projects in a team`,
+	Run: func(cmd *cobra.Command, args []string) {
+		ps, e := ion.GetProjects(teamID, viper.GetString(secretKey), nil)
 		if e != nil {
 			fmt.Println(e.Error())
 		}
-		fmt.Println(string(j))
+
+		PPrint(ps)
 	},
 }
