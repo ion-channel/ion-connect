@@ -1,5 +1,5 @@
-hash: 78ce4f4e4f65f2b790c9bf14b2c96a9429de47eabfad86f81dca40e6863f1637
-updated: 2019-02-01T16:44:17.518173-08:00
+hash: 0bd217fbe11c990f38f06bd3bb0433fcfb6e1b3caaa447472395b3083681fb02
+updated: 2019-02-05T14:57:47.021629-08:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: ccc981bf80385c528a65fbfdd49bf2d8da22aa23
@@ -20,8 +20,26 @@ imports:
 - name: github.com/ion-channel/ionic
   version: 14db2a9564a78a2b9230b024eb7976adc9f1cd3c
   subpackages:
+  - aliases
+  - analysis
+  - community
+  - dependencies
+  - digests
+  - errors
+  - events
+  - pagination
+  - products
   - projects
+  - reports
+  - rules
+  - rulesets
   - scanner
+  - scans
+  - tags
+  - teams
+  - teamusers
+  - users
+  - vulnerabilities
 - name: github.com/magiconair/properties
   version: 7757cc9fdb852f7579b24170bcacda2c7471bb6a
 - name: github.com/mitchellh/mapstructure
@@ -42,8 +60,12 @@ imports:
   version: 24fa6976df40757dce6aea913e7b81ade90530e1
 - name: github.com/spf13/viper
   version: 6d33b5a963d922d182c91e8a1c88d81fd150cfd4
+- name: golang.org/x/crypto
+  version: 346896d57731cb5670b36c6178fc5519f3225980
+  subpackages:
+  - ssh/terminal
 - name: golang.org/x/sys
-  version: afcc84fd7533758f95a6e93ae710aa945a0b7e73
+  version: 41f3e6584952bb034a481797859f6ab34b6803bd
   subpackages:
   - unix
 - name: golang.org/x/text
