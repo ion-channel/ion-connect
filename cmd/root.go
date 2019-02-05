@@ -26,6 +26,7 @@ var (
 	ion       *ionic.IonClient
 	teamID    string
 	projectID string
+	branch    string
 )
 
 // RootCmd represents the base command when called without any subcommands
