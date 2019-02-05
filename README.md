@@ -85,13 +85,10 @@ If you've added the $GOHOME/bin to you path you should now be able to get ion-co
 
 ```sh
 $ GOOS=windows go build -o ion-connect/windows/bin/ion-connect.exe ./
-$ rice append --exec ion-connect/windows/bin/ion-connect.exe -i ./lib
 
 $ GOOS=linux go build -o ion-connect/linux/bin/ion-connect ./
-$ rice append --exec ion-connect/linux/bin/ion-connect -i ./lib
 
 $ GOOS=darwin go build -o ion-connect/darwin/bin/ion-connect ./
-$ rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
 ```
 
 ## Your wish
@@ -117,14 +114,13 @@ NAME:
    ion-connect - Interact with Ion Channel
 
 USAGE:
-   ion-connect [global options] command [command options] [arguments...]
-   
+   ion-connect [global flags] command [command flags] [arguments...]
+
 VERSION:
    0.10.2
-   
+
 COMMANDS:
      scanner        set of commands for effecting artifacts or source code
-     airgap         set of commands for moving artifacts or source code
      metadata       set of commands for parsing metadata from text
      ruleset        set of commands for managing rulesets
      analysis       set of commands for querying for projects analysis scan results

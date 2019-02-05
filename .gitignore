@@ -1,5 +1,4 @@
 ./ion-connect
-lib/rice-box.go
 target*
 ion-connect/
 ion-connect
