@@ -11,20 +11,26 @@ Master Branch
 
 [https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/ion-connect-latest.tar.gz](https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/ion-connect-latest.tar.gz)
 
+### Install on RHEL OS types with yum/dnf
+Add the following to /etc/yum.repos.d/ion-channel.repo
+
+```sh
+[ion-channel]
+name=Ion Channel Repo
+baseurl=https://yum.fury.io/ionchannel/
+enabled=1
+gpgcheck=0
+```
+
+Then run:
+
+```sh
+sudo dnf clean all; sudo dnf install ion-connect
+```
+
 ## License
 
 [Apache Software License 2.0](LICENSE.txt)
-
-## With Docker
-
-```sh
-docker pull ionchannel/ion-connect
-```
-
-```sh
-docker run -it -e IONCHANNEL_SECRET_KEY=<secret> ionchannel/ion-connect help
-```
-
 
 ## Let's build it!
 
@@ -79,13 +85,10 @@ If you've added the $GOHOME/bin to you path you should now be able to get ion-co
 
 ```sh
 $ GOOS=windows go build -o ion-connect/windows/bin/ion-connect.exe ./
-$ rice append --exec ion-connect/windows/bin/ion-connect.exe -i ./lib
 
 $ GOOS=linux go build -o ion-connect/linux/bin/ion-connect ./
-$ rice append --exec ion-connect/linux/bin/ion-connect -i ./lib
 
 $ GOOS=darwin go build -o ion-connect/darwin/bin/ion-connect ./
-$ rice append --exec ion-connect/darwin/bin/ion-connect -i ./lib
 ```
 
 ## Your wish
@@ -111,14 +114,13 @@ NAME:
    ion-connect - Interact with Ion Channel
 
 USAGE:
-   ion-connect [global options] command [command options] [arguments...]
+   ion-connect [global flags] command [command flags] [arguments...]
 
 VERSION:
    0.10.2
 
 COMMANDS:
      scanner        set of commands for effecting artifacts or source code
-     airgap         set of commands for moving artifacts or source code
      metadata       set of commands for parsing metadata from text
      ruleset        set of commands for managing rulesets
      analysis       set of commands for querying for projects analysis scan results
@@ -141,7 +143,7 @@ GLOBAL OPTIONS:
 Commands that are only supported in test by supplying the Ion Channel API endpoint url using an environment variable, similar to the following:
 
 ```
-$ ion-connect metadata get-sentiment 'I love governance'
+$ IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ ion-connect metadata get-sentiment 'I love governance'
 {
   "score": 0.925,
   "sentiment": "positive"
@@ -149,22 +151,3 @@ $ ion-connect metadata get-sentiment 'I love governance'
 ```
 
 That's it! You are well on your way to world domination.
-
-
-
-### Install on RHEL OS types with yum/dnf
-Add the following to /etc/yum.repos.d/ion-channel.repo
-
-```sh
-[ion-channel]
-name=Ion Channel Repo
-baseurl=https://yum.fury.io/ionchannel/
-enabled=1
-gpgcheck=0
-```
-
-Then run:
-
-```sh
-sudo dnf clean all; sudo dnf install ion-connect
-```

@@ -1,57 +1,11 @@
 language: go
 
+go:
+  - 1.11.5
+  - tip
+
 install:
-  - make travis_setup
-  - bundle
-  - go get github.com/GeertJohan/go.rice
-  - go get github.com/GeertJohan/go.rice/rice
-  - go get -v github.com/Masterminds/glide
   - go get -u golang.org/x/lint/golint
-  - cd $GOPATH/src/github.com/Masterminds/glide && git checkout 8460774 && go install
-    && cd -
-  - glide install
-  - gem install fpm
 
 script:
-  - IONCHANNEL_SECRET_KEY="" make fmt vet lint unit_test && make crosscompile && rice append --exec compiled/ion-connect/windows/ion-connect.exe -i ./lib && rice append --exec compiled/ion-connect/darwin/ion-connect -i ./lib && rice append --exec compiled/ion-connect/linux/ion-connect -i ./lib && VERSION=`if [ $TRAVIS_TAG -z ]; then echo 'master'; else echo $TRAVIS_TAG; fi` && FILE_NAME=ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER && tar cfvz $FILE_NAME.tar.gz compiled/ion-connect && make dockerize && go install && IONCHANNEL_ENDPOINT_URL=$CI_ENDPOINT_URL IONCHANNEL_SECRET_KEY=$CI_SECRET_KEY make integration_test && make coverage analyze
-
-before_deploy:
-  - rm -rf compiled
-  - tar xvf $FILE_NAME.tar.gz
-  - fpm -s dir -t rpm -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C
-    compiled/ion-connect/linux
-  - fpm -s dir -t deb -n ion-connect --iteration $TRAVIS_BUILD_NUMBER -v $VERSION -C
-    compiled/ion-connect/linux
-  - mkdir -p deploy/$TRAVIS_TAG
-  - cp $FILE_NAME.tar.gz deploy/$TRAVIS_TAG/
-  - cp $FILE_NAME.tar.gz deploy/ion-connect-latest.tar.gz
-
-after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login -e="$HUB_DOCKER_EMAIL" -u="$HUB_DOCKER_USER" -p="$HUB_DOCKER_PASSWORD";
-    docker push ionchannel/ion-connect;
-    fi
-
-deploy:
-  - provider: s3
-    bucket: public.ionchannel.io
-    region: us-east-1
-    skip_cleanup: true
-    upload-dir: files/ion-connect
-    local_dir: deploy
-    acl: public_read
-    on:
-      tags: true
-
-after_deploy:
-  - curl -v -F package=@ion-connect_$VERSION-${TRAVIS_BUILD_NUMBER}_amd64.deb https://$GEMFURY_TOKEN@push.fury.io/ionchannel/
-  - curl -v -F package=@ion-connect-$VERSION-$TRAVIS_BUILD_NUMBER.x86_64.rpm https://$GEMFURY_TOKEN@push.fury.io/ionchannel/
-
-notifications:
-  email: false
-  slack:
-    rooms:
-      secure: H4/dc+yBvYYEO/4JdCiMsjCYkffi/87Wfz0/Xe5cyYXUHmYjO9129T7qJgBXbudB/leVWhxe1EgejwQz6o91i7hqpSJjMC2fB+KJcWjqkdM8xxX/hsbyfFAXpq4sPfdxAgikVHfjrg8pktuZZt8wJuTH0kVpRCsRIP/T0qRREYhOA+CUK5rlP1/ewl6p3RIsSTJkLPNNraGEgPeBfQcTWxRmbFqCPmbAZ0AOBtZiNRjyuaS4BxF59Hezv2UkPpamL+X8bZXVpik4F/wYvqnoKnm9IT0DAys5I4LgPWICCdJnMfK2dLPR90QFAkIleh8JhtVOj3QVhWCdHXZjAYJzuw/PFz3peuQ853xfF0zexwSwqx0IOO4en7w4HoyLkX2USerfKtzIqiLIoV26AqA35K/i0YKmYMDhFTIAm6wl1rh8BXKblK5llkker2JhVqTin/VEvuj6yAEY/oIXM3lNiH2jbh0RGWYf3U7qOoFFebV7rdsmZ61B3qZwKCuKFjAnNe8xBBMNuZmU4el0WRVFMdljRUspt3ydhWnoGpXFDquPdU16zz9osnG9mOmub73pH8/dQLrJFspd1VbMTEZmQ/L53QXHtaAaWwGbYjeVte/rYGnu0Wi854SatfaoumJmfWT0IsidKu0wWBMU7Q+NJMi1SSV/4yMJNdBessfD5xs=
-
-services:
-  - docker
+  - make fmt vet lint unit_test build install

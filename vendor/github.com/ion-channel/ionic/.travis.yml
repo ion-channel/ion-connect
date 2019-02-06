@@ -1,0 +1,16 @@
+language: go
+
+go:
+  - "1.10"
+  - master
+
+install:
+  - make travis_setup
+
+script:
+  - make fmt vet lint
+  - go test -v $(go list ./... | grep -v /vendor/)
+  - make coverage analyze
+
+notifications:
+  email: false
