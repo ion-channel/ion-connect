@@ -11,6 +11,7 @@ func init() {
 	RootCmd.AddCommand(ProjectCmd)
 	ProjectCmd.AddCommand(GetProjectCmd)
 	ProjectCmd.AddCommand(GetProjectsCmd)
+	ProjectCmd.AddCommand(CreateProjectsCSVCmd)
 
 	GetProjectCmd.Flags().StringVarP(&teamID, "team-id", "t", "", "ID of the team for the project (required)")
 	GetProjectCmd.MarkFlagRequired("team-id")
@@ -19,6 +20,9 @@ func init() {
 
 	GetProjectsCmd.Flags().StringVarP(&teamID, "team-id", "t", "", "ID of the team for the project (required)")
 	GetProjectsCmd.MarkFlagRequired("team-id")
+
+	CreateProjectsCSVCmd.Flags().StringVarP(&teamID, "team-id", "t", "", "ID of the team for the project (required)")
+	CreateProjectsCSVCmd.MarkFlagRequired("team-id")
 }
 
 // ProjectCmd - Container for holding project root and secondary commands
@@ -50,6 +54,23 @@ var GetProjectsCmd = &cobra.Command{
 	Long:  `Get the data for a projects in a team`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ps, e := ion.GetProjects(teamID, viper.GetString(secretKey), nil)
+		if e != nil {
+			fmt.Println(e.Error())
+		}
+
+		PPrint(ps)
+	},
+}
+
+// CreateProjectsCSVCmd - Container for holding project root and secondary commands
+var CreateProjectsCSVCmd = &cobra.Command{
+	Use:   "create-projects-csv [flags] PATHTOCSV",
+	Short: "Create Projects",
+	Long:  `Create projects from a Ion Channel CSV input file`,
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		csv := args[0]
+		ps, e := ion.CreateProjectsFromCSV(csv, teamID, viper.GetString(secretKey))
 		if e != nil {
 			fmt.Println(e.Error())
 		}
