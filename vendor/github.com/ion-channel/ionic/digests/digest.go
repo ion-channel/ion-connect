@@ -6,6 +6,7 @@ import (
 	"math"
 	"strings"
 
+	"github.com/ion-channel/ionic/scanner"
 	"github.com/ion-channel/ionic/scans"
 )
 
@@ -36,6 +37,9 @@ type Digest struct {
 	WarningMessage string          `json:"warning_message,omitempty"`
 	Errored        bool            `json:"errored"`
 	ErroredMessage string          `json:"errored_message,omitempty"`
+
+	singularTitle string
+	pluralTitle   string
 }
 
 type boolean struct {
@@ -58,70 +62,102 @@ type percent struct {
 	Percent float64 `json:"percent"`
 }
 
-// NewFromEval takes a title, data type and value to attempt constructing a digest. It
-// returns a digest and any error that it encounters while trying to construct
-// the digest.
-func NewFromEval(index int, title string, dataType string, value interface{}, eval *scans.Evaluation) (*Digest, error) {
+// NewDigest takes a scan status, ordering index, and a singular and plural
+// version of the digest title. The status is leveraged to determine the first
+// levels of a digest status. The index provides an ordered location if a list
+// of Digests are sorted. The singular and plural titles are used to display as
+// singular title if data is added that warrants a singular title, and otherwise
+// will favor a plural title. A newly constructed Digest with the appropriate
+// settings is returned.
+func NewDigest(status *scanner.ScanStatus, index int, singular, plural string) *Digest {
+	var errored bool
+	var erroredMsg string
+
+	if status != nil && strings.ToLower(status.Status) == "errored" {
+		errored = true
+		erroredMsg = status.Message
+	}
+
+	d := &Digest{
+		Index:          index,
+		Pending:        status == nil,
+		Errored:        errored,
+		ErroredMessage: erroredMsg,
+		Title:          plural,
+		singularTitle:  singular,
+		pluralTitle:    plural,
+	}
+
+	return d
+}
+
+// AppendEval takes an evaluation, data type, and value to interleave into the
+// digest. It will also use the data to determine whether or not to show it's
+// singular or plural title. It returns an error if the data type does not match
+// the value provided.
+func (d *Digest) AppendEval(eval *scans.Evaluation, dataType string, value interface{}) error {
 	var data []byte
 	var err error
+	title := d.pluralTitle
 
 	switch strings.ToLower(dataType) {
 	case "bool", "boolean":
 		b, ok := value.(bool)
 		if !ok {
-			return nil, ErrFailedValueAssertion
+			return ErrFailedValueAssertion
 		}
 
 		data, err = json.Marshal(boolean{b})
 	case "chars":
 		c, ok := value.(string)
 		if !ok {
-			return nil, ErrFailedValueAssertion
+			return ErrFailedValueAssertion
 		}
 
 		data, err = json.Marshal(chars{c})
 	case "count":
 		c, ok := value.(int)
 		if !ok {
-			return nil, ErrFailedValueAssertion
+			return ErrFailedValueAssertion
 		}
 
 		data, err = json.Marshal(count{c})
+		if c == 1 {
+			title = d.singularTitle
+		}
 	case "list":
 		l, ok := value.([]string)
 		if !ok {
-			return nil, ErrFailedValueAssertion
+			return ErrFailedValueAssertion
 		}
 
 		data, err = json.Marshal(&list{l})
+		if len(l) == 1 {
+			title = d.singularTitle
+		}
 	case "percent":
 		p, ok := value.(float64)
 		if !ok {
-			return nil, ErrFailedValueAssertion
+			return ErrFailedValueAssertion
 		}
 
 		data, err = json.Marshal(percent{math.Round(p*100) / 100})
 	default:
-		return nil, ErrUnsupportedType
+		return ErrUnsupportedType
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal digest data: %v", err.Error())
+		return fmt.Errorf("failed to marshal digest data: %v", err.Error())
 	}
 
-	d := &Digest{
-		Index: index,
-		Title: title,
-		Data:  data,
+	d.Data = data
+	d.Title = title
+	d.ScanID = eval.ID
+	d.RuleID = eval.RuleID
+	d.RulesetID = eval.RulesetID
+	d.Evaluated = (strings.ToLower(eval.Type) != "not evaluated")
+	d.Passed = eval.Passed
+	d.PassedMessage = eval.Description
 
-		ScanID:    eval.ID,
-		RuleID:    eval.RuleID,
-		RulesetID: eval.RulesetID,
-
-		Evaluated:     (strings.ToLower(eval.Type) != "not evaluated"),
-		Passed:        eval.Passed,
-		PassedMessage: eval.Description,
-	}
-
-	return d, nil
+	return nil
 }
