@@ -1,5 +1,5 @@
-hash: 40d494b93e8059693579292479eb91014221148c81d5e1628bec8ed80b1aa428
-updated: 2019-02-06T15:21:36.455446-08:00
+hash: 3b53413bf3787edb5631bcc942324b045f0f678c086796d9a66a49220c75b13f
+updated: 2019-02-15T16:03:48.681894-08:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: ccc981bf80385c528a65fbfdd49bf2d8da22aa23
@@ -18,10 +18,10 @@ imports:
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/ion-channel/ionic
-  version: 87a152961b9e172e0ef57021ba23f26b6032cbfd
+  version: c38240288c7dbf54c1d6080144b244bda896a895
   subpackages:
   - aliases
-  - analysis
+  - analyses
   - community
   - dependencies
   - digests
@@ -35,6 +35,7 @@ imports:
   - rulesets
   - scanner
   - scans
+  - searches
   - tags
   - teams
   - teamusers
@@ -65,7 +66,7 @@ imports:
   subpackages:
   - ssh/terminal
 - name: golang.org/x/sys
-  version: 41f3e6584952bb034a481797859f6ab34b6803bd
+  version: d0b11bdaac8adb652bff00e49bcacf992835621a
   subpackages:
   - unix
 - name: golang.org/x/text

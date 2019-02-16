@@ -27,6 +27,7 @@ var (
 	teamID    string
 	projectID string
 	branch    string
+	query     string
 )
 
 // RootCmd represents the base command when called without any subcommands
