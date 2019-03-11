@@ -55,6 +55,13 @@ func saveCredentials(creds string) {
 		fmt.Println(e.Error())
 		return
 	}
+
+	e = os.MkdirAll(strings.Replace(configPath, "$HOME", usr.HomeDir, -1), 0700)
+	if e != nil {
+		fmt.Println(e.Error())
+		return
+	}
+
 	path := strings.Replace(configFilePath, "~", usr.HomeDir, -1)
 	e = ioutil.WriteFile(path, yamlCreds, 0600)
 	if e != nil {
