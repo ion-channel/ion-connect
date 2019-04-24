@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/ion-channel/ionic/pagination"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -19,6 +20,8 @@ func init() {
 	GetProjectCmd.MarkFlagRequired("project-id")
 
 	GetProjectsCmd.Flags().StringVarP(&teamID, "team-id", "t", "", "ID of the team for the project (required)")
+	GetProjectsCmd.Flags().IntVarP(&limit, "limit", "", 10, "maximum count of projects")
+	GetProjectsCmd.Flags().IntVarP(&offset, "offset", "", 0, "beginning index for project set")
 	GetProjectsCmd.MarkFlagRequired("team-id")
 
 	CreateProjectsCSVCmd.Flags().StringVarP(&teamID, "team-id", "t", "", "ID of the team for the project (required)")
@@ -53,7 +56,14 @@ var GetProjectsCmd = &cobra.Command{
 	Short: "Get Projects",
 	Long:  `Get the data for a projects in a team`,
 	Run: func(cmd *cobra.Command, args []string) {
-		ps, e := ion.GetProjects(teamID, viper.GetString(secretKey), nil)
+		var page *pagination.Pagination
+		if limit != 0 {
+			page = &pagination.Pagination{
+				Limit:  limit,
+				Offset: offset,
+			}
+		}
+		ps, e := ion.GetProjects(teamID, viper.GetString(secretKey), page)
 		if e != nil {
 			fmt.Println(e.Error())
 		}

@@ -28,6 +28,8 @@ var (
 	projectID string
 	branch    string
 	query     string
+	limit     int
+	offset    int
 )
 
 // RootCmd represents the base command when called without any subcommands
