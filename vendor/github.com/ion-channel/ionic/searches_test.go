@@ -30,7 +30,7 @@ func TestSearches(t *testing.T) {
 				SetMethods("GET").
 				SetPayload([]byte(sampleValidProdIDSearch)).
 				SetStatus(http.StatusOK)
-			searchResults, err := client.GetSearch("query", "sometoken")
+			searchResults, err := client.GetSearch("query", "", "sometoken")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(searchResults).To(HaveLen(2))
 			hitRecords := server.HitRecords()
