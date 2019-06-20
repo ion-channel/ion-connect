@@ -26,8 +26,8 @@ func init() {
 // DependencyCmd - Container for holding dep root and secondary commands
 var DependencyCmd = &cobra.Command{
 	Use:   "dependency",
-	Short: "Dependecy resource",
-	Long:  `Dependecy resource - access data relating to dependencies and their associations`,
+	Short: "Dependency resource",
+	Long:  `Dependency resource - access data relating to dependencies and their associations`,
 }
 
 // ResolveDependecyFileCmd - Resolves dependencies in a file
