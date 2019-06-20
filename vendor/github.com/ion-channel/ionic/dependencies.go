@@ -1,9 +1,14 @@
 package ionic
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"mime/multipart"
+	"net/http"
 	"net/url"
+	"os"
 
 	"github.com/ion-channel/ionic/dependencies"
 )
@@ -11,10 +16,63 @@ import (
 const (
 	getLatestVersionForDependencyEndpoint = "v1/dependency/getLatestVersionForDependency"
 	getVersionsForDependencyEndpoint      = "v1/dependency/getVersionsForDependency"
+	resolveDependenciesInFileEndpoint     = "v1/dependency/resolveDependenciesInFile"
 
 	// RubyEcosystem represents the ruby ecosystem for resolving dependencies
 	RubyEcosystem = "ruby"
 )
+
+// ResolveDependenciesInFile takes a dependency file location and token to send
+// the specified file to the API. All dependencies that are able to be resolved will
+// be with their info returned, and a list of any errors encountered during the
+// process.
+func (ic *IonClient) ResolveDependenciesInFile(depFile, ecosystem string, flatten, flag bool, token string) (*dependencies.DependencyResolutionResponse, error) {
+	params := &url.Values{}
+	params.Set("type", ecosystem)
+	if flatten {
+		params.Set("flatten", "true")
+	}
+
+	if flag {
+		params.Set("flag", "flag")
+	}
+
+	var buf bytes.Buffer
+	w := multipart.NewWriter(&buf)
+
+	fw, err := w.CreateFormFile("file", depFile)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create form file: %v", err.Error())
+	}
+
+	fh, err := os.Open(depFile)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open file: %v", err.Error())
+	}
+
+	_, err = io.Copy(fw, fh)
+	if err != nil {
+		return nil, fmt.Errorf("failed to copy file contents: %v", err.Error())
+	}
+
+	w.Close()
+
+	h := http.Header{}
+	h.Set("Content-Type", w.FormDataContentType())
+
+	b, err := ic.Post(resolveDependenciesInFileEndpoint, token, params, buf, h)
+	if err != nil {
+		return nil, fmt.Errorf("failed to resolve dependencies: %v", err.Error())
+	}
+
+	var resp dependencies.DependencyResolutionResponse
+	err = json.Unmarshal(b, &resp)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response: %v", err.Error())
+	}
+
+	return &resp, nil
+}
 
 // GetLatestVersionForDependency takes a package name, an ecosystem to find the
 // package in, and a token for accessing the API. It returns a dependency
