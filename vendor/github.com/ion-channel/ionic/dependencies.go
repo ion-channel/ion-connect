@@ -14,10 +14,6 @@ import (
 )
 
 const (
-	getLatestVersionForDependencyEndpoint = "v1/dependency/getLatestVersionForDependency"
-	getVersionsForDependencyEndpoint      = "v1/dependency/getVersionsForDependency"
-	resolveDependenciesInFileEndpoint     = "v1/dependency/resolveDependenciesInFile"
-
 	// RubyEcosystem represents the ruby ecosystem for resolving dependencies
 	RubyEcosystem = "ruby"
 )
@@ -26,26 +22,22 @@ const (
 // the specified file to the API. All dependencies that are able to be resolved will
 // be with their info returned, and a list of any errors encountered during the
 // process.
-func (ic *IonClient) ResolveDependenciesInFile(depFile, ecosystem string, flatten, flag bool, token string) (*dependencies.DependencyResolutionResponse, error) {
+func (ic *IonClient) ResolveDependenciesInFile(o dependencies.DependencyResolutionRequest, token string) (*dependencies.DependencyResolutionResponse, error) {
 	params := &url.Values{}
-	params.Set("type", ecosystem)
-	if flatten {
+	params.Set("type", o.Ecosystem)
+	if o.Flatten {
 		params.Set("flatten", "true")
-	}
-
-	if flag {
-		params.Set("flag", "flag")
 	}
 
 	var buf bytes.Buffer
 	w := multipart.NewWriter(&buf)
 
-	fw, err := w.CreateFormFile("file", depFile)
+	fw, err := w.CreateFormFile("file", o.File)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create form file: %v", err.Error())
 	}
 
-	fh, err := os.Open(depFile)
+	fh, err := os.Open(o.File)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open file: %v", err.Error())
 	}
@@ -60,7 +52,7 @@ func (ic *IonClient) ResolveDependenciesInFile(depFile, ecosystem string, flatte
 	h := http.Header{}
 	h.Set("Content-Type", w.FormDataContentType())
 
-	b, err := ic.Post(resolveDependenciesInFileEndpoint, token, params, buf, h)
+	b, err := ic.Post(dependencies.ResolveDependenciesInFileEndpoint, token, params, buf, h)
 	if err != nil {
 		return nil, fmt.Errorf("failed to resolve dependencies: %v", err.Error())
 	}
@@ -83,7 +75,7 @@ func (ic *IonClient) GetLatestVersionForDependency(packageName, ecosystem, token
 	params.Set("name", packageName)
 	params.Set("type", ecosystem)
 
-	b, err := ic.Get(getLatestVersionForDependencyEndpoint, token, params, nil, nil)
+	b, err := ic.Get(dependencies.GetLatestVersionForDependencyEndpoint, token, params, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get latest version for dependency: %v", err.Error())
 	}
@@ -107,7 +99,7 @@ func (ic *IonClient) GetVersionsForDependency(packageName, ecosystem, token stri
 	params.Set("name", packageName)
 	params.Set("type", ecosystem)
 
-	b, err := ic.Get(getVersionsForDependencyEndpoint, token, params, nil, nil)
+	b, err := ic.Get(dependencies.GetVersionsForDependencyEndpoint, token, params, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get latest version for dependency: %v", err.Error())
 	}

@@ -35,7 +35,9 @@ func TestAnalysisReport(t *testing.T) {
 				json.Unmarshal([]byte(sampleAnalysisPayload), &a)
 				Expect(a.ID).To(Equal("f9bca953-80ac-46c4-b195-d37f3bc4f498"))
 
+				rulsetID := "someruleset"
 				p := &projects.Project{
+					RulesetID: &rulsetID,
 					Aliases: []aliases.Alias{
 						aliases.Alias{
 							Name: "bar",
@@ -48,6 +50,11 @@ func TestAnalysisReport(t *testing.T) {
 					},
 				}
 
+				pr := &rulesets.RuleSet{
+					ID:   rulsetID,
+					Name: "this ruleset",
+				}
+
 				var eval scans.Evaluation
 				json.Unmarshal([]byte(sampleUntranslatedResults), &eval)
 
@@ -55,16 +62,18 @@ func TestAnalysisReport(t *testing.T) {
 					RuleEvaluationSummary: &rulesets.RuleEvaluationSummary{
 						RulesetName: "super cool ruleset",
 						Summary:     "pass",
+						Risk:        "low",
+						Passed:      true,
 						Ruleresults: []scans.Evaluation{eval},
 					},
 				}
 
-				ar, err := NewAnalysisReport(s, &a, p, app)
+				ar, err := NewAnalysisReport(s, &a, p, pr, app)
 				Expect(err).To(BeNil())
 				Expect(ar).NotTo(BeNil())
 
 				Expect(ar.RulesetName).To(Equal("super cool ruleset"))
-				Expect(ar.Statuses.Status).To(Equal("finished"))
+				Expect(ar.Report.Statuses.Status).To(Equal("finished"))
 				Expect(ar.Risk).To(Equal("low"))
 				Expect(ar.Passed).To(Equal(true))
 				Expect(len(ar.Aliases)).To(Equal(1))
@@ -103,7 +112,9 @@ func TestAnalysisReport(t *testing.T) {
 				json.Unmarshal([]byte(sampleAnalysisPayload), &a)
 				Expect(a.ID).To(Equal("f9bca953-80ac-46c4-b195-d37f3bc4f498"))
 
+				rulsetID := "someruleset"
 				p := &projects.Project{
+					RulesetID: &rulsetID,
 					Aliases: []aliases.Alias{
 						aliases.Alias{
 							Name: "bar",
@@ -116,6 +127,11 @@ func TestAnalysisReport(t *testing.T) {
 					},
 				}
 
+				pr := &rulesets.RuleSet{
+					ID:   rulsetID,
+					Name: "this ruleset",
+				}
+
 				var eval scans.Evaluation
 				json.Unmarshal([]byte(sampleTranslatedResults), &eval)
 
@@ -123,16 +139,18 @@ func TestAnalysisReport(t *testing.T) {
 					RuleEvaluationSummary: &rulesets.RuleEvaluationSummary{
 						RulesetName: "super cool ruleset",
 						Summary:     "pass",
+						Risk:        "low",
+						Passed:      true,
 						Ruleresults: []scans.Evaluation{eval},
 					},
 				}
 
-				ar, err := NewAnalysisReport(s, &a, p, app)
+				ar, err := NewAnalysisReport(s, &a, p, pr, app)
 				Expect(err).To(BeNil())
 				Expect(ar).NotTo(BeNil())
 
 				Expect(ar.RulesetName).To(Equal("super cool ruleset"))
-				Expect(ar.Statuses.Status).To(Equal("finished"))
+				Expect(ar.Report.Statuses.Status).To(Equal("finished"))
 				Expect(ar.Risk).To(Equal("low"))
 				Expect(ar.Passed).To(Equal(true))
 				Expect(len(ar.Aliases)).To(Equal(1))

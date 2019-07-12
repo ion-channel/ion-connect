@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/ion-channel/ionic/dependencies"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -38,7 +39,13 @@ var ResolveDependecyFileCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		dep := args[0]
-		deps, e := ion.ResolveDependenciesInFile(dep, tipe, flatten, flag, viper.GetString(secretKey))
+		o := dependencies.DependencyResolutionRequest{
+			File:      dep,
+			Flatten:   flatten,
+			Ecosystem: tipe,
+		}
+
+		deps, e := ion.ResolveDependenciesInFile(o, viper.GetString(secretKey))
 		if e != nil {
 			fmt.Println(e.Error())
 		}
