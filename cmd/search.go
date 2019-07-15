@@ -36,7 +36,6 @@ func init() {
 	RootCmd.AddCommand(SearchCmd)
 	SearchCmd.Flags().StringVarP(&query, "query", "q", "", "String text to search Ion Channel for matches (required)")
 	SearchCmd.MarkFlagRequired("query")
-	SearchCmd.Flags().StringVarP(&resource, "resource", "r", "", "Resource type to query and return (product,repo,package)")
 }
 
 // SearchCmd For a queary string provide a resutl set
@@ -53,7 +52,7 @@ var SearchCmd = &cobra.Command{
 		return fmt.Errorf("invalid resource type specified: %s", resource)
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		r, e := ion.GetRawSearch(query, resource, viper.GetString(secretKey))
+		r, e := ion.GetSearch(query, viper.GetString(secretKey))
 		if e != nil {
 			fmt.Println(e.Error())
 		}

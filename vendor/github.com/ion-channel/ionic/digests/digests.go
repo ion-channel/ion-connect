@@ -13,6 +13,8 @@ import (
 const (
 	differenceIndex = iota
 	virusFoundIndex
+	criticalVulnerabilitiesIndex
+	highVulnerabilitiesIndex
 	totalVulnerabilitiesIndex
 	uniqueVulnerabilitiesIndex
 	licensesIndex
@@ -22,7 +24,7 @@ const (
 	dependencyOutdatedIndex
 	noVersionIndex
 	aboutYMLIndex
-	dominantLanguagesIndex
+	languagesIndex
 	uniqueCommittersIndex
 	codeCoverageIndex
 )

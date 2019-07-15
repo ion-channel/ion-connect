@@ -8,18 +8,13 @@ import (
 	"github.com/ion-channel/ionic/community"
 )
 
-const (
-	getRepoEndpoint    = `v1/repo/getRepo`
-	searchRepoEndpoint = `v1/repo/search`
-)
-
 // GetRepo takes in a repository string and calls the Ion API to get
 // a pointer to the Ionic community.Repo
 func (ic *IonClient) GetRepo(repo, token string) (*community.Repo, error) {
 	params := &url.Values{}
 	params.Set("repo", repo)
 
-	b, err := ic.Get(getRepoEndpoint, token, params, nil, nil)
+	b, err := ic.Get(community.GetRepoEndpoint, token, params, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get repo: %v", err.Error())
 	}
@@ -31,15 +26,14 @@ func (ic *IonClient) GetRepo(repo, token string) (*community.Repo, error) {
 	return &resultRepo, nil
 }
 
-// SearchRepo takes an organization name (org) and a project name (project) and
+// SearchRepo takes a query `org AND name` and
 // calls the Ion API to retrieve the information, then forms a slice of
 // Ionic community.Repo objects
-func (ic *IonClient) SearchRepo(org, project, token string) ([]community.Repo, error) {
+func (ic *IonClient) SearchRepo(q, token string) ([]community.Repo, error) {
 	params := &url.Values{}
-	params.Set("org", org)
-	params.Set("project", project)
+	params.Set("q", q)
 
-	b, err := ic.Get(searchRepoEndpoint, token, params, nil, nil)
+	b, err := ic.Get(community.SearchRepoEndpoint, token, params, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get repo: %v", err.Error())
 	}

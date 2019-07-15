@@ -1,6 +1,7 @@
 package digests
 
 import (
+	"fmt"
 	"sort"
 	"testing"
 
@@ -39,12 +40,35 @@ func TestDigest(t *testing.T) {
 			})
 		})
 
+		g.Describe("Strings", func() {
+			g.It("should return string in JSON", func() {
+				d := Digest{
+					Index:          12,
+					Title:          "sometitle",
+					Data:           nil,
+					ScanID:         "somescanid",
+					RuleID:         "someruleid",
+					RulesetID:      "somerulesetid",
+					Evaluated:      true,
+					Pending:        false,
+					Passed:         true,
+					PassedMessage:  "somepassedmessage",
+					Warning:        false,
+					WarningMessage: "somewarningmessage",
+					Errored:        false,
+					ErroredMessage: "someerroredmessage",
+					singularTitle:  "somesingulartitle",
+					pluralTitle:    "somepluraltitle",
+				}
+				Expect(fmt.Sprintf("%v", d)).To(Equal(`{"index":12,"title":"sometitle","data":null,"scan_id":"somescanid","rule_id":"someruleid","ruleset_id":"somerulesetid","evaluated":true,"pending":false,"passed":true,"passed_message":"somepassedmessage","warning":false,"warning_message":"somewarningmessage","errored":false,"errored_message":"someerroredmessage"}`))
+			})
+		})
+
 		g.Describe("States", func() {
 			g.It("should be marked as pending when no status is provided", func() {
 				ds := NewDigest(nil, 0, "", "")
 				Expect(ds).NotTo(BeNil())
 				Expect(ds.Pending).To(BeTrue())
-				Expect(ds.Errored).To(BeFalse())
 			})
 
 			g.It("should show an error if present", func() {
@@ -65,8 +89,8 @@ func TestDigest(t *testing.T) {
 				ds = NewDigest(s, 0, "", "")
 				Expect(ds).NotTo(BeNil())
 				Expect(ds.Pending).To(BeFalse())
-				Expect(ds.Errored).To(BeFalse())
-				Expect(ds.ErroredMessage).To(Equal(""))
+				Expect(ds.Errored).To(BeTrue())
+				Expect(ds.ErroredMessage).To(Equal("evaluation not received"))
 			})
 		})
 

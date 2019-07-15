@@ -2,6 +2,7 @@ package projects
 
 import (
 	"crypto/x509"
+	"encoding/json"
 	"encoding/pem"
 	"fmt"
 	"net/http"
@@ -11,12 +12,28 @@ import (
 	"time"
 
 	"github.com/ion-channel/ionic/aliases"
+	"github.com/ion-channel/ionic/rulesets"
 	"github.com/ion-channel/ionic/tags"
 )
 
 const (
-	validEmailRegex  = `^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$`
+	validEmailRegex  = `(?i)^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$`
 	validGitURIRegex = `^(?:(?:http|ftp|gopher|mailto|mid|cid|news|nntp|prospero|telnet|rlogin|tn3270|wais|svn|git|rsync)+\+ssh\:\/\/|git\+https?:\/\/|git\@|(?:http|ftp|gopher|mailto|mid|cid|news|nntp|prospero|telnet|rlogin|tn3270|wais|svn|git|rsync|ssh|file)+s?:\/\/)[^\s]+$`
+)
+
+const (
+	// CreateProjectEndpoint is a string representation of the current endpoint for creating project
+	CreateProjectEndpoint = "v1/project/createProject"
+	// CreateProjectsFromCSVEndpoint is a string representation of the current endpoint for creating projects from CSV
+	CreateProjectsFromCSVEndpoint = "v1/project/createProjectsCSV"
+	// GetProjectEndpoint is a string representation of the current endpoint for getting project
+	GetProjectEndpoint = "v1/project/getProject"
+	// GetProjectByURLEndpoint is a string representation of the current endpoint for getting project by URL
+	GetProjectByURLEndpoint = "v1/project/getProjectByUrl"
+	// GetProjectsEndpoint is a string representation of the current endpoint for getting projects
+	GetProjectsEndpoint = "v1/project/getProjects"
+	// UpdateProjectEndpoint is a string representation of the current endpoint for updating project
+	UpdateProjectEndpoint = "v1/project/updateProject"
 )
 
 var (
@@ -51,11 +68,20 @@ type Project struct {
 	Tags           []tags.Tag      `json:"tags"`
 }
 
-// Validate takes an http client and returns a slice of fields as a string and
+// String returns a JSON formatted string of the project object
+func (p Project) String() string {
+	b, err := json.Marshal(p)
+	if err != nil {
+		return fmt.Sprintf("failed to format project: %v", err.Error())
+	}
+	return string(b)
+}
+
+// Validate takes an http client, baseURL, and token; returns a slice of fields as a string and
 // an error. The fields will be a list of fields that did not pass the
 // validation. An error will only be returned if any of the fields fail their
 // validation.
-func (p *Project) Validate(client *http.Client) (map[string]string, error) {
+func (p *Project) Validate(client *http.Client, baseURL *url.URL, token string) (map[string]string, error) {
 	invalidFields := make(map[string]string)
 	var projErr error
 
@@ -98,6 +124,20 @@ func (p *Project) Validate(client *http.Client) (map[string]string, error) {
 		invalidFields["description"] = "missing description"
 		projErr = ErrInvalidProject
 	}
+
+	if p.RulesetID != nil && p.TeamID != nil {
+		exists, err := rulesets.RuleSetExists(client, baseURL, *p.RulesetID, *p.TeamID, token)
+		if err != nil {
+			return nil, fmt.Errorf("failed to determine if ruleset exists: %v", err.Error())
+		}
+
+		if !exists {
+			invalidFields["ruleset_id"] = "ruleset id does not match to a valid ruleset"
+			projErr = ErrInvalidProject
+		}
+	}
+
+	p.POCEmail = strings.TrimSpace(p.POCEmail)
 
 	r := regexp.MustCompile(validEmailRegex)
 	if p.POCEmail != "" && !r.MatchString(p.POCEmail) {
@@ -161,6 +201,9 @@ func (p *Project) Validate(client *http.Client) (map[string]string, error) {
 				invalidFields["source"] = "source must be a valid uri"
 				projErr = ErrInvalidProject
 			}
+		default:
+			invalidFields["type"] = fmt.Sprintf("invalid type value")
+			projErr = ErrInvalidProject
 		}
 	}
 

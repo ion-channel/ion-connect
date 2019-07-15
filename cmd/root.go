@@ -30,6 +30,7 @@ var (
 	query     string
 	limit     int
 	offset    int
+	tipe      string
 )
 
 // RootCmd represents the base command when called without any subcommands

@@ -2,11 +2,15 @@ package ionic
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
 	"testing"
 
 	. "github.com/franela/goblin"
 	"github.com/gomicro/bogus"
+	"github.com/ion-channel/ionic/dependencies"
 	. "github.com/onsi/gomega"
 )
 
@@ -52,10 +56,55 @@ func TestDependencies(t *testing.T) {
 			hrs := server.HitRecords()
 			Expect(len(hrs)).To(Equal(1))
 		})
+
+		g.It("should resolve dependencies from a definition file", func() {
+			server.AddPath("/v1/dependency/resolveDependenciesInFile").
+				SetMethods("POST").
+				SetPayload([]byte(sampleResolutionResponse)).
+				SetStatus(http.StatusOK)
+
+			tf, err := ioutil.TempFile("", "test")
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			defer os.Remove(tf.Name()) // clean up
+
+			tf.Write([]byte(samplePomSnippet))
+			tf.Close()
+
+			o := dependencies.DependencyResolutionRequest{
+				File:      tf.Name(),
+				Flatten:   true,
+				Ecosystem: "maven",
+			}
+
+			deps, err := client.ResolveDependenciesInFile(o, "atoken")
+
+			Expect(err).To(BeNil())
+			Expect(deps.Dependencies[0].Version).To(Equal("1.16.3"))
+
+			hrs := server.HitRecords()
+			Expect(len(hrs)).To(Equal(1))
+			fmt.Printf("asdfaf:::: %v\n", string(hrs[0].Body))
+			Expect(string(hrs[0].Body)).To(ContainSubstring(samplePomSnippet))
+		})
 	})
 }
 
 const (
 	sampleLatestVersionResponse  = `{"data":{"version":"1.16.3"}}`
 	sampleLatestVersionsResponse = `{"data":["1.16.3","1.16.2"]}`
+	sampleResolutionResponse     = `{"data":{"dependencies":[{"version":"1.16.3"}]}}`
+
+	samplePomSnippet = `<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<dependencies>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+            <version>2.7.3</version>
+        </dependency>
+    </dependencies>
+</project>`
 )
