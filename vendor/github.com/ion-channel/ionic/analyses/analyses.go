@@ -10,16 +10,20 @@ import (
 )
 
 const (
-	// AnalysisGetAnalysisEndpoint is a string representation of the current endpoint for getting analysis
+	// AnalysisGetAnalysisEndpoint returns a single raw analysis. Requires team id, project id and analysis id.
 	AnalysisGetAnalysisEndpoint = "v1/animal/getAnalysis"
-	// AnalysisGetAnalysesEndpoint is a string representation of the current endpoint for getting analyses
+	// AnalysisGetAnalysesEndpoint returns multiple raw analyses. Requires team id and project id.
 	AnalysisGetAnalysesEndpoint = "v1/animal/getAnalyses"
-	// AnalysisGetLatestAnalysisSummaryEndpoint is a string representation of the current endpoint for getting latest analysis summary
+	// AnalysisGetLatestAnalysisSummaryEndpoint returns the latest analysis summary. Requires team id and project id.
 	AnalysisGetLatestAnalysisSummaryEndpoint = "v1/animal/getLatestAnalysisSummary"
-	// AnalysisGetPublicAnalysisEndpoint is a string representation of the current endpoint for getting public analysis
+	// AnalysisGetPublicAnalysisEndpoint returns a public analysis.  Requires an analysis id.
 	AnalysisGetPublicAnalysisEndpoint = "v1/animal/getPublicAnalysis"
-	// AnalysisGetLatestPublicAnalysisEndpoint is a string representation of the current endpoint for getting latesting public analysis
+	// AnalysisGetLatestPublicAnalysisEndpoint returns a public analysis.  Requires an analysis id.
 	AnalysisGetLatestPublicAnalysisEndpoint = "v1/animal/getLatestPublicAnalysisSummary"
+	// AnalysisGetLatestAnalysisEndpoint returns the latest analysis. Requires team id and project id.
+	AnalysisGetLatestAnalysisEndpoint = "v1/animal/getLatestAnalysis"
+	// AnalysisGetScanEndpoint returns a scan. Requires a team id, project id, analysis id and scan id.
+	AnalysisGetScanEndpoint = "v1/animal/getScan"
 )
 
 // Analysis is a representation of an Ion Channel Analysis within the system
