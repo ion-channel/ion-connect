@@ -1,5 +1,5 @@
-hash: 192356512aa2929c2e6cbc6844e02f0ed6d19cbb2d2a31f069f70e57fc9169e1
-updated: 2019-07-12T14:50:29.204631-07:00
+hash: 6fc60718b428f9dc7ceb2ace46147e991acf8c7ae18317aeb826ae469f009739
+updated: 2019-08-16T10:00:39.745163-07:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: 1485a34d5d5723fea214f5710708e19a831720e4
@@ -18,11 +18,12 @@ imports:
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/ion-channel/ionic
-  version: 2ea394dd034a59e28ec70e6d1e44e9f889d09a69
+  version: 8ebae7b0e2842b2aa65a1c291211b5fba6b15148
   subpackages:
   - aliases
   - analyses
   - community
+  - deliveries
   - dependencies
   - digests
   - errors
@@ -48,7 +49,7 @@ imports:
 - name: github.com/mitchellh/mapstructure
   version: 3536a929edddb9a5b34bd6861dc4a9647cb459fe
 - name: github.com/pelletier/go-toml
-  version: dba45d427ff48cfb9bcf633db3a8e43b7364e261
+  version: 84da2c4a25c585816f2c4211b699228d111d18ab
 - name: github.com/spf13/afero
   version: 588a75ec4f32903aa5e39a2619ba6a4631e28424
   subpackages:
@@ -60,7 +61,7 @@ imports:
 - name: github.com/spf13/jwalterweatherman
   version: 94f6ae3ed3bceceafa716478c5fbf8d29ca601a1
 - name: github.com/spf13/pflag
-  version: 24fa6976df40757dce6aea913e7b81ade90530e1
+  version: 972238283c0625cf3e881de7699ba8f2524c340a
 - name: github.com/spf13/viper
   version: 6d33b5a963d922d182c91e8a1c88d81fd150cfd4
 - name: golang.org/x/crypto
@@ -68,7 +69,7 @@ imports:
   subpackages:
   - ssh/terminal
 - name: golang.org/x/sys
-  version: fae7ac547cb717d141c433a2a173315e216b64c4
+  version: fde4db37ae7ad8191b03d30d27f258b5291ae4e3
   subpackages:
   - unix
 - name: golang.org/x/text
