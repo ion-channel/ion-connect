@@ -69,16 +69,14 @@ var CreateSkeletonCmd = &cobra.Command{
 	Long:  `Prints a skeleton JSON to edit and use with create-destination`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("{")
-		fmt.Println("  \"data\":{")
-		fmt.Println("    \"id\":\"\",")
-		fmt.Println("    \"team_id\":\"\",")
-		fmt.Println("    \"location\":\"\",")
-		fmt.Println("    \"region\":\"\",")
-		fmt.Println("    \"name\":\"\",")
-		fmt.Println("    \"type\":\"s3\",")
-		fmt.Println("    \"access_key\":\"\",")
-		fmt.Println("    \"secret_key\":\"\"")
-		fmt.Println("  }")
+		fmt.Println("   \"id\":\"\",")
+		fmt.Println("   \"team_id\":\"\",")
+		fmt.Println("   \"location\":\"\",")
+		fmt.Println("   \"region\":\"\",")
+		fmt.Println("   \"name\":\"\",")
+		fmt.Println("   \"type\":\"\",")
+		fmt.Println("   \"access_key\":\"\",")
+		fmt.Println("   \"secret_key\":\"\"")
 		fmt.Println("}")
 	},
 }
