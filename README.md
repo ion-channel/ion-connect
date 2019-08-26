@@ -1,36 +1,20 @@
 # Ion Connect
 
-CLI tool for interacting with the Ion Channel Service/API
+CLI tool for interacting with the Ion Channel.
 
-Master Branch
 [![Build Status](https://travis-ci.org/ion-channel/ion-connect.svg?branch=master)](https://travis-ci.org/ion-channel/ion-connect)
 
-## Latest Build
+## Download and install
 
-[https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/ion-connect-latest.tar.gz](https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/ion-connect-latest.tar.gz)
-
-### Install on RHEL OS types with yum/dnf
-Add the following to /etc/yum.repos.d/ion-channel.repo
-
-```sh
-[ion-channel]
-name=Ion Channel Repo
-baseurl=https://yum.fury.io/ionchannel/
-enabled=1
-gpgcheck=0
-```
-
-Then run:
-
-```sh
-sudo dnf clean all; sudo dnf install ion-connect
-```
+The latest build is available at [https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/ion-connect-latest.tar.gz](https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/ion-connect-latest.tar.gz). Download, open the folder for the operating system being used and put the file somewhere it can be run.
 
 ## License
 
 [Apache Software License 2.0](LICENSE.txt)
 
-## Let's build it!
+## Building from source
+
+This information is only applicable if you are making changes to `ion-connect`.
 
 First thing you will need is the Golang environment setup. [The install process](https://golang.org/doc/install) pretty simple you can use [brew](http://brew.sh) to install go.  You will also need to set the $GOPATH environment variable and point it at your go workspace.
 
