@@ -12,67 +12,6 @@ The latest build is available at [https://s3.amazonaws.com/public.ionchannel.io/
 
 [Apache Software License 2.0](LICENSE.txt)
 
-## Building from source
-
-This information is only applicable if you are making changes to `ion-connect`.
-
-First thing you will need is the Golang environment setup. [The install process](https://golang.org/doc/install) pretty simple you can use [brew](http://brew.sh) to install go.  You will also need to set the $GOPATH environment variable and point it at your go workspace.
-
-```sh
-$ brew install go
-$ brew install glide
-$ export GOPATH=$HOME/go
-$ export GOBIN=$GOPATH/bin
-```
-
-Go provides a command for retrieving dependencies called `go get`.  Since ion-connect is currently private it may be helpful (and more generally helpful) to force git to use ssh by default with  `git config --global url."git@github.com:".insteadOf "https://github.com/"`
-
-```sh
-$ go get github.com/ion-channel/ion-connect
-```
-
-then grab our Go dependencies:
-
-```sh
-$ glide install
-```
-
-finally you can build ion-connect with the following:
-
-```sh
-$ go build github.com/ion-channel/ion-connect
-```
-
-## Don't forget the tests
-
-NOTE: test dependencies are also managed with `glide install` as above.
-
-You can then run the tests with the following command:
-
-```sh
-$ go test -v github.com/ion-channel/ion-connect/...
-```
-
-## Install from source
-
-Once you feel your tests are up to snuff you can use the go install command to install the ion-connect binary in the go bin directory.
-
-```sh
-$ go install github.com/ion-channel/ion-connect
-```
-
-If you've added the $GOHOME/bin to you path you should now be able to get ion-connect action going.
-
-### To get stuff 'cross-compiled':
-
-```sh
-$ GOOS=windows go build -o ion-connect/windows/bin/ion-connect.exe ./
-
-$ GOOS=linux go build -o ion-connect/linux/bin/ion-connect ./
-
-$ GOOS=darwin go build -o ion-connect/darwin/bin/ion-connect ./
-```
-
 ## Your wish
 
 Ion Connect provides a setup command called *configure*.  This should probably be the first command you run.  You will be prompted for your Ion Channel Secret Key which will be provided by an Ion Channel staff member. Contact us at <ion-connect@ionchannel.io>
@@ -133,3 +72,15 @@ $ IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ ion-connect metadata g
 ```
 
 That's it! You are well on your way to world domination.
+
+## Building from source
+
+This information is only applicable if you are making changes to `ion-connect`.
+
+First thing you will need is the Golang environment setup. [The install process](https://golang.org/doc/install) pretty simple you can use [brew](http://brew.sh) to install go.  You will also need to set the $GOPATH environment variable and point it at your go workspace. [GNU make](https://www.gnu.org/software/make/) is also used for running commands.
+
+`make install` will download the Go linter tool.
+
+`make test` will run the tests.
+
+`make build` will build `ion-connect`.
