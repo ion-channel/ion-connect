@@ -62,6 +62,7 @@ var DeleteDestinationCmd = &cobra.Command{
 		e := ion.DeleteDeliveryDestination(deliveryID, viper.GetString(secretKey))
 		if e != nil {
 			fmt.Println(e.Error())
+			return
 		}
 
 		PPrint("delivery marked as deleted")
