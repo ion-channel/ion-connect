@@ -16,12 +16,16 @@ var (
 func init() {
 	RootCmd.AddCommand(DependencyCmd)
 	DependencyCmd.AddCommand(ResolveDependecyFileCmd)
+	DependencyCmd.AddCommand(GetVersionsCmd)
 
 	ResolveDependecyFileCmd.Flags().StringVarP(&tipe, "type", "t", "", "Type of ecosystem or file for parsing (required)")
 	ResolveDependecyFileCmd.MarkFlagRequired("type")
 
 	ResolveDependecyFileCmd.Flags().BoolVarP(&flatten, "flatten", "f", false, "Return the list in a flattened array")
 	ResolveDependecyFileCmd.Flags().BoolVarP(&flag, "flag", "", false, "feature flag")
+
+	GetVersionsCmd.Flags().StringVarP(&tipe, "type", "t", "", "Type of ecosystem or file for parsing (required)")
+	GetVersionsCmd.MarkFlagRequired("type")
 }
 
 // DependencyCmd - Container for holding dep root and secondary commands
@@ -51,5 +55,23 @@ var ResolveDependecyFileCmd = &cobra.Command{
 		}
 
 		PPrint(deps)
+	},
+}
+
+// GetVersionsCmd - Resolves versions for a dependency
+var GetVersionsCmd = &cobra.Command{
+	Use:   "get-versions [flags] NAME",
+	Short: "Resolves versions for a dependency",
+	Long:  `Get a list of versions for a dependency`,
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		dep := args[0]
+
+		vs, e := ion.GetVersionsForDependency(dep, tipe, viper.GetString(secretKey))
+		if e != nil {
+			fmt.Println(e.Error())
+		}
+
+		PPrint(vs)
 	},
 }
