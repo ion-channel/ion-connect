@@ -6,7 +6,7 @@ CLI tool for interacting with the Ion Channel.
 
 ## Download and install
 
-The latest build is available at [https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/ion-connect-latest.tar.gz](https://s3.amazonaws.com/public.ionchannel.io/files/ion-connect/ion-connect-latest.tar.gz). Download, open the folder for the operating system being used and put the file somewhere it can be run.
+Go to [Releases](https://github.com/ion-channel/ion-connect/releases) on the Github repo page.
 
 ## License
 
