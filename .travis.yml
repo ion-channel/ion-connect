@@ -1,7 +1,7 @@
 language: go
 
 go:
-  - 1.11.5
+  - 1.13
   - tip
 
 install:
@@ -25,4 +25,5 @@ deploy:
     skip_cleanup: true
     script: ext/goreleaser release
     on:
+      go: '1.13'
       tags: true
