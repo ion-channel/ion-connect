@@ -9,3 +9,4 @@ coverage.out
 .idea
 coverage/
 .DS_Store
+deploy/
