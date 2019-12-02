@@ -11,16 +11,6 @@ script:
   - make fmt vet lint unit_test build install
 
 deploy:
-  - provider: s3
-    bucket: public.ionchannel.io
-    region: us-east-1
-    skip_cleanup: true
-    upload-dir: files/ion-connect
-    local_dir: deploy
-    acl: public_read
-    on:
-      tags: true
-
   - provider: script
     skip_cleanup: true
     script: ext/goreleaser release
