@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -18,7 +20,7 @@ import (
 
 const (
 	validEmailRegex  = `(?i)^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$`
-	validGitURIRegex = `^(?:(?:http|ftp|gopher|mailto|mid|cid|news|nntp|prospero|telnet|rlogin|tn3270|wais|svn|git|rsync)+\+ssh\:\/\/|git\+https?:\/\/|git\@|(?:http|ftp|gopher|mailto|mid|cid|news|nntp|prospero|telnet|rlogin|tn3270|wais|svn|git|rsync|ssh|file)+s?:\/\/)[^\s]+$`
+	validGitURIRegex = `^(?:(?:http|ftp|gopher|mailto|mid|cid|news|nntp|prospero|telnet|rlogin|tn3270|wais|svn|git|rsync)+\+ssh\:\/\/|git\+https?:\/\/|git\@|(?:http|ftp|gopher|mailto|mid|cid|news|nntp|prospero|telnet|rlogin|tn3270|wais|svn|git|rsync|ssh|file|s3)+s?:\/\/)[^\s]+$`
 )
 
 const (
@@ -44,28 +46,29 @@ var (
 
 //Project is a representation of a project within the Ion Channel system
 type Project struct {
-	ID             *string         `json:"id,omitempty"`
-	TeamID         *string         `json:"team_id,omitempty"`
-	RulesetID      *string         `json:"ruleset_id,omitempty"`
-	Name           *string         `json:"name,omitempty"`
-	Type           *string         `json:"type,omitempty"`
-	Source         *string         `json:"source,omitempty"`
-	Branch         *string         `json:"branch,omitempty"`
-	Description    *string         `json:"description,omitempty"`
-	Active         bool            `json:"active"`
-	ChatChannel    string          `json:"chat_channel"`
-	CreatedAt      time.Time       `json:"created_at"`
-	UpdatedAt      time.Time       `json:"updated_at"`
-	DeployKey      string          `json:"deploy_key"`
-	Monitor        bool            `json:"should_monitor"`
-	POCName        string          `json:"poc_name"`
-	POCEmail       string          `json:"poc_email"`
-	Username       string          `json:"username"`
-	Password       string          `json:"password"`
-	KeyFingerprint string          `json:"key_fingerprint"`
-	Private        bool            `json:"private"`
-	Aliases        []aliases.Alias `json:"aliases"`
-	Tags           []tags.Tag      `json:"tags"`
+	ID               *string         `json:"id,omitempty"`
+	TeamID           *string         `json:"team_id,omitempty"`
+	RulesetID        *string         `json:"ruleset_id,omitempty"`
+	Name             *string         `json:"name,omitempty"`
+	Type             *string         `json:"type,omitempty"`
+	Source           *string         `json:"source,omitempty"`
+	Branch           *string         `json:"branch,omitempty"`
+	Description      *string         `json:"description,omitempty"`
+	Active           bool            `json:"active"`
+	ChatChannel      string          `json:"chat_channel"`
+	CreatedAt        time.Time       `json:"created_at"`
+	UpdatedAt        time.Time       `json:"updated_at"`
+	DeployKey        string          `json:"deploy_key"`
+	Monitor          bool            `json:"should_monitor"`
+	MonitorFrequency string          `json:"monitor_frequency"`
+	POCName          string          `json:"poc_name"`
+	POCEmail         string          `json:"poc_email"`
+	Username         string          `json:"username"`
+	Password         string          `json:"password"`
+	KeyFingerprint   string          `json:"key_fingerprint"`
+	Private          bool            `json:"private"`
+	Aliases          []aliases.Alias `json:"aliases"`
+	Tags             []tags.Tag      `json:"tags"`
 }
 
 // String returns a JSON formatted string of the project object
@@ -190,7 +193,7 @@ func (p *Project) Validate(client *http.Client, baseURL *url.URL, token string) 
 					projErr = ErrInvalidProject
 				}
 			}
-		case "git", "svn":
+		case "git", "svn", "s3":
 			r := regexp.MustCompile(validGitURIRegex)
 			if p.Source != nil && !r.MatchString(*p.Source) {
 				invalidFields["source"] = "source must be a valid uri"
@@ -203,4 +206,139 @@ func (p *Project) Validate(client *http.Client, baseURL *url.URL, token string) 
 	}
 
 	return invalidFields, projErr
+}
+
+// Filter represents the available fields to filter a get project request
+// with.
+type Filter struct {
+	ID      *string `sql:"id"`
+	TeamID  *string `sql:"team_id"`
+	Source  *string `sql:"source"`
+	Type    *string `sql:"type"`
+	Active  *bool   `sql:"active"`
+	Monitor *bool   `sql:"should_monitor"`
+}
+
+// ParseParam takes a param string, breaks it apart, and repopulates it into a
+// struct for further use. Any invalid or incomplete interpretations of a field
+// will be ignored and only valid entries put into the struct.
+func ParseParam(param string) *Filter {
+	pf := Filter{}
+
+	fvs := strings.Split(param, ",")
+	for i := range fvs {
+		parts := strings.Split(fvs[i], ":")
+
+		if len(parts) == 2 {
+			name := strings.Title(parts[0])
+			value := parts[1]
+
+			field, _ := reflect.TypeOf(&pf).Elem().FieldByName(name)
+			kind := field.Type.Kind()
+
+			if kind == reflect.Ptr {
+				kind = field.Type.Elem().Kind()
+			}
+
+			switch kind {
+			case reflect.String:
+				reflect.ValueOf(&pf).Elem().FieldByName(name).Set(reflect.ValueOf(&value))
+			case reflect.Bool:
+				b, err := strconv.ParseBool(value)
+				if err == nil {
+					reflect.ValueOf(&pf).Elem().FieldByName(name).Set(reflect.ValueOf(&b))
+				}
+			}
+		}
+	}
+
+	return &pf
+}
+
+// Param converts the non nil fields of the Project Filter into a string usable
+// for URL query params.
+func (pf *Filter) Param() string {
+	ps := make([]string, 0)
+
+	fields := reflect.TypeOf(pf)
+	values := reflect.ValueOf(pf)
+
+	if fields.Kind() == reflect.Ptr {
+		fields = fields.Elem()
+		values = values.Elem()
+	}
+
+	for i := 0; i < fields.NumField(); i++ {
+		value := values.Field(i)
+
+		if value.IsNil() {
+			continue
+		}
+
+		if value.Kind() == reflect.Ptr {
+			value = value.Elem()
+		}
+
+		name := strings.ToLower(fields.Field(i).Name)
+
+		switch value.Kind() {
+		case reflect.String:
+			ps = append(ps, fmt.Sprintf("%v:%v", name, value.String()))
+		case reflect.Bool:
+			ps = append(ps, fmt.Sprintf("%v:%v", name, value.Bool()))
+		}
+	}
+
+	return strings.Join(ps, ",")
+}
+
+// SQL takes an identifier and returns the filter as a constructed where clause
+// and set of values for use in a query as SQL params. If the identifier is left
+// blank it will not be included in the resulting where clause.
+func (pf *Filter) SQL(identifier string) (string, []interface{}) {
+
+	fields := reflect.TypeOf(pf)
+	values := reflect.ValueOf(pf)
+
+	if fields.Kind() == reflect.Ptr {
+		fields = fields.Elem()
+		values = values.Elem()
+	}
+
+	idx := 1
+	wheres := make([]string, 0)
+	vals := make([]interface{}, 0)
+	for i := 0; i < fields.NumField(); i++ {
+		value := values.Field(i)
+
+		if value.IsNil() {
+			continue
+		}
+
+		if value.Kind() == reflect.Ptr {
+			value = value.Elem()
+		}
+
+		tag, ok := fields.Field(i).Tag.Lookup("sql")
+		if !ok {
+			tag = fields.Field(i).Name
+		}
+
+		ident := ""
+		if identifier != "" {
+			ident = fmt.Sprintf("%v.", identifier)
+		}
+
+		name := strings.ToLower(tag)
+		wheres = append(wheres, fmt.Sprintf("%v%v=$%v", ident, name, idx))
+		vals = append(vals, value.Interface())
+		idx++
+	}
+
+	where := strings.Join(wheres, " AND ")
+	if where != "" {
+		where = fmt.Sprintf(" WHERE %v", where)
+	}
+
+	return where, vals
 }

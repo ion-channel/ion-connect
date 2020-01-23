@@ -153,7 +153,7 @@ func TestProject(t *testing.T) {
 				Aliases:        nil,
 				Tags:           nil,
 			}
-			Expect(fmt.Sprintf("%v", p)).To(Equal(`{"id":"someid","team_id":"someteamiD","ruleset_id":"someruleset","name":"coolproject","type":"artifact","source":"http://%v:%v/goodurl","branch":"master","description":"the coolest project around","active":true,"chat_channel":"#thechan","created_at":"2018-07-07T13:42:47.651387237Z","updated_at":"2018-07-07T13:42:47.651387237Z","deploy_key":"thekey","should_monitor":false,"poc_name":"youknowit","poc_email":"you@know.it","username":"knowit","password":"supersecret","key_fingerprint":"supersecret","private":true,"aliases":null,"tags":null}`))
+			Expect(fmt.Sprintf("%v", p)).To(Equal(`{"id":"someid","team_id":"someteamiD","ruleset_id":"someruleset","name":"coolproject","type":"artifact","source":"http://%v:%v/goodurl","branch":"master","description":"the coolest project around","active":true,"chat_channel":"#thechan","created_at":"2018-07-07T13:42:47.651387237Z","updated_at":"2018-07-07T13:42:47.651387237Z","deploy_key":"thekey","should_monitor":false,"monitor_frequency":"","poc_name":"youknowit","poc_email":"you@know.it","username":"knowit","password":"supersecret","key_fingerprint":"supersecret","private":true,"aliases":null,"tags":null}`))
 
 		})
 
@@ -189,6 +189,12 @@ func TestProject(t *testing.T) {
 				Expect(len(fs)).To(Equal(0))
 
 				t = "GiT"
+				p.Type = &t
+				fs, err = p.Validate(client, b, testToken)
+				Expect(err).To(BeNil())
+				Expect(len(fs)).To(Equal(0))
+
+				t = "s3"
 				p.Type = &t
 				fs, err = p.Validate(client, b, testToken)
 				Expect(err).To(BeNil())
@@ -301,6 +307,7 @@ func TestProject(t *testing.T) {
 					"ssh://user@host.xz:port/path/to/repo.git/",
 					"svn+ssh://foo@svn.bar.com/project",
 					"svn://svn.code.sf.net/p/regshot/code/trunk",
+					"s3://bucket/key",
 				}
 
 				for _, val := range us {
@@ -358,6 +365,115 @@ func TestProject(t *testing.T) {
 				fs, err := p.Validate(client, b, testToken)
 				Expect(err).To(Equal(ErrInvalidProject))
 				Expect(fs["ruleset_id"]).To(Equal("ruleset id does not match to a valid ruleset"))
+			})
+		})
+	})
+
+	g.Describe("Project Filters", func() {
+		g.Describe("To Param String", func() {
+			g.It("should convert the filter to params", func() {
+				a := false
+				t := "git"
+
+				pf := Filter{
+					Type:   &t,
+					Active: &a,
+				}
+
+				Expect(pf.Param()).To(Equal("type:git,active:false"))
+			})
+
+			g.It("should not include blank filters in the params", func() {
+				t := "git"
+
+				pf := Filter{
+					Type: &t,
+				}
+
+				Expect(pf.Param()).To(Equal("type:git"))
+			})
+		})
+
+		g.Describe("From Param String", func() {
+			g.It("should parse a filter from a param", func() {
+				a := false
+				t := "git"
+
+				pf := Filter{
+					Type:   &t,
+					Active: &a,
+				}
+
+				newPf := ParseParam(pf.Param())
+				Expect(newPf).NotTo(BeNil())
+
+				Expect(newPf.Type).NotTo(BeNil())
+				Expect(*newPf.Type).To(Equal(t))
+
+				Expect(newPf.Active).NotTo(BeNil())
+				Expect(*newPf.Active).To(Equal(a))
+
+				Expect(newPf.TeamID).To(BeNil())
+				Expect(newPf.Source).To(BeNil())
+			})
+
+			g.It("should return a filter for an empty param string", func() {
+				newPf := ParseParam("")
+				Expect(newPf).NotTo(BeNil())
+			})
+		})
+
+		g.Describe("To SQL", func() {
+			g.It("should convert a filter to a where clause with an identifier", func() {
+				a := false
+				t := "git"
+				ti := "someteamid"
+
+				pf := Filter{
+					Type:   &t,
+					Active: &a,
+					TeamID: &ti,
+				}
+
+				query, vals := pf.SQL("p")
+				Expect(query).To(Equal(" WHERE p.team_id=$1 AND p.type=$2 AND p.active=$3"))
+				Expect(len(vals)).To(Equal(3))
+
+				teamID, ok := vals[0].(string)
+				Expect(ok).To(BeTrue())
+				Expect(teamID).To(Equal(ti))
+
+				typeStr, ok := vals[1].(string)
+				Expect(ok).To(BeTrue())
+				Expect(typeStr).To(Equal(t))
+
+				active, ok := vals[2].(bool)
+				Expect(ok).To(BeTrue())
+				Expect(active).To(Equal(a))
+			})
+
+			g.It("should convert a filter to a where clause without an identifier", func() {
+				a := false
+				t := "git"
+				ti := "someteamid"
+
+				pf := Filter{
+					Type:   &t,
+					Active: &a,
+					TeamID: &ti,
+				}
+
+				query, vals := pf.SQL("")
+				Expect(query).To(Equal(" WHERE team_id=$1 AND type=$2 AND active=$3"))
+				Expect(len(vals)).To(Equal(3))
+			})
+
+			g.It("should return an empty where clause for no params", func() {
+				pf := Filter{}
+
+				query, vals := pf.SQL("p")
+				Expect(query).To(Equal(""))
+				Expect(len(vals)).To(Equal(0))
 			})
 		})
 	})
