@@ -1,7 +1,7 @@
 package: github.com/ion-channel/ion-connect
 import:
 - package: github.com/ion-channel/ionic
-  version: a14016ac28a95bbaed8d77c2f39d36ca9577f061
+  version: 205074f6c144472adcaf7e7322b8e96ca714bc14
   subpackages:
   - projects
   - scanner

@@ -1,5 +1,5 @@
-hash: db35afdb571071b072495406f8653637b590be6628e6f339b23df3c47a9d0564
-updated: 2019-08-20T14:35:44.501501-07:00
+hash: a4cb87329f5b71a7e8a17baff386ae3619678a140439068d84eba40a6d9ab381
+updated: 2020-01-23T11:15:58.055997-08:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: 1485a34d5d5723fea214f5710708e19a831720e4
@@ -18,7 +18,7 @@ imports:
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/ion-channel/ionic
-  version: a14016ac28a95bbaed8d77c2f39d36ca9577f061
+  version: 571894437770b71e266a17e53bd10ef4a801a4bd
   subpackages:
   - aliases
   - analyses
@@ -27,8 +27,8 @@ imports:
   - dependencies
   - digests
   - errors
-  - events
   - pagination
+  - portfolios
   - products
   - projects
   - reports
@@ -49,7 +49,7 @@ imports:
 - name: github.com/mitchellh/mapstructure
   version: 3536a929edddb9a5b34bd6861dc4a9647cb459fe
 - name: github.com/pelletier/go-toml
-  version: 781fbae71e40e8e598206a0ac02c680d64df2fd0
+  version: 26fd12ff5458ed76bb7be556938691838288a855
 - name: github.com/spf13/afero
   version: 588a75ec4f32903aa5e39a2619ba6a4631e28424
   subpackages:
@@ -69,7 +69,7 @@ imports:
   subpackages:
   - ssh/terminal
 - name: golang.org/x/sys
-  version: fde4db37ae7ad8191b03d30d27f258b5291ae4e3
+  version: b4ddaad3f8a36719f2b8bc6486c14cc468ca2bb5
   subpackages:
   - unix
 - name: golang.org/x/text

@@ -83,7 +83,7 @@ func NewDigest(status *scanner.ScanStatus, index int, singular, plural string) *
 	errored := true
 	erroredMsg := "evaluation not received"
 
-	if status != nil && strings.ToLower(status.Status) == "errored" {
+	if status != nil && status.Errored() {
 		errored = true
 		erroredMsg = status.Message
 	}
@@ -138,6 +138,16 @@ func (d *Digest) AppendEval(eval *scans.Evaluation, dataType string, value inter
 		data, err = json.Marshal(count{c})
 		if c == 1 {
 			title = d.singularTitle
+		}
+
+		// Counts less than 0 are an indicator of error state. Record where the
+		// information came from, but do not overwrite errors and other states.
+		if c < 0 {
+			d.ScanID = eval.ID
+			d.RuleID = eval.RuleID
+			d.RulesetID = eval.RulesetID
+
+			return nil
 		}
 	case "list":
 		l, ok := value.([]string)

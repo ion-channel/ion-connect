@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 	"io"
+	"net/http"
+	"net/url"
 	"os"
 	"strings"
 
@@ -24,6 +26,8 @@ var (
 	output    io.Writer
 	cfgFile   string
 	ion       *ionic.IonClient
+	cc        *http.Client
+	uu        *url.URL
 	teamID    string
 	projectID string
 	branch    string
@@ -76,5 +80,12 @@ func initConfig() {
 		os.Exit(1)
 	}
 
-	ion, _ = ionic.New(viper.GetString("api"))
+	uu, err = url.Parse(viper.GetString("api"))
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+
+	cc = &http.Client{}
+	ion, _ = ionic.NewWithClient(viper.GetString("api"), cc)
 }
