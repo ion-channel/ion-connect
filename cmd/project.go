@@ -143,6 +143,8 @@ var CreateProjectCmd = &cobra.Command{
 			return
 		}
 
+		data.Active = true
+
 		r, err := ion.CreateProject(&data, teamID, viper.GetString(secretKey))
 		if err != nil {
 			fmt.Println(err.Error())
