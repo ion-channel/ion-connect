@@ -144,6 +144,29 @@ func TestF64SWithDefault(t *testing.T) {
 	}
 }
 
+func TestF64SAsSliceValue(t *testing.T) {
+	var f64s []float64
+	f := setUpF64SFlagSet(&f64s)
+
+	in := []string{"1.0", "2.0"}
+	argfmt := "--f64s=%s"
+	arg1 := fmt.Sprintf(argfmt, in[0])
+	arg2 := fmt.Sprintf(argfmt, in[1])
+	err := f.Parse([]string{arg1, arg2})
+	if err != nil {
+		t.Fatal("expected no error; got", err)
+	}
+
+	f.VisitAll(func(f *Flag) {
+		if val, ok := f.Value.(SliceValue); ok {
+			_ = val.Replace([]string{"3.1"})
+		}
+	})
+	if len(f64s) != 1 || f64s[0] != 3.1 {
+		t.Fatalf("Expected ss to be overwritten with '3.1', but got: %v", f64s)
+	}
+}
+
 func TestF64SCalledTwice(t *testing.T) {
 	var f64s []float64
 	f := setUpF64SFlagSet(&f64s)

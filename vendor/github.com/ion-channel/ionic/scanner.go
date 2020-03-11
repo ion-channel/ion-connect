@@ -62,7 +62,7 @@ func (ic *IonClient) GetAnalysisStatus(analysisID, teamID, projectID, token stri
 	params.Set("team_id", teamID)
 	params.Set("project_id", projectID)
 
-	b, err := ic.Get(scanner.ScannerGetAnalysisStatusEndpoint, token, params, nil, nil)
+	b, _, err := ic.Get(scanner.ScannerGetAnalysisStatusEndpoint, token, params, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get analysis status: %v", err.Error())
 	}
@@ -71,6 +71,18 @@ func (ic *IonClient) GetAnalysisStatus(analysisID, teamID, projectID, token stri
 	err = json.Unmarshal(b, &a)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get analysis status: %v", err.Error())
+	}
+
+	if a.Status == "finished" {
+		w, err := ic.GetAppliedRuleSet(projectID, teamID, analysisID, token)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get pass/fail status: %v", err.Error())
+		}
+
+		a.Status = "pass"
+		if !w.RuleEvaluationSummary.Passed {
+			a.Status = "fail"
+		}
 	}
 
 	return &a, nil
@@ -82,7 +94,7 @@ func (ic *IonClient) GetLatestAnalysisStatus(teamID, projectID, token string) (*
 	params.Set("team_id", teamID)
 	params.Set("project_id", projectID)
 
-	b, err := ic.Get(scanner.ScannerGetLatestAnalysisStatusEndpoint, token, params, nil, nil)
+	b, _, err := ic.Get(scanner.ScannerGetLatestAnalysisStatusEndpoint, token, params, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get analysis: %v", err.Error())
 	}
@@ -94,6 +106,25 @@ func (ic *IonClient) GetLatestAnalysisStatus(teamID, projectID, token string) (*
 	}
 
 	return &a, nil
+}
+
+//GetLatestAnalysisStatuses takes a teamID and returns the latest analysis statuses or an error encountered by the API
+func (ic *IonClient) GetLatestAnalysisStatuses(teamID, token string) ([]scanner.AnalysisStatus, error) {
+	params := &url.Values{}
+	params.Set("team_id", teamID)
+
+	b, _, err := ic.Get(scanner.ScannerGetLatestAnalysisStatusesEndpoint, token, params, nil, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get analysis: %v", err.Error())
+	}
+
+	var a []scanner.AnalysisStatus
+	err = json.Unmarshal(b, &a)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get analysis: %v", err.Error())
+	}
+
+	return a, nil
 }
 
 //AddScanResult takes a scanResultID, teamID, projectID, status, scanType, and

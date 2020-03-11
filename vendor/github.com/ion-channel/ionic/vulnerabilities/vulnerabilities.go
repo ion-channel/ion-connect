@@ -74,6 +74,15 @@ type Source struct {
 type ScoreDetails struct {
 	CVSSv2 *CVSSv2 `json:"cvssv2,omitempty" xml:"cvssv2"`
 	CVSSv3 *CVSSv3 `json:"cvssv3,omitempty" xml:"cvssv3"`
+	NPM    *NPM    `json:"npm,omitempty" xml:"npm"`
+}
+
+// NPM represents the variables that go into determining the NPM score
+// for a given vulnerability
+type NPM struct {
+	AttackVector string  `json:"attackVector" xml:"attackVector"`
+	BaseScore    float64 `json:"baseScore" xml:"baseScore"`
+	BaseSeverity string  `json:"baseSeverity" xml:"baseSeverity"`
 }
 
 // CVSSv2 represents the variables that go into determining the CVSS v2 score
@@ -93,8 +102,8 @@ type CVSSv2 struct {
 // for a given vulnerability
 type CVSSv3 struct {
 	VectorString          string  `json:"vectorString" xml:"vectorString"`
-	AccessVector          string  `json:"accessVector" xml:"accessVector"`
-	AccessComplexity      string  `json:"accessComplexity" xml:"accessComplexity"`
+	AttackVector          string  `json:"attackVector" xml:"accessVector"`
+	AttackComplexity      string  `json:"attackComplexity" xml:"accessComplexity"`
 	PrivilegesRequired    string  `json:"privilegesRequired" xml:"privilegesRequired"`
 	UserInteraction       string  `json:"userInteraction" xml:"userInteraction"`
 	Scope                 string  `json:"scope" xml:"scope"`
@@ -128,16 +137,16 @@ func NewV3FromShorthand(shorthand string) *CVSSv3 {
 		case "AV":
 			switch parts[1] {
 			case "N":
-				sv.AccessVector = "network"
+				sv.AttackVector = "network"
 			case "A":
-				sv.AccessVector = "adjacent"
+				sv.AttackVector = "adjacent"
 			case "L":
-				sv.AccessVector = "local"
+				sv.AttackVector = "local"
 			case "P":
-				sv.AccessVector = "physical"
+				sv.AttackVector = "physical"
 			}
 		case "AC":
-			sv.AccessComplexity = parseLowHighNone(parts[1])
+			sv.AttackComplexity = parseLowHighNone(parts[1])
 		case "PR":
 			sv.PrivilegesRequired = parseLowHighNone(parts[1])
 		case "UI":

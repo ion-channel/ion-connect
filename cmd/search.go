@@ -52,7 +52,7 @@ var SearchCmd = &cobra.Command{
 		return fmt.Errorf("invalid resource type specified: %s", resource)
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		r, e := ion.GetSearch(query, viper.GetString(secretKey))
+		r, _, e := ion.GetSearch(query, viper.GetString(secretKey))
 		if e != nil {
 			fmt.Println(e.Error())
 		}

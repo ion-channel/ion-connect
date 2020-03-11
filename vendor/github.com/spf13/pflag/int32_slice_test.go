@@ -150,6 +150,29 @@ func TestI32SWithDefault(t *testing.T) {
 	}
 }
 
+func TestI32SAsSliceValue(t *testing.T) {
+	var i32s []int32
+	f := setUpI32SFlagSet(&i32s)
+
+	in := []string{"1", "2"}
+	argfmt := "--is=%s"
+	arg1 := fmt.Sprintf(argfmt, in[0])
+	arg2 := fmt.Sprintf(argfmt, in[1])
+	err := f.Parse([]string{arg1, arg2})
+	if err != nil {
+		t.Fatal("expected no error; got", err)
+	}
+
+	f.VisitAll(func(f *Flag) {
+		if val, ok := f.Value.(SliceValue); ok {
+			_ = val.Replace([]string{"3"})
+		}
+	})
+	if len(i32s) != 1 || i32s[0] != 3 {
+		t.Fatalf("Expected ss to be overwritten with '3.1', but got: %v", i32s)
+	}
+}
+
 func TestI32SCalledTwice(t *testing.T) {
 	var is []int32
 	f := setUpI32SFlagSet(&is)
