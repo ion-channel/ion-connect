@@ -5,9 +5,9 @@ import (
 )
 
 const (
-	// AnalysisStatusAccepted denotes a request for analysis has been
+	// AnalysisStatusQueued denotes a request for analysis has been
 	// accepted and queued
-	AnalysisStatusAccepted = "accepted"
+	AnalysisStatusQueued = "queued"
 	// AnalysisStatusErrored denotes a request for analysis has errored during
 	// the run, the message field will have more details
 	AnalysisStatusErrored = "errored"
@@ -18,9 +18,9 @@ const (
 	// AnalysisStatusFailed denotes a request for analysis has failed to
 	// run, the message field will have more details
 	AnalysisStatusFailed = "failed"
-	// AnalysisStatusStarted denotes a request for analysis has been
+	// AnalysisStatusAnalyzing denotes a request for analysis has been
 	// accepted and has begun
-	AnalysisStatusStarted = "started"
+	AnalysisStatusAnalyzing = "analyzing"
 )
 
 const (
@@ -30,6 +30,8 @@ const (
 	ScannerGetAnalysisStatusEndpoint = "v1/scanner/getAnalysisStatus"
 	// ScannerGetLatestAnalysisStatusEndpoint is a string representation of the current endpoint for getting latest analysis status
 	ScannerGetLatestAnalysisStatusEndpoint = "v1/scanner/getLatestAnalysisStatus"
+	// ScannerGetLatestAnalysisStatusesEndpoint is a string representation of the current endpoint for getting latest analysis statuses
+	ScannerGetLatestAnalysisStatusesEndpoint = "v1/scanner/getLatestAnalysisStatuses"
 )
 
 // AnalysisStatus is a representation of an Ion Channel Analysis Status within the system

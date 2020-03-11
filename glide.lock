@@ -1,10 +1,10 @@
-hash: 1947c3b92764ede601718774eb997957238e48fa05e7f3d32f70c8cab9a6457f
-updated: 2020-01-24T15:50:55.90304-08:00
+hash: d6f5f3ee4b85ed876598a0d82037414060e0c2aeb26b1a9f84148b8487d8c601
+updated: 2020-03-11T14:09:16.916122-07:00
 imports:
 - name: github.com/fsnotify/fsnotify
-  version: 1485a34d5d5723fea214f5710708e19a831720e4
+  version: 45d7d09e39ef4ac08d493309fa031790c15bfe8a
 - name: github.com/hashicorp/hcl
-  version: cf7d376da96d9cecec7c7483cec2735efe54a410
+  version: 914dc3f8dd7c463188c73fc47e9ced82a6e421ca
   subpackages:
   - hcl/ast
   - hcl/parser
@@ -18,7 +18,7 @@ imports:
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/ion-channel/ionic
-  version: 36c1edc9aef9b8d1eb5388229f404e30d034f0e7
+  version: 05046a1720a32f03e2e4005ce7d9d897956fe172
   subpackages:
   - aliases
   - analyses
@@ -45,23 +45,23 @@ imports:
   - users
   - vulnerabilities
 - name: github.com/magiconair/properties
-  version: de8848e004dd33dc07a2947b3d76f618a7fc7ef1
+  version: a586bb8b7deaae2a0eb4c6c8b63a539425628137
 - name: github.com/mitchellh/mapstructure
   version: 3536a929edddb9a5b34bd6861dc4a9647cb459fe
 - name: github.com/pelletier/go-toml
-  version: 26fd12ff5458ed76bb7be556938691838288a855
+  version: 3503483c7399484b41d346f503aa2ddc4b16857d
 - name: github.com/spf13/afero
   version: 588a75ec4f32903aa5e39a2619ba6a4631e28424
   subpackages:
   - mem
 - name: github.com/spf13/cast
-  version: c01685bb8421cecb276fa517e91f757215f980b3
+  version: 1ffadf551085444af981432dd0f6d1160c11ec64
 - name: github.com/spf13/cobra
   version: ef82de70bb3f60c65fb8eebacbb2d122ef517385
 - name: github.com/spf13/jwalterweatherman
   version: 94f6ae3ed3bceceafa716478c5fbf8d29ca601a1
 - name: github.com/spf13/pflag
-  version: 972238283c0625cf3e881de7699ba8f2524c340a
+  version: 2e9d26c8c37aae03e3f9d4e90b7116f5accb7cab
 - name: github.com/spf13/viper
   version: 6d33b5a963d922d182c91e8a1c88d81fd150cfd4
 - name: golang.org/x/crypto
@@ -69,14 +69,14 @@ imports:
   subpackages:
   - ssh/terminal
 - name: golang.org/x/sys
-  version: b4ddaad3f8a36719f2b8bc6486c14cc468ca2bb5
+  version: 5c8b2ff67527cb88b770f693cebf3799036d8bc0
   subpackages:
   - unix
 - name: golang.org/x/text
-  version: 342b2e1fbaa52c93f31447ad2c6abc048c63e475
+  version: 06d492aade888ab8698aad35476286b7b555c961
   subpackages:
   - transform
   - unicode/norm
 - name: gopkg.in/yaml.v2
-  version: 51d6538a90f86fe93ac480b35f37b2be17fef232
+  version: 53403b58ad1b561927d19068c655246f2db79d48
 testImports: []

@@ -8,7 +8,7 @@ GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GOLIST=$(GOCMD) list
 GOVET=$(GOCMD) vet
-GOTEST=$(GOCMD) test -v $(shell $(GOCMD) list ./... | grep -v /vendor/)
+GOTEST=$(GOCMD) test -v
 GOFMT=$(GOCMD) fmt
 CGO_ENABLED ?= 0
 GOOS ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
@@ -83,8 +83,12 @@ lint: ## Run golint
 .PHONY: docs
 docs: ## exports documents from the source code
 	@echo "creating documentation..."
-	@./make-public-docs > docs/endpoints.md
+	./make-public-docs > docs/endpoints.md
 	@pandoc -f markdown docs/endpoints.md -c api.css -s --highlight-style monochrome --metadata pagetitle="API Documentation" -o docs/index.html
 	@pandoc -f markdown docs/examples.md -c api.css -s --highlight-style monochrome --metadata pagetitle="API Examples" -o docs/examples.html
 	@pandoc -f markdown docs/data_examples.md -c api.css -s --highlight-style monochrome --metadata pagetitle="API Data Examples" -o docs/data_examples.html
 	@pandoc -f markdown docs/gitlab_examples.md -c api.css -s --highlight-style monochrome --metadata pagetitle="API Gitlab Examples" -o docs/gitlab_examples.html
+
+.PHONY: deploy_docs
+deploy_docs: ## deploys the docs to S3
+	aws s3 sync ./docs/ s3://docs.ionchannel.io

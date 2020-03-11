@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/ion-channel/ionic/pagination"
 	"github.com/ion-channel/ionic/products"
+	"github.com/ion-channel/ionic/responses"
 )
 
 // GetProducts takes a product ID search string and token.  It returns the product found,
@@ -15,7 +17,7 @@ func (ic *IonClient) GetProducts(idSearch, token string) ([]products.Product, er
 	params := &url.Values{}
 	params.Set("external_id", idSearch)
 
-	b, err := ic.Get(products.GetProductEndpoint, token, params, nil, nil)
+	b, _, err := ic.Get(products.GetProductEndpoint, token, params, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get raw product: %v", err.Error())
 	}
@@ -38,7 +40,7 @@ func (ic *IonClient) GetProductVersions(name, version, token string) ([]products
 		params.Set("version", version)
 	}
 
-	b, err := ic.Get(products.GetProductVersionsEndpoint, token, params, nil, nil)
+	b, _, err := ic.Get(products.GetProductVersionsEndpoint, token, params, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get product versions: %v", err.Error())
 	}
@@ -84,7 +86,7 @@ func (ic *IonClient) GetRawProducts(idSearch, token string) (json.RawMessage, er
 	params := &url.Values{}
 	params.Set("external_id", idSearch)
 
-	b, err := ic.Get(products.GetProductEndpoint, token, params, nil, nil)
+	b, _, err := ic.Get(products.GetProductEndpoint, token, params, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get raw product: %v", err.Error())
 	}
@@ -94,18 +96,18 @@ func (ic *IonClient) GetRawProducts(idSearch, token string) (json.RawMessage, er
 
 // GetProductSearch takes a search query. It returns a new raw json message of
 // all the matching products in the Bunsen dependencies table
-func (ic *IonClient) GetProductSearch(query, token string) ([]products.Product, error) {
+func (ic *IonClient) GetProductSearch(query string, page *pagination.Pagination, token string) ([]products.Product, *responses.Meta, error) {
 	params := &url.Values{}
 	params.Set("q", query)
 
-	b, err := ic.Get(products.ProductSearchEndpoint, token, params, nil, nil)
+	b, m, err := ic.Get(products.ProductSearchEndpoint, token, params, nil, page)
 	if err != nil {
-		return nil, fmt.Errorf("failed to GetProductSearch: %v", err.Error())
+		return nil, nil, fmt.Errorf("failed to GetProductSearch: %v", err.Error())
 	}
 	var products []products.Product
 	err = json.Unmarshal(b, &products)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse products: %v", err.Error())
+		return nil, nil, fmt.Errorf("failed to parse products: %v", err.Error())
 	}
-	return products, nil
+	return products, m, nil
 }
