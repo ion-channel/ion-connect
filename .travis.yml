@@ -17,3 +17,6 @@ deploy:
     on:
       go: '1.13'
       tags: true
+
+notifications:
+  email: false
