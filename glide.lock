@@ -1,5 +1,5 @@
-hash: d6f5f3ee4b85ed876598a0d82037414060e0c2aeb26b1a9f84148b8487d8c601
-updated: 2020-03-11T14:09:16.916122-07:00
+hash: ff23a5d1908b5246c6c8d9de89714684f34047bc8f781b5a767957de8c2d9250
+updated: 2020-03-11T14:23:48.010694-07:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: 45d7d09e39ef4ac08d493309fa031790c15bfe8a
@@ -18,7 +18,7 @@ imports:
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/ion-channel/ionic
-  version: 05046a1720a32f03e2e4005ce7d9d897956fe172
+  version: 9d23d752b0268f164516f9a026784f1cf970a073
   subpackages:
   - aliases
   - analyses
