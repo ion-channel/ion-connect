@@ -1,59 +1,73 @@
 # Ion Connect
+[![Build Status](https://travis-ci.org/ion-channel/ion-connect.svg?branch=master)](https://travis-ci.org/ion-channel/ion-connect)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ion-channel/ion-connect)](https://goreportcard.com/report/github.com/ion-channel/ion-connect)
+[![GoDoc](https://godoc.org/github.com/ion-channel/ion-connect?status.svg)](https://godoc.org/github.com/ion-channel/ion-connect)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/ion-channel/ion-connect/blob/master/LICENSE.md)
+[![Release](https://img.shields.io/github/release/ion-channel/ion-connect.svg)](https://github.com/ion-channel/ion-connect/releases/latest)
 
 CLI tool for interacting with the Ion Channel.
 
-[![Build Status](https://travis-ci.org/ion-channel/ion-connect.svg?branch=master)](https://travis-ci.org/ion-channel/ion-connect)
+# Requirements
+Golang Version 1.13 or higher
 
-## Download and install
+**and**
 
-Go to [Releases](https://github.com/ion-channel/ion-connect/releases) on the Github repo page.
+Ion API key
 
-## License
+# Installation
+Ion Connect can be installed from source, a binary download, or indirectly within a Docker
+container.
 
-[Apache Software License 2.0](LICENSE.txt)
-
-## Your wish
-
-Ion Connect provides a setup command called *configure*.  This should probably be the first command you run.  You will be prompted for your Ion Channel Secret Key which will be provided by an Ion Channel staff member. Contact us at <info@ionchannel.io>
-
-```sh
-$ ion-connect configure
-Ion Channel Api Key []:
+##Go
+```
+go get github.com/ion-channel/ion-connect
+cd $GOPATH/src/github.com/ion-channel/ion-connect
+go build
+go install
 ```
 
-NOTE:  Ion Connect can also do configuration through environment variables.  The following variables are supported:
+##Binary
+[http://github.com/ion-channel/ion-connect/releases/latest](http://github.com/ion-channel/ion-connect/releases/latest)
 
-- `IONCHANNEL_SECRET_KEY` - allows the user to set the secret key used for authentication with Ion Channel
-- `IONCHANNEL_ENDPOINT_URL` - allows the user to set the location of the Ion Channel api
-
-The default endpoint url is the Ion Channel public/production environment.
-
-You can then run various commands to query the Ion Channel system.  The best next step is the the help command to see what commands are available:
-
-```sh
-$ ion-connect help
+##Docker
+```
+docker pull ionchannel/ion-connect
 ```
 
-Commands that are only supported in test by supplying the Ion Channel API endpoint url using an environment variable, similar to the following:
+# Usage
+
+## Configure
+
+Ion Connect can be configured either by config file or through environment variables.
+
+Config File:
 
 ```
-$ IONCHANNEL_ENDPOINT_URL=https://api.test.ionchannel.io/ ion-connect metadata get-sentiment 'I love governance'
-{
-  "score": 0.925,
-  "sentiment": "positive"
-}
+ion-connect configure
 ```
 
-That's it! You are well on your way to world domination.
+Environment Variables:
 
-## Building from source
+```
+export IONCHANNEL_SECRET_KEY=<your_api_key>
+```
 
-This information is only applicable if you are making changes to `ion-connect`.
+## Other Environments
+The default environment for Ion Connect is the Ion Channel public/production environment. If for some reason you need to point Ion Connect to a different environment, you can use environment variables to change the API endpoint used.
 
-First thing you will need is the Golang environment setup. [The install process](https://golang.org/doc/install) pretty simple you can use [brew](http://brew.sh) to install go.  You will also need to set the $GOPATH environment variable and point it at your go workspace. [GNU make](https://www.gnu.org/software/make/) is also used for running commands.
+```
+export IONCHANNEL_ENDPOINT_URL=https://otherionurl
+```
 
-`make install` will download the Go linter tool.
+## Available Comands
+Utilize the built in help to see what commands are available to Ion Connect.
 
-`make test` will run the tests.
+```
+ion-connect help
+```
 
-`make build` will build `ion-connect`.
+# Versioning
+The project will be versioned in accordance with [Semver 2.0.0](http://semver.org).  See the [releases](https://github.com/ion-channel/ionic/releases) section for the latest version.  Until version 1.0.0 the project is considered to be unstable.
+
+# License
+This project is distributed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).  See [LICENSE.md](./LICENSE.md) for more information.

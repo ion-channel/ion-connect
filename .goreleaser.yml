@@ -1,20 +1,26 @@
 
 builds:
-  # Custom environment variables to be set during the builds.
-  # Default is empty.
 - env:
     - CGO_ENABLED=0
 
-  # Custom ldflags templates.
-  # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
   ldflags:
     - -X "main.appVersion={{.Env.TRAVIS_TAG}}"
 
-
-  # GOOS list to build for.
-  # For more info refer to: https://golang.org/doc/install/source#environment
-  # Defaults are darwin and linux.
   goos:
     - darwin
     - windows
     - linux
+
+archives:
+  -
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+
+dockers:
+  -
+    goos: linux
+
+    goarch: amd64
+
+    image_templates:
+      - "ionchannel/ion-connect:latest"
+      - "ionchannel/ion-connect:{{ .Env.TRAVIS_TAG }}"

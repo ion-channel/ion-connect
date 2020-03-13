@@ -8,7 +8,7 @@ GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GOLIST=$(GOCMD) list
 GOVET=$(GOCMD) vet
-GOTEST=$(GOCMD) test -v $(shell $(GOCMD) list ./... | grep -v /vendor/)
+GOTEST=$(GOCMD) test -v ./...
 GOFMT=$(GOCMD) fmt
 CGO_ENABLED ?= 0
 GOOS ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
@@ -16,23 +16,39 @@ GOOS ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
 # General Vars
 APP := $(shell basename $(PWD) | tr '[:upper:]' '[:lower:]')
 DATE := $(shell date -u +%Y-%m-%d%Z%H:%M:%S)
-VERSION := v0.15.0
 COVERAGE_DIR=coverage
 
 TRAVIS_BUILD_NUMBER ?= 1
 TRAVIS_COMMIT ?= $(shell git rev-parse HEAD)
 
-BUILD_NUMBER ?= $(TRAVIS_BUILD_NUMBER)
-BUILD_VERSION := $(VERSION)-$(BUILD_NUMBER)
 GIT_COMMIT_HASH ?= $(TRAVIS_COMMIT)
 
 
 .PHONY: all
-all: test build
+all: test
 
-.PHONY: build
-build: ## Build the project
-	CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o $(APP) .
+.PHONY: travis_setup
+travis_setup: ## Setup the travis environmnet
+	@if [[ -n "$$BUILD_ENV" ]] && [[ "$$BUILD_ENV" == "testing" ]]; then echo -e "$(INFO_COLOR)THIS IS EXECUTING AGAINST THE TESTING ENVIRONMEMNT$(NO_COLOR)"; fi
+	@echo "Downloading latest Ionize"
+	@wget --quiet http://github.com/ion-channel/ionize/releases/latest/download/ionize_linux_amd64.tar.gz -O ionize.tar.gz
+	@mkdir -p $$HOME/.local/bin && tar xvf ionize.tar.gz -C $$HOME/.local/bin
+	@echo "Installing Go Linter"
+	@go get -u golang.org/x/lint/golint
+
+.PHONY: analyze
+analyze:  ## Perform an analysis of the project
+	@if [[ -n "$$BUILD_ENV" ]] && [[ "$$BUILD_ENV" == "testing" ]]; then \
+		IONCHANNEL_SECRET_KEY=$$TESTING_APIKEY IONCHANNEL_ENDPOINT_URL=$$TESTING_ENDPOINT_URL ionize --config .ionize.test.yaml analyze; \
+	else \
+		ionize analyze; \
+	fi
+
+.PHONY: deploy
+deploy: ## Deploy the artifacts
+	@echo "Logging into Docker Hub"
+	-@echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+	@ext/goreleaser release
 
 .PHONY: clean
 clean:  ## Clean out all generated files
@@ -41,6 +57,7 @@ clean:  ## Clean out all generated files
 	-@rm -rf deploy
 	-@rm -rf coverage
 	-@rm -f coverage.txt
+	-@rm -rf dist
 
 .PHONY: coverage
 coverage:  ## Generates the code coverage from all the tests
@@ -54,12 +71,6 @@ coverage_compfriendly:  ## Generates the code coverage in a computer friendly ma
 	@echo 'mode: count' > $(COVERAGE_DIR)/tmp/full.out
 	@tail -q -n +2 $(COVERAGE_DIR)/*.out >> $(COVERAGE_DIR)/tmp/full.out
 	@$(GOCMD) tool cover -func=$(COVERAGE_DIR)/tmp/full.out | tail -n 1 | sed -e 's/^.*statements)[[:space:]]*//' -e 's/%//'
-
-.PHONY: crosscompile
-crosscompile:  ## Build the binaries for the primary OS'
-	GOOS=linux $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o deploy/linux/bin/$(APP) .
-	GOOS=darwin $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o deploy/darwin/bin/$(APP) .
-	GOOS=windows $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o deploy/windows/bin/$(APP).exe .
 
 .PHONY: help
 help:  ## Show This Help
