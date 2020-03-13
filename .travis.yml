@@ -2,18 +2,22 @@ language: go
 
 go:
   - 1.13
-  - tip
+  - master
+
+sudo: required
 
 install:
-  - go get -u golang.org/x/lint/golint
+  - make travis_setup
 
 script:
-  - make fmt vet lint unit_test build install
+  - make fmt vet lint unit_test coverage analyze install
+
+before_deploy: make crosscompile
 
 deploy:
   - provider: script
     skip_cleanup: true
-    script: ext/goreleaser release
+    script: make deploy
     on:
       go: '1.13'
       tags: true
