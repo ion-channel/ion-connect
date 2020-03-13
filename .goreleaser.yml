@@ -10,3 +10,17 @@ builds:
     - darwin
     - windows
     - linux
+
+archives:
+  -
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+
+dockers:
+  -
+    goos: linux
+
+    goarch: amd64
+
+    image_templates:
+      - "ionchannel/ion-connect:latest"
+      - "ionchannel/ion-connect:{{ .Env.TRAVIS_TAG }}"
