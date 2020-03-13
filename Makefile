@@ -8,7 +8,7 @@ GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GOLIST=$(GOCMD) list
 GOVET=$(GOCMD) vet
-GOTEST=$(GOCMD) test -v $(shell $(GOCMD) list ./... | grep -v /vendor/)
+GOTEST=$(GOCMD) test -v ./...
 GOFMT=$(GOCMD) fmt
 CGO_ENABLED ?= 0
 GOOS ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
@@ -16,14 +16,11 @@ GOOS ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
 # General Vars
 APP := $(shell basename $(PWD) | tr '[:upper:]' '[:lower:]')
 DATE := $(shell date -u +%Y-%m-%d%Z%H:%M:%S)
-VERSION := v0.15.0
 COVERAGE_DIR=coverage
 
 TRAVIS_BUILD_NUMBER ?= 1
 TRAVIS_COMMIT ?= $(shell git rev-parse HEAD)
 
-BUILD_NUMBER ?= $(TRAVIS_BUILD_NUMBER)
-BUILD_VERSION := $(VERSION)-$(BUILD_NUMBER)
 GIT_COMMIT_HASH ?= $(TRAVIS_COMMIT)
 
 
@@ -57,9 +54,9 @@ coverage_compfriendly:  ## Generates the code coverage in a computer friendly ma
 
 .PHONY: crosscompile
 crosscompile:  ## Build the binaries for the primary OS'
-	GOOS=linux $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o deploy/linux/bin/$(APP) .
-	GOOS=darwin $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o deploy/darwin/bin/$(APP) .
-	GOOS=windows $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -X main.appVersion=$(BUILD_VERSION)" -o deploy/windows/bin/$(APP).exe .
+	GOOS=linux $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -o deploy/linux/bin/$(APP) .
+	GOOS=darwin $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -o deploy/darwin/bin/$(APP) .
+	GOOS=windows $(GOBUILD) -ldflags "-X main.buildTime=$(DATE) -o deploy/windows/bin/$(APP).exe .
 
 .PHONY: help
 help:  ## Show This Help
