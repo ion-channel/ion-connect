@@ -1,12 +1,19 @@
+# Binaries
 ./ion-connect
 target*
 ion-connect/
 ion-connect
-tmp
-.vscode
-debug
+ionize*
+
+# Generated
 coverage.out
-.idea
+coverage.txt
 coverage/
-.DS_Store
 deploy/
+
+# Local
+.DS_Store
+.idea
+.vscode
+tmp
+debug
