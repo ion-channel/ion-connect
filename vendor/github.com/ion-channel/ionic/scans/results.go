@@ -259,14 +259,16 @@ type CoverageResults struct {
 
 // Dependency represents data for an individual requirement resolution
 type Dependency struct {
-	LatestVersion string `json:"latest_version" xml:"latest_version"`
-	Org           string `json:"org" xml:"org"`
-	Name          string `json:"name" xml:"name"`
-	Type          string `json:"type" xml:"type"`
-	Package       string `json:"package" xml:"package"`
-	Version       string `json:"version" xml:"version"`
-	Scope         string `json:"scope" xml:"scope"`
-	Requirement   string `json:"requirement" xml:"requirement"`
+	LatestVersion string       `json:"latest_version" xml:"latest_version"`
+	Org           string       `json:"org" xml:"org"`
+	Name          string       `json:"name" xml:"name"`
+	Type          string       `json:"type" xml:"type"`
+	Package       string       `json:"package" xml:"package"`
+	Version       string       `json:"version" xml:"version"`
+	Scope         string       `json:"scope" xml:"scope"`
+	Requirement   string       `json:"requirement" xml:"requirement"`
+	File          string       `json:"file" xml:"file"`
+	Dependencies  []Dependency `json:"dependencies" xml:"dependencies"`
 }
 
 // DependencyMeta represents data for a summary of all dependencies resolved
@@ -346,24 +348,28 @@ type LicenseType struct {
 	Confidence float32 `json:"confidence"`
 }
 
+// FileNotes contains data related to file discoveries
+type FileNotes map[string][]string
+
+// ClamavDetails contains data related to the virus scan engine
+type ClamavDetails struct {
+	ClamavVersion   string `json:"clamav_version" xml:"clamav_version"`
+	ClamavDbVersion string `json:"clamav_db_version" xml:"clamav_db_version"`
+}
+
 // VirusResults represents the data collected from a virus scan.  It includes
 // information of the viruses seen and the virus scanner used.
 type VirusResults struct {
-	KnownViruses       int    `json:"known_viruses" xml:"known_viruses"`
-	EngineVersion      string `json:"engine_version" xml:"engine_version"`
-	ScannedDirectories int    `json:"scanned_directories" xml:"scanned_directories"`
-	ScannedFiles       int    `json:"scanned_files" xml:"scanned_files"`
-	InfectedFiles      int    `json:"infected_files" xml:"infected_files"`
-	DataScanned        string `json:"data_scanned" xml:"data_scanned"`
-	DataRead           string `json:"data_read" xml:"data_read"`
-	Time               string `json:"time" xml:"time"`
-	FileNotes          struct {
-		EmptyFiles []string `json:"empty_file" xml:"empty_file"`
-	} `json:"file_notes" xml:"file_notes"`
-	ClamavDetails struct {
-		ClamavVersion   string `json:"clamav_version" xml:"clamav_version"`
-		ClamavDbVersion string `json:"clamav_db_version" xml:"clamav_db_version"`
-	} `json:"clam_av_details" xml:"clam_av_details"`
+	KnownViruses       int           `json:"known_viruses" xml:"known_viruses"`
+	EngineVersion      string        `json:"engine_version" xml:"engine_version"`
+	ScannedDirectories int           `json:"scanned_directories" xml:"scanned_directories"`
+	ScannedFiles       int           `json:"scanned_files" xml:"scanned_files"`
+	InfectedFiles      int           `json:"infected_files" xml:"infected_files"`
+	DataScanned        string        `json:"data_scanned" xml:"data_scanned"`
+	DataRead           string        `json:"data_read" xml:"data_read"`
+	Time               string        `json:"time" xml:"time"`
+	FileNotes          FileNotes     `json:"file_notes" xml:"file_notes"`
+	ClamavDetails      ClamavDetails `json:"clam_av_details" xml:"clam_av_details"`
 }
 
 //VulnerabilityResults represents the data collected from a vulnerability scan.  It includes

@@ -68,9 +68,6 @@ const (
 
 var timeType = reflect.TypeOf(time.Time{})
 var marshalerType = reflect.TypeOf(new(Marshaler)).Elem()
-var localDateType = reflect.TypeOf(LocalDate{})
-var localTimeType = reflect.TypeOf(LocalTime{})
-var localDateTimeType = reflect.TypeOf(LocalDateTime{})
 
 // Check if the given marshal type maps to a Tree primitive
 func isPrimitive(mtype reflect.Type) bool {
@@ -88,31 +85,29 @@ func isPrimitive(mtype reflect.Type) bool {
 	case reflect.String:
 		return true
 	case reflect.Struct:
-		return mtype == timeType || mtype == localDateType || mtype == localDateTimeType || mtype == localTimeType || isCustomMarshaler(mtype)
+		return mtype == timeType || isCustomMarshaler(mtype)
 	default:
 		return false
 	}
 }
 
-// Check if the given marshal type maps to a Tree slice or array
-func isTreeSequence(mtype reflect.Type) bool {
+// Check if the given marshal type maps to a Tree slice
+func isTreeSlice(mtype reflect.Type) bool {
 	switch mtype.Kind() {
-	case reflect.Ptr:
-		return isTreeSequence(mtype.Elem())
-	case reflect.Slice, reflect.Array:
-		return isTree(mtype.Elem())
+	case reflect.Slice:
+		return !isOtherSlice(mtype)
 	default:
 		return false
 	}
 }
 
-// Check if the given marshal type maps to a non-Tree slice or array
-func isOtherSequence(mtype reflect.Type) bool {
+// Check if the given marshal type maps to a non-Tree slice
+func isOtherSlice(mtype reflect.Type) bool {
 	switch mtype.Kind() {
 	case reflect.Ptr:
-		return isOtherSequence(mtype.Elem())
-	case reflect.Slice, reflect.Array:
-		return !isTreeSequence(mtype)
+		return isOtherSlice(mtype.Elem())
+	case reflect.Slice:
+		return isPrimitive(mtype.Elem()) || isOtherSlice(mtype.Elem())
 	default:
 		return false
 	}
@@ -121,8 +116,6 @@ func isOtherSequence(mtype reflect.Type) bool {
 // Check if the given marshal type maps to a Tree
 func isTree(mtype reflect.Type) bool {
 	switch mtype.Kind() {
-	case reflect.Ptr:
-		return isTree(mtype.Elem())
 	case reflect.Map:
 		return true
 	case reflect.Struct:
@@ -177,7 +170,7 @@ Tree primitive types and corresponding marshal types:
   float64    float32, float64, pointers to same
   string     string, pointers to same
   bool       bool, pointers to same
-  time.LocalTime  time.LocalTime{}, pointers to same
+  time.Time  time.Time{}, pointers to same
 
 For additional flexibility, use the Encoder API.
 */
@@ -413,9 +406,9 @@ func (e *Encoder) valueToToml(mtype reflect.Type, mval reflect.Value) (interface
 		return callCustomMarshaler(mval)
 	case isTree(mtype):
 		return e.valueToTree(mtype, mval)
-	case isTreeSequence(mtype):
+	case isTreeSlice(mtype):
 		return e.valueToTreeSlice(mtype, mval)
-	case isOtherSequence(mtype):
+	case isOtherSlice(mtype):
 		return e.valueToOtherSlice(mtype, mval)
 	default:
 		switch mtype.Kind() {
@@ -433,7 +426,7 @@ func (e *Encoder) valueToToml(mtype reflect.Type, mval reflect.Value) (interface
 		case reflect.String:
 			return mval.String(), nil
 		case reflect.Struct:
-			return mval.Interface(), nil
+			return mval.Interface().(time.Time), nil
 		default:
 			return nil, fmt.Errorf("Marshal can't handle %v(%v)", mtype, mtype.Kind())
 		}
@@ -452,11 +445,8 @@ func (t *Tree) Unmarshal(v interface{}) error {
 // See Marshal() documentation for types mapping table.
 func (t *Tree) Marshal() ([]byte, error) {
 	var buf bytes.Buffer
-	_, err := t.WriteTo(&buf)
-	if err != nil {
-		return nil, err
-	}
-	return buf.Bytes(), nil
+	err := NewEncoder(&buf).Encode(t)
+	return buf.Bytes(), err
 }
 
 // Unmarshal parses the TOML-encoded data and stores the result in the value
@@ -624,8 +614,8 @@ func (d *Decoder) valueFromTree(mtype reflect.Type, tval *Tree, mval1 *reflect.V
 					mval.Field(i).Set(reflect.ValueOf(val))
 				}
 
-				// save the old behavior above and try to check structs
-				if !found && opts.defaultValue == "" && mtypef.Type.Kind() == reflect.Struct {
+				// save the old behavior above and try to check anonymous structs
+				if !found && opts.defaultValue == "" && mtypef.Anonymous && mtypef.Type.Kind() == reflect.Struct {
 					v, err := d.valueFromTree(mtypef.Type, tval, nil)
 					if err != nil {
 						return v, err
@@ -694,12 +684,12 @@ func (d *Decoder) valueFromToml(mtype reflect.Type, tval interface{}, mval1 *ref
 		}
 		return reflect.ValueOf(nil), fmt.Errorf("Can't convert %v(%T) to a tree", tval, tval)
 	case []*Tree:
-		if isTreeSequence(mtype) {
+		if isTreeSlice(mtype) {
 			return d.valueFromTreeSlice(mtype, t)
 		}
 		return reflect.ValueOf(nil), fmt.Errorf("Can't convert %v(%T) to trees", tval, tval)
 	case []interface{}:
-		if isOtherSequence(mtype) {
+		if isOtherSlice(mtype) {
 			return d.valueFromOtherSlice(mtype, t)
 		}
 		return reflect.ValueOf(nil), fmt.Errorf("Can't convert %v(%T) to a slice", tval, tval)
@@ -707,31 +697,7 @@ func (d *Decoder) valueFromToml(mtype reflect.Type, tval interface{}, mval1 *ref
 		switch mtype.Kind() {
 		case reflect.Bool, reflect.Struct:
 			val := reflect.ValueOf(tval)
-
-			switch val.Type() {
-			case localDateType:
-				localDate := val.Interface().(LocalDate)
-				switch mtype {
-				case timeType:
-					return reflect.ValueOf(time.Date(localDate.Year, localDate.Month, localDate.Day, 0, 0, 0, 0, time.Local)), nil
-				}
-			case localDateTimeType:
-				localDateTime := val.Interface().(LocalDateTime)
-				switch mtype {
-				case timeType:
-					return reflect.ValueOf(time.Date(
-						localDateTime.Date.Year,
-						localDateTime.Date.Month,
-						localDateTime.Date.Day,
-						localDateTime.Time.Hour,
-						localDateTime.Time.Minute,
-						localDateTime.Time.Second,
-						localDateTime.Time.Nanosecond,
-						time.Local)), nil
-				}
-			}
-
-			// if this passes for when mtype is reflect.Struct, tval is a time.LocalTime
+			// if this passes for when mtype is reflect.Struct, tval is a time.Time
 			if !val.Type().ConvertibleTo(mtype) {
 				return reflect.ValueOf(nil), fmt.Errorf("Can't convert %v(%T) to %v", tval, tval, mtype.String())
 			}
