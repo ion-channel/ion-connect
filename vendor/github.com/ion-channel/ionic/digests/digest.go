@@ -26,6 +26,7 @@ type Digest struct {
 	Index          int             `json:"index"`
 	Title          string          `json:"title"`
 	Data           json.RawMessage `json:"data"`
+	SourceData     json.RawMessage `json:"source_data"`
 	ScanID         string          `json:"scan_id"`
 	RuleID         string          `json:"rule_id"`
 	RulesetID      string          `json:"ruleset_id"`
@@ -79,18 +80,31 @@ func (d Digest) String() string {
 // will favor a plural title. A newly constructed Digest with the appropriate
 // settings is returned.
 func NewDigest(status *scanner.ScanStatus, index int, singular, plural string) *Digest {
-	// A digest is in an error state until an evaluation is appended into it
-	errored := true
+	// We have other states now
+	errored := false
+	pending := true
 	erroredMsg := "evaluation not received"
 
-	if status != nil && status.Errored() {
-		errored = true
-		erroredMsg = status.Message
+	if status != nil {
+		switch status.Status {
+		case scanner.AnalysisStatusErrored:
+			errored = true
+			erroredMsg = status.Message
+			pending = false
+		case scanner.AnalysisStatusQueued, scanner.AnalysisStatusAnalyzing:
+			pending = true
+		case scanner.AnalysisStatusFinished, scanner.AnalysisStatusFailed:
+			pending = false
+		default:
+			errored = true
+			pending = true
+			erroredMsg = "Unknown status"
+		}
 	}
 
 	d := &Digest{
 		Index:          index,
-		Pending:        status == nil,
+		Pending:        pending,
 		Errored:        errored,
 		ErroredMessage: erroredMsg,
 		Title:          plural,
@@ -184,6 +198,22 @@ func (d *Digest) AppendEval(eval *scans.Evaluation, dataType string, value inter
 	d.Evaluated = (strings.ToLower(eval.Type) != "not evaluated")
 	d.Passed = eval.Passed
 	d.PassedMessage = eval.Description
+
+	return nil
+}
+
+// MarshalSourceData takes a data struct, generates json
+// and sets the source data on the digest
+func (d *Digest) MarshalSourceData(data interface{}, t string) error {
+	r := scans.TranslatedResults{
+		Type: t,
+		Data: data,
+	}
+	b, err := json.Marshal(&r)
+	if err != nil {
+		return fmt.Errorf("failed to marshal digest data: %v", err.Error())
+	}
+	d.SourceData = b
 
 	return nil
 }

@@ -9,12 +9,6 @@ import (
 	"github.com/ion-channel/ionic/scanner"
 )
 
-type analyzeRequest struct {
-	TeamID    string `json:"team_id"`
-	ProjectID string `json:"project_id"`
-	Branch    string `json:"branch,omitempty"`
-}
-
 type addScanRequest struct {
 	TeamID    string               `json:"team_id"`
 	ProjectID string               `json:"project_id"`
@@ -27,7 +21,7 @@ type addScanRequest struct {
 // AnalyzeProject takes a projectID, teamID, and project branch, performs an
 // analysis, and returns the result status or an error encountered by the API
 func (ic *IonClient) AnalyzeProject(projectID, teamID, branch, token string) (*scanner.AnalysisStatus, error) {
-	request := &analyzeRequest{}
+	request := &scanner.AnalyzeRequest{}
 	request.TeamID = teamID
 	request.ProjectID = projectID
 
@@ -71,18 +65,6 @@ func (ic *IonClient) GetAnalysisStatus(analysisID, teamID, projectID, token stri
 	err = json.Unmarshal(b, &a)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get analysis status: %v", err.Error())
-	}
-
-	if a.Status == "finished" {
-		w, err := ic.GetAppliedRuleSet(projectID, teamID, analysisID, token)
-		if err != nil {
-			return nil, fmt.Errorf("failed to get pass/fail status: %v", err.Error())
-		}
-
-		a.Status = "pass"
-		if !w.RuleEvaluationSummary.Passed {
-			a.Status = "fail"
-		}
 	}
 
 	return &a, nil
@@ -156,4 +138,36 @@ func (ic *IonClient) AddScanResult(scanResultID, teamID, projectID, status, scan
 	}
 
 	return &a, nil
+}
+
+type projectStates struct {
+	Filter string   `json:"filter"`
+	IDs    []string `json:"ids"`
+}
+
+// GetProjectsStates takes a slice of project ids and an optional filter
+// returns a slice of id's with each respected state
+func (ic *IonClient) GetProjectsStates(ids []string, filter string, token string) ([]scanner.ProjectsStates, error) {
+	ri := projectStates{
+		IDs:    ids,
+		Filter: filter,
+	}
+
+	b, err := json.Marshal(ri)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal request body: %v", err.Error())
+	}
+
+	r, err := ic.Post(scanner.ScannerGetProjectsStates, token, nil, *bytes.NewBuffer(b), nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get project states: %v", err.Error())
+	}
+
+	var ps []scanner.ProjectsStates
+	err = json.Unmarshal(r, &ps)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal response: %v", err.Error())
+	}
+
+	return ps, nil
 }
