@@ -62,7 +62,7 @@ var GetProjectsCmd = &cobra.Command{
 	Short: "Get Projects",
 	Long:  `Get the data for a projects in a team`,
 	Run: func(cmd *cobra.Command, args []string) {
-		page := pagination.New(limit, offset)
+		page := pagination.New(offset, limit)
 		ps, e := ion.GetProjects(teamID, viper.GetString(secretKey), page, nil)
 		if e != nil {
 			fmt.Println(e.Error())
