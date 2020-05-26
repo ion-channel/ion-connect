@@ -12,11 +12,11 @@ type Resource string
 
 const (
 	// Repo repository resource type
-	Repo Resource = "repo"
+	Repo Resource = "repos"
 	// Product product (cpe, software) resource type
-	Product Resource = "product"
+	Product Resource = "products"
 	// Package package (dependencies, libraries) resource type
-	Package Resource = "package"
+	Package Resource = "packages"
 )
 
 var (
@@ -35,6 +35,7 @@ func (r *Resource) Valid() bool {
 func init() {
 	RootCmd.AddCommand(SearchCmd)
 	SearchCmd.Flags().StringVarP(&query, "query", "q", "", "String text to search Ion Channel for matches (required)")
+	SearchCmd.Flags().StringVarP(&resource, "tbs", "t", "products", "Requests that the search is performed against the provided resource type")
 	SearchCmd.MarkFlagRequired("query")
 }
 
@@ -52,7 +53,7 @@ var SearchCmd = &cobra.Command{
 		return fmt.Errorf("invalid resource type specified: %s", resource)
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		r, _, e := ion.GetSearch(query, viper.GetString(secretKey))
+		r, _, e := ion.GetSearch(query, resource, viper.GetString(secretKey))
 		if e != nil {
 			fmt.Println(e.Error())
 		}

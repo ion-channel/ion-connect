@@ -35,8 +35,7 @@
   version = "v1.0"
 
 [[projects]]
-  branch = "master"
-  digest = "1:7f5291802b50a297891ec9a3983b69a672a902e4c28a0a4f68c721229ec15702"
+  digest = "1:903534c696c19a311bc0f7b041f9b36701b20d0b3208ec1795699b9d8d1c9539"
   name = "github.com/ion-channel/ionic"
   packages = [
     ".",
@@ -65,7 +64,7 @@
     "vulnerabilities",
   ]
   pruneopts = "UT"
-  revision = "fcfe8246ff55a863c48f08d6d038ab2a772b08db"
+  revision = "ccc72d035b193a0b4cc0cbc42cf28a7295ebf774"
 
 [[projects]]
   digest = "1:5a0ef768465592efca0412f7e838cdc0826712f8447e70e6ccc52eb441e9ab13"
