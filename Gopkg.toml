@@ -1,6 +1,6 @@
 [[constraint]]
   name = "github.com/ion-channel/ionic"
-  revision = "ccc72d035b193a0b4cc0cbc42cf28a7295ebf774"
+  revision = "061f4560494d684813246364426649c41167408e"
 
 [[constraint]]
   name = "github.com/spf13/cobra"
