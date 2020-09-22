@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/ion-channel/ionic"
 	"github.com/ion-channel/ionic/pagination"
 	"github.com/ion-channel/ionic/projects"
 	"github.com/spf13/cobra"
@@ -13,10 +14,16 @@ import (
 
 func init() {
 	RootCmd.AddCommand(ProjectCmd)
+	ProjectCmd.AddCommand(AddAliasCmd)
 	ProjectCmd.AddCommand(GetProjectCmd)
 	ProjectCmd.AddCommand(GetProjectsCmd)
 	ProjectCmd.AddCommand(CreateProjectsCSVCmd)
 	ProjectCmd.AddCommand(CreateProjectCmd)
+
+	AddAliasCmd.Flags().StringVarP(&teamID, "team-id", "t", "", "ID of the team for the project (required)")
+	AddAliasCmd.MarkFlagRequired("team-id")
+	AddAliasCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "ID of the project (required)")
+	AddAliasCmd.MarkFlagRequired("project-id")
 
 	GetProjectCmd.Flags().StringVarP(&teamID, "team-id", "t", "", "ID of the team for the project (required)")
 	GetProjectCmd.MarkFlagRequired("team-id")
@@ -39,6 +46,31 @@ var ProjectCmd = &cobra.Command{
 	Use:   "project",
 	Short: "Project resource",
 	Long:  `Project resource - access data relating to projects and their associations`,
+}
+
+// AddAliasCmd - Container for holder add alias cmd
+var AddAliasCmd = &cobra.Command{
+	Use:   "add-alias NAME VERSION [ORG]",
+	Short: "Add Alias",
+	Long:  `Add an alias to a project`,
+	Args:  cobra.MinimumNArgs(2),
+	Run: func(cmd *cobra.Command, args []string) {
+		options := ionic.AddAliasOptions{
+			Name:      args[0],
+			ProjectID: projectID,
+			TeamID:    teamID,
+			Version:   args[1],
+		}
+		if len(args) == 3 {
+			options.Org = args[2]
+		}
+		p, e := ion.AddAlias(options, viper.GetString(secretKey))
+		if e != nil {
+			fmt.Println(e.Error())
+		}
+
+		PPrint(p)
+	},
 }
 
 // GetProjectCmd - Container for holding project root and secondary commands
