@@ -34,6 +34,8 @@ const (
 	GetProjectsEndpoint = "v1/project/getProjects"
 	// UpdateProjectEndpoint is a string representation of the current endpoint for updating project
 	UpdateProjectEndpoint = "v1/project/updateProject"
+	// GetUsedRulesetIdsEndpoint is a string representation of the current endpoint for getting list of a team's in use rulesets
+	GetUsedRulesetIdsEndpoint = "v1/project/getUsedRulesetIds"
 )
 
 var (
@@ -44,29 +46,35 @@ var (
 
 //Project is a representation of a project within the Ion Channel system
 type Project struct {
-	ID               *string         `json:"id,omitempty"`
-	TeamID           *string         `json:"team_id,omitempty"`
-	RulesetID        *string         `json:"ruleset_id,omitempty"`
-	Name             *string         `json:"name,omitempty"`
-	Type             *string         `json:"type,omitempty"`
-	Source           *string         `json:"source,omitempty"`
-	Branch           *string         `json:"branch,omitempty"`
-	Description      *string         `json:"description,omitempty"`
-	Active           bool            `json:"active"`
-	ChatChannel      string          `json:"chat_channel"`
-	CreatedAt        time.Time       `json:"created_at"`
-	UpdatedAt        time.Time       `json:"updated_at"`
-	DeployKey        string          `json:"deploy_key"`
-	Monitor          bool            `json:"should_monitor"`
-	MonitorFrequency string          `json:"monitor_frequency"`
-	POCName          string          `json:"poc_name"`
-	POCEmail         string          `json:"poc_email"`
-	Username         string          `json:"username"`
-	Password         string          `json:"password"`
-	KeyFingerprint   string          `json:"key_fingerprint"`
-	Private          bool            `json:"private"`
-	Aliases          []aliases.Alias `json:"aliases"`
-	Tags             []tags.Tag      `json:"tags"`
+	ID               *string                          `json:"id,omitempty"`
+	TeamID           *string                          `json:"team_id,omitempty"`
+	RulesetID        *string                          `json:"ruleset_id,omitempty"`
+	Name             *string                          `json:"name,omitempty"`
+	Type             *string                          `json:"type,omitempty"`
+	Source           *string                          `json:"source,omitempty"`
+	Branch           *string                          `json:"branch,omitempty"`
+	Description      *string                          `json:"description,omitempty"`
+	Active           bool                             `json:"active"`
+	ChatChannel      string                           `json:"chat_channel"`
+	CreatedAt        time.Time                        `json:"created_at"`
+	UpdatedAt        time.Time                        `json:"updated_at"`
+	DeployKey        string                           `json:"deploy_key"`
+	Monitor          bool                             `json:"should_monitor"`
+	MonitorFrequency string                           `json:"monitor_frequency"`
+	POCName          string                           `json:"poc_name"`
+	POCEmail         string                           `json:"poc_email"`
+	Username         string                           `json:"username"`
+	Password         string                           `json:"password"`
+	KeyFingerprint   string                           `json:"key_fingerprint"`
+	Private          bool                             `json:"private"`
+	Aliases          []aliases.Alias                  `json:"aliases"`
+	Tags             []tags.Tag                       `json:"tags"`
+	RulesetHistory   []rulesets.ProjectRulesetHistory `json:"ruleset_history"`
+}
+
+// RulesetID represents a ruleset ID
+type RulesetID struct {
+	RulesetID string `json:"ruleset_id"`
 }
 
 // String returns a JSON formatted string of the project object

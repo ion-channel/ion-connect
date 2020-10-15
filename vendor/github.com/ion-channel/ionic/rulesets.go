@@ -7,6 +7,7 @@ import (
 	"net/url"
 
 	"github.com/ion-channel/ionic/pagination"
+	"github.com/ion-channel/ionic/requests"
 	"github.com/ion-channel/ionic/rulesets"
 )
 
@@ -138,4 +139,49 @@ func (ic *IonClient) GetRuleSets(teamID, token string, page *pagination.Paginati
 // It returns whether or not ruleset exists and any errors it encounters with the API.
 func (ic *IonClient) RuleSetExists(ruleSetID, teamID, token string) (bool, error) {
 	return rulesets.RuleSetExists(ic.client, ic.baseURL, ruleSetID, teamID, token)
+}
+
+//GetProjectPassFailHistory takes a project id and returns a daily history of pass/fail statuses
+func (ic *IonClient) GetProjectPassFailHistory(projectID, token string) ([]rulesets.ProjectPassFailHistory, error) {
+	params := &url.Values{}
+	params.Set("project_id", projectID)
+
+	b, _, err := ic.Get(rulesets.GetProjectHistoryEndpoint, token, params, nil, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get project history: %v", err.Error())
+	}
+
+	var ph []rulesets.ProjectPassFailHistory
+	err = json.Unmarshal(b, &ph)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal ruleset: %v", err.Error())
+	}
+
+	return ph, nil
+}
+
+//GetRulesetNames takes slice of ids and returns the ruleset names with the ids
+func (ic *IonClient) GetRulesetNames(ids []string, token string) ([]rulesets.NameForID, error) {
+	byIDs := requests.ByIDs{
+		IDs: ids,
+	}
+
+	b, err := json.Marshal(byIDs)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal request body: %v", err.Error())
+	}
+
+	buff := bytes.NewBuffer(b)
+	r, err := ic.Post(rulesets.RulesetsGetRulesetNames, token, nil, *buff, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get applied ruleset summary: %v", err.Error())
+	}
+
+	var s []rulesets.NameForID
+	err = json.Unmarshal(r, &s)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal applied ruleset summary: %v", err.Error())
+	}
+
+	return s, nil
 }
