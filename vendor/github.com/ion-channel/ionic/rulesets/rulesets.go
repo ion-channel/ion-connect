@@ -1,6 +1,7 @@
 package rulesets
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -25,6 +26,8 @@ const (
 	GetRuleSetsEndpoint = "v1/ruleset/getRulesets"
 	//RulesetsGetRulesEndpoint is a string representation of the current endpoint for getting rules.
 	RulesetsGetRulesEndpoint = "v1/ruleset/getRules"
+	//RulesetsGetRulesetNames is a string representation of the current endpoint for getting ruleset names.
+	RulesetsGetRulesetNames = "v1/ruleset/getRulesetNames"
 )
 
 // AppliedRulesetRequest represents a request for an applied ruleset result
@@ -45,15 +48,25 @@ type CreateRuleSetOptions struct {
 
 // RuleSet is a collection of rules
 type RuleSet struct {
-	ID          string       `json:"id"`
-	TeamID      string       `json:"team_id"`
-	Name        string       `json:"name"`
-	Description string       `json:"description"`
-	RuleIDs     []string     `json:"rule_ids"`
-	CreatedAt   time.Time    `json:"created_at"`
-	UpdatedAt   time.Time    `json:"updated_at"`
-	Rules       []rules.Rule `json:"rules"`
-	Deprecated  bool         `json:"has_deprecated_rules"`
+	ID          string        `json:"id"`
+	TeamID      string        `json:"team_id"`
+	Name        string        `json:"name"`
+	Description string        `json:"description"`
+	RuleIDs     []string      `json:"rule_ids"`
+	CreatedAt   time.Time     `json:"created_at"`
+	UpdatedAt   time.Time     `json:"updated_at"`
+	Rules       []rules.Rule  `json:"rules"`
+	Deprecated  bool          `json:"has_deprecated_rules"`
+	IsUsed      bool          `json:"has_projects_assigned"`
+	DeletedAt   *sql.NullTime `json:"deleted_at,omitempty"`
+	DeletedBy   string        `json:"deleted_by,omitempty"`
+}
+
+// NameForID represents the data object for ruleset name and its ID
+type NameForID struct {
+	ID     string `json:"id"`
+	Name   string `json:"name"`
+	TeamID string `json:"team_id"`
 }
 
 // String returns a JSON formatted string of the ruleset object
