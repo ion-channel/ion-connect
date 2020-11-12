@@ -17,8 +17,9 @@ import (
 )
 
 const (
-	validEmailRegex  = `(?i)^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$`
-	validGitURIRegex = `^(?:(?:http|ftp|gopher|mailto|mid|cid|news|nntp|prospero|telnet|rlogin|tn3270|wais|svn|git|rsync)+\+ssh\:\/\/|git\+https?:\/\/|git\@|(?:http|ftp|gopher|mailto|mid|cid|news|nntp|prospero|telnet|rlogin|tn3270|wais|svn|git|rsync|ssh|file|s3)+s?:\/\/)[^\s]+$`
+	validEmailRegex     = `(?i)^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$`
+	validGitURIRegex    = `^(?:(?:http|ftp|gopher|mailto|mid|cid|news|nntp|prospero|telnet|rlogin|tn3270|wais|svn|git|rsync)+\+ssh\:\/\/|git\+https?:\/\/|git\@|(?:http|ftp|gopher|mailto|mid|cid|news|nntp|prospero|telnet|rlogin|tn3270|wais|svn|git|rsync|ssh|file|s3)+s?:\/\/)[^\s]+$`
+	validDockerURIRegex = `[a-z0-9]+(?:[._-][a-z0-9]+)*`
 )
 
 const (
@@ -36,6 +37,8 @@ const (
 	UpdateProjectEndpoint = "v1/project/updateProject"
 	// GetUsedRulesetIdsEndpoint is a string representation of the current endpoint for getting list of a team's in use rulesets
 	GetUsedRulesetIdsEndpoint = "v1/project/getUsedRulesetIds"
+	// GetProjectsNamesEndpoint is a string representation of the current endpoint for getting projects alaised names and versions
+	GetProjectsNamesEndpoint = "v1/project/getProjectsNames"
 )
 
 var (
@@ -77,6 +80,12 @@ type RulesetID struct {
 	RulesetID string `json:"ruleset_id"`
 }
 
+// Name represents a single project name and id
+type Name struct {
+	ID   string `json:"project_id"`
+	Name string `json:"name"`
+}
+
 // String returns a JSON formatted string of the project object
 func (p Project) String() string {
 	b, err := json.Marshal(p)
@@ -86,10 +95,147 @@ func (p Project) String() string {
 	return string(b)
 }
 
+// ProjectReachable checks if the artifact URL is reachable
+func (p *Project) ProjectReachable(client *http.Client, baseURL *url.URL, token string) (map[string]string, error) {
+	invalidFields := make(map[string]string)
+	var projErr error
+	if p.Type != nil {
+		switch strings.ToLower(*p.Type) {
+		case "artifact":
+			u, err := url.Parse(*p.Source)
+			if err != nil {
+				invalidFields["source"] = fmt.Sprintf("source must be a valid url: %v", err.Error())
+				projErr = ErrInvalidProject
+			}
+
+			if u != nil {
+				res, err := client.Head(u.String())
+				if err != nil {
+					invalidFields["source"] = "source failed to return a response"
+					projErr = ErrInvalidProject
+				}
+
+				if res != nil && res.StatusCode == http.StatusNotFound {
+					invalidFields["source"] = "source returned a not found"
+					projErr = ErrInvalidProject
+				}
+			}
+		case "git", "svn", "s3":
+			r := regexp.MustCompile(validGitURIRegex)
+			if p.Source != nil && !r.MatchString(*p.Source) {
+				invalidFields["source"] = "source must be a valid uri"
+				projErr = ErrInvalidProject
+			}
+		case "docker":
+			r := regexp.MustCompile(validDockerURIRegex)
+			if p.Source != nil && !r.MatchString(*p.Source) {
+				invalidFields["source"] = "source must be a docker image name"
+				projErr = ErrInvalidProject
+			}
+		default:
+			invalidFields["type"] = fmt.Sprintf("invalid type value")
+			projErr = ErrInvalidProject
+		}
+	}
+
+	return invalidFields, projErr
+}
+
+// ValidateRequiredFields verifies the project contains the fields required
+func (p *Project) ValidateRequiredFields(client *http.Client, baseURL *url.URL, token string) (map[string]string, error) {
+	invalidFields := make(map[string]string)
+	var projErr error
+
+	if p.TeamID == nil {
+		invalidFields["team_id"] = "missing team id"
+		projErr = ErrInvalidProject
+	}
+
+	if p.RulesetID == nil {
+		invalidFields["ruleset_id"] = "missing ruleset id"
+		projErr = ErrInvalidProject
+	}
+
+	if p.Name == nil {
+		invalidFields["name"] = "missing name"
+		projErr = ErrInvalidProject
+	}
+
+	if p.Type == nil {
+		invalidFields["type"] = "missing type"
+		projErr = ErrInvalidProject
+	}
+
+	if p.Source == nil {
+		invalidFields["source"] = "missing source"
+		projErr = ErrInvalidProject
+	}
+
+	if p.Branch == nil && p.Type != nil && strings.ToLower(*p.Type) == "git" {
+		invalidFields["branch"] = "missing branch"
+		projErr = ErrInvalidProject
+	}
+
+	if p.Description == nil {
+		invalidFields["description"] = "missing description"
+		projErr = ErrInvalidProject
+	}
+
+	if p.RulesetID != nil && p.TeamID != nil {
+		exists, err := rulesets.RuleSetExists(client, baseURL, *p.RulesetID, *p.TeamID, token)
+		if err != nil {
+			return nil, fmt.Errorf("failed to determine if ruleset exists: %v", err.Error())
+		}
+
+		if !exists {
+			invalidFields["ruleset_id"] = "ruleset id does not match to a valid ruleset"
+			projErr = ErrInvalidProject
+		}
+	}
+
+	p.POCEmail = strings.TrimSpace(p.POCEmail)
+
+	r := regexp.MustCompile(validEmailRegex)
+	if p.POCEmail != "" && !r.MatchString(p.POCEmail) {
+		invalidFields["poc_email"] = "invalid email supplied"
+		projErr = ErrInvalidProject
+	}
+
+	if p.Type != nil {
+		switch strings.ToLower(*p.Type) {
+		case "artifact":
+			_, err := url.Parse(*p.Source)
+			if err != nil {
+				invalidFields["source"] = fmt.Sprintf("source must be a valid url: %v", err.Error())
+				projErr = ErrInvalidProject
+			}
+		case "git", "svn", "s3":
+			r := regexp.MustCompile(validGitURIRegex)
+			if p.Source != nil && !r.MatchString(*p.Source) {
+				invalidFields["source"] = "source must be a valid uri"
+				projErr = ErrInvalidProject
+			}
+		case "docker":
+			r := regexp.MustCompile(validDockerURIRegex)
+			if p.Source != nil && !r.MatchString(*p.Source) {
+				invalidFields["source"] = "source must be a docker image name"
+				projErr = ErrInvalidProject
+			}
+		default:
+			invalidFields["type"] = fmt.Sprintf("invalid type value")
+			projErr = ErrInvalidProject
+		}
+	}
+
+	return invalidFields, projErr
+}
+
 // Validate takes an http client, baseURL, and token; returns a slice of fields as a string and
 // an error. The fields will be a list of fields that did not pass the
 // validation. An error will only be returned if any of the fields fail their
 // validation.
+// Since this also checks for project reachability, ValidateRequiredFields
+// can be used to skip that check.
 func (p *Project) Validate(client *http.Client, baseURL *url.URL, token string) (map[string]string, error) {
 	invalidFields := make(map[string]string)
 	var projErr error
@@ -174,6 +320,12 @@ func (p *Project) Validate(client *http.Client, baseURL *url.URL, token string) 
 			r := regexp.MustCompile(validGitURIRegex)
 			if p.Source != nil && !r.MatchString(*p.Source) {
 				invalidFields["source"] = "source must be a valid uri"
+				projErr = ErrInvalidProject
+			}
+		case "docker":
+			r := regexp.MustCompile(validDockerURIRegex)
+			if p.Source != nil && !r.MatchString(*p.Source) {
+				invalidFields["source"] = "source must be a docker image name"
 				projErr = ErrInvalidProject
 			}
 		default:

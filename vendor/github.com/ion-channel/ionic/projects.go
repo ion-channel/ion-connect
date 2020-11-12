@@ -14,6 +14,7 @@ import (
 
 	"github.com/ion-channel/ionic/pagination"
 	"github.com/ion-channel/ionic/projects"
+	"github.com/ion-channel/ionic/requests"
 )
 
 // CreateProjectsResponse represents the response from the API when sending a
@@ -255,4 +256,30 @@ func (ic *IonClient) GetUsedRulesetIds(teamID, token string) ([]projects.Ruleset
 	}
 
 	return rList, nil
+}
+
+// GetProjectsNames takes a team ID and slice of project ids. it returns slice of project ids, and project names
+func (ic *IonClient) GetProjectsNames(teamID string, ids []string, token string) ([]projects.Name, error) {
+	p := requests.ByIDsAndTeamID{
+		TeamID: teamID,
+		IDs:    ids,
+	}
+
+	b, err := json.Marshal(p)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal request body: %v", err.Error())
+	}
+
+	r, err := ic.Post(projects.GetProjectsNamesEndpoint, token, nil, *bytes.NewBuffer(b), nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get projects names and versions: %v", err.Error())
+	}
+
+	var list []projects.Name
+	err = json.Unmarshal(r, &list)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal projects names: %v", err.Error())
+	}
+
+	return list, nil
 }
