@@ -1,7 +1,7 @@
 language: go
 
 go:
-  - 1.13
+  - 1.15
   - master
 
 sudo: required
@@ -17,7 +17,7 @@ deploy:
     skip_cleanup: true
     script: make deploy
     on:
-      go: '1.13'
+      go: '1.15'
       tags: true
 
 notifications:

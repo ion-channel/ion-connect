@@ -4,12 +4,12 @@ SHELL = bash
 # Go Stuff
 GOCMD=go
 GOLINTCMD=golint
-GOBUILD=$(GOCMD) build
+GOBUILD=$(GOCMD) build -mod=vendor
 GOCLEAN=$(GOCMD) clean
-GOLIST=$(GOCMD) list
-GOVET=$(GOCMD) vet
-GOTEST=$(GOCMD) test -v ./...
-GOFMT=$(GOCMD) fmt
+GOLIST=$(GOCMD) list -mod=mod
+GOVET=$(GOCMD) vet -mod=mod
+GOTEST=$(GOCMD) test -mod=vendor -v ./...
+GOFMT=$(GOCMD) fmt -mod=mod
 CGO_ENABLED ?= 0
 GOOS ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
 
@@ -78,7 +78,7 @@ help:  ## Show This Help
 
 .PHONY: install
 install:  ## Installs the binary
-	$(GOCMD) install
+	$(GOCMD) install -mod=vendor
 
 .PHONY: test
 test: unit_test  ## Runs all available tests

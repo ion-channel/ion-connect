@@ -1,0 +1,91 @@
+# github.com/franela/goblin v0.0.0-20201006155558-6240afcb2eb7
+## explicit
+# github.com/fsnotify/fsnotify v1.4.8-0.20190312181446-1485a34d5d57
+## explicit
+github.com/fsnotify/fsnotify
+# github.com/gomicro/bogus v0.1.1
+## explicit
+# github.com/gomicro/penname v0.1.0
+## explicit
+# github.com/hashicorp/hcl v1.0.1-0.20190611123218-cf7d376da96d
+## explicit
+github.com/hashicorp/hcl
+github.com/hashicorp/hcl/hcl/ast
+github.com/hashicorp/hcl/hcl/parser
+github.com/hashicorp/hcl/hcl/printer
+github.com/hashicorp/hcl/hcl/scanner
+github.com/hashicorp/hcl/hcl/strconv
+github.com/hashicorp/hcl/hcl/token
+github.com/hashicorp/hcl/json/parser
+github.com/hashicorp/hcl/json/scanner
+github.com/hashicorp/hcl/json/token
+# github.com/inconshreveable/mousetrap v1.0.0
+## explicit
+github.com/inconshreveable/mousetrap
+# github.com/ion-channel/ionic v0.19.2-0.20201106210014-b051289c6e13
+## explicit
+github.com/ion-channel/ionic
+github.com/ion-channel/ionic/aliases
+github.com/ion-channel/ionic/analyses
+github.com/ion-channel/ionic/community
+github.com/ion-channel/ionic/deliveries
+github.com/ion-channel/ionic/dependencies
+github.com/ion-channel/ionic/errors
+github.com/ion-channel/ionic/pagination
+github.com/ion-channel/ionic/portfolios
+github.com/ion-channel/ionic/products
+github.com/ion-channel/ionic/projects
+github.com/ion-channel/ionic/reports
+github.com/ion-channel/ionic/requests
+github.com/ion-channel/ionic/responses
+github.com/ion-channel/ionic/rules
+github.com/ion-channel/ionic/rulesets
+github.com/ion-channel/ionic/scanner
+github.com/ion-channel/ionic/scans
+github.com/ion-channel/ionic/tags
+github.com/ion-channel/ionic/teams
+github.com/ion-channel/ionic/teamusers
+github.com/ion-channel/ionic/users
+github.com/ion-channel/ionic/vulnerabilities
+# github.com/magiconair/properties v1.8.1
+## explicit
+github.com/magiconair/properties
+# github.com/mitchellh/mapstructure v1.1.2
+github.com/mitchellh/mapstructure
+# github.com/onsi/gomega v1.10.4
+## explicit
+# github.com/pelletier/go-toml v1.4.1-0.20190910035959-26fd12ff5458
+## explicit
+github.com/pelletier/go-toml
+# github.com/spf13/afero v1.2.2
+## explicit
+github.com/spf13/afero
+github.com/spf13/afero/mem
+# github.com/spf13/cast v1.3.1-0.20190531093228-c01685bb8421
+## explicit
+github.com/spf13/cast
+# github.com/spf13/cobra v0.0.3
+## explicit
+github.com/spf13/cobra
+# github.com/spf13/jwalterweatherman v1.1.0
+## explicit
+github.com/spf13/jwalterweatherman
+# github.com/spf13/pflag v1.0.4-0.20190814001055-972238283c06
+## explicit
+github.com/spf13/pflag
+# github.com/spf13/viper v1.3.1
+## explicit
+github.com/spf13/viper
+# golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+## explicit
+golang.org/x/crypto/ssh/terminal
+# golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f
+golang.org/x/sys/internal/unsafeheader
+golang.org/x/sys/unix
+golang.org/x/sys/windows
+# golang.org/x/text v0.3.3
+golang.org/x/text/transform
+golang.org/x/text/unicode/norm
+# gopkg.in/yaml.v2 v2.3.0
+## explicit
+gopkg.in/yaml.v2
