@@ -78,7 +78,7 @@ help:  ## Show This Help
 
 .PHONY: install
 install:  ## Installs the binary
-	$(GOCMD) install
+	$(GOCMD) install -mod=vendor
 
 .PHONY: test
 test: unit_test  ## Runs all available tests
