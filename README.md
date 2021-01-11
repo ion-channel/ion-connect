@@ -71,3 +71,10 @@ The project will be versioned in accordance with [Semver 2.0.0](http://semver.or
 
 # License
 This project is distributed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).  See [LICENSE.md](./LICENSE.md) for more information.
+
+## Updating dependencies with go modules
+To update ionic:
+`go get -u github.com/ion-channel/ionic@master && go mod vendor`
+
+To update the linter requirements (to fix inconsistent vendoring in build):
+`go get -u golang.org/x/lint && go get -u golang.org/x/tools && go mod vendor`
