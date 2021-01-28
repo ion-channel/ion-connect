@@ -49,18 +49,21 @@ type ProjectReport struct {
 // ExportedData represents the exported data
 type ExportedData struct {
 	CreatedAt time.Time      `json:"created_at"`
-	Projects  []AnalysisData `json:"projects"`
+	Projects  []ExportFields `json:"projects"`
 }
 
-// AnalysisData represents the project data
-type AnalysisData struct {
+// ExportFields represents the project data
+type ExportFields struct {
 	ProjectName   string `json:"project_name"`
 	ProjectID     string `json:"project_id"`
+	ProductName   string `json:"product_name"`
+	Version       string `json:"version"`
+	Org           string `json:"org"`
 	CurrentStatus string `json:"current_status"`
-	VulnCount     int    `json:"vuln_count"`
-	CritVulnCount int    `json:"critical_vuln_count"`
-	HighVulnCount int    `json:"high_vuln_count"`
-	VirusCount    int    `json:"virus_count"`
+	VulnCount     *int   `json:"vuln_count"`
+	CritVulnCount *int   `json:"critical_vuln_count"`
+	HighVulnCount *int   `json:"high_vuln_count"`
+	VirusCount    *int   `json:"virus_count"`
 }
 
 // NewProjectReport takes a project and analysis summaries to return a
@@ -93,14 +96,14 @@ type NewProjectReportsInput struct {
 // NewProjectReports takes a project, analysis summary, and applied ruleset to
 // create a summarized, high level report of a singular project. It returns this
 // as a ProjectReports type.
-func NewProjectReports(input NewProjectReportsInput) *ProjectReports {
+func NewProjectReports(input NewProjectReportsInput, defaultRulesetName string) *ProjectReports {
 	project := input.Project
 	summary := input.Summary
 	appliedRuleset := input.AppliedRuleset
 	analysisStatus := input.AnalysisStatus
 
 	projectStatus := ProjectStatusPending
-	rulesetName := "N/A"
+	rulesetName := defaultRulesetName
 	if appliedRuleset != nil && appliedRuleset.RuleEvaluationSummary != nil {
 		rulesetName = appliedRuleset.RuleEvaluationSummary.RulesetName
 	}

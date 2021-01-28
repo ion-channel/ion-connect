@@ -287,9 +287,10 @@ type BuildsystemResults struct {
 // CommunityResults represents the data collected from a community scan.  It
 // represents all known data regarding the open community of a software project
 type CommunityResults struct {
-	Committers int    `json:"committers" xml:"committers"`
-	Name       string `json:"name" xml:"name"`
-	URL        string `json:"url" xml:"url"`
+	Committers  int       `json:"committers" xml:"committers"`
+	Name        string    `json:"name" xml:"name"`
+	URL         string    `json:"url" xml:"url"`
+	CommittedAt time.Time `json:"committed_at" xml:"committed_at"`
 }
 
 // CoverageResults represents the data collected from a code coverage scan.  It
@@ -300,16 +301,25 @@ type CoverageResults struct {
 
 // Dependency represents data for an individual requirement resolution
 type Dependency struct {
-	LatestVersion string       `json:"latest_version" xml:"latest_version"`
-	Org           string       `json:"org" xml:"org"`
-	Name          string       `json:"name" xml:"name"`
-	Type          string       `json:"type" xml:"type"`
-	Package       string       `json:"package" xml:"package"`
-	Version       string       `json:"version" xml:"version"`
-	Scope         string       `json:"scope" xml:"scope"`
-	Requirement   string       `json:"requirement" xml:"requirement"`
-	File          string       `json:"file" xml:"file"`
-	Dependencies  []Dependency `json:"dependencies" xml:"dependencies"`
+	LatestVersion string          `json:"latest_version" xml:"latest_version"`
+	Org           string          `json:"org" xml:"org"`
+	Name          string          `json:"name" xml:"name"`
+	Type          string          `json:"type" xml:"type"`
+	Package       string          `json:"package" xml:"package"`
+	Version       string          `json:"version" xml:"version"`
+	Scope         string          `json:"scope" xml:"scope"`
+	Requirement   string          `json:"requirement" xml:"requirement"`
+	File          string          `json:"file" xml:"file"`
+	DepMeta       *DependencyMeta `json:"dependency_counts,omitempty" xml:"dependency_counts"`
+	OutdatedMeta  *OutdatedMeta   `json:"outdated_version,omitempty" xml:"outdated_version"`
+	Dependencies  []Dependency    `json:"dependencies" xml:"dependencies"`
+}
+
+// OutdatedMeta is used to represent the number of versions behind a dependcy is
+type OutdatedMeta struct {
+	MajorBehind int `json:"major_behind" xml:"major_behind"`
+	MinorBehind int `json:"minor_behind" xml:"minor_behind"`
+	PatchBehind int `json:"patch_behind" xml:"patch_behind"`
 }
 
 // DependencyMeta represents data for a summary of all dependencies resolved
@@ -318,6 +328,7 @@ type DependencyMeta struct {
 	NoVersionCount       int `json:"no_version_count" xml:"no_version_count"`
 	TotalUniqueCount     int `json:"total_unique_count" xml:"total_unique_count"`
 	UpdateAvailableCount int `json:"update_available_count" xml:"update_available_count"`
+	VulnerableCount      int `json:"vulnerable_count" xml:"vulnerable_count"`
 }
 
 // DependencyResults represents the data collected from a dependency scan.  It
