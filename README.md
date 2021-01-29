@@ -18,7 +18,7 @@ Ion API key
 Ion Connect can be installed from source, a binary download, or indirectly within a Docker
 container.
 
-##Go
+## Go
 ```
 go get github.com/ion-channel/ion-connect
 cd $GOPATH/src/github.com/ion-channel/ion-connect
@@ -26,10 +26,10 @@ go build
 go install
 ```
 
-##Binary
+## Binary
 [http://github.com/ion-channel/ion-connect/releases/latest](http://github.com/ion-channel/ion-connect/releases/latest)
 
-##Docker
+## Docker
 ```
 docker pull ionchannel/ion-connect
 ```
