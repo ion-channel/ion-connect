@@ -1,5 +1,5 @@
 # Ion Connect
-[![Build Status](https://travis-ci.org/ion-channel/ion-connect.svg?branch=master)](https://travis-ci.org/ion-channel/ion-connect)
+[![Build Status](https://travis-ci.com/ion-channel/ion-connect.svg?branch=master)](https://travis-ci.com/ion-channel/ion-connect)
 [![Go Report Card](https://goreportcard.com/badge/github.com/ion-channel/ion-connect)](https://goreportcard.com/report/github.com/ion-channel/ion-connect)
 [![GoDoc](https://godoc.org/github.com/ion-channel/ion-connect?status.svg)](https://godoc.org/github.com/ion-channel/ion-connect)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/ion-channel/ion-connect/blob/master/LICENSE.md)
