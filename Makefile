@@ -47,7 +47,7 @@ analyze:  ## Perform an analysis of the project
 .PHONY: deploy
 deploy: ## Deploy the artifacts
 	@echo "Logging into Docker Hub"
-	-@echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+	-@echo docker login -u "$(DOCKER_USERNAME)" -p "$(DOCKER_PASSWORD)" 
 	@ext/goreleaser release
 
 .PHONY: clean
