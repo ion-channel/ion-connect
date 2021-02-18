@@ -19,7 +19,7 @@ github.com/hashicorp/hcl/json/scanner
 github.com/hashicorp/hcl/json/token
 # github.com/inconshreveable/mousetrap v1.0.0
 github.com/inconshreveable/mousetrap
-# github.com/ion-channel/ionic v0.19.2-0.20210129191544-e37723b52718
+# github.com/ion-channel/ionic v0.20.1-0.20210218175248-79f2003727ea
 ## explicit
 github.com/ion-channel/ionic
 github.com/ion-channel/ionic/aliases
