@@ -30,7 +30,7 @@ func init() {
 	ProjectCmd.AddCommand(GetProjectsCmd)
 	ProjectCmd.AddCommand(CreateProjectsCSVCmd)
 	ProjectCmd.AddCommand(CreateProjectCmd)
-	ProjectCmd.AddCommand(CreateProjectSPDXCmd)
+	ProjectCmd.AddCommand(CreateProjectsSPDXCmd)
 
 	AddAliasCmd.Flags().StringVarP(&teamID, "team-id", "t", "", "ID of the team for the project (required)")
 	AddAliasCmd.MarkFlagRequired("team-id")
@@ -52,14 +52,14 @@ func init() {
 
 	CreateProjectCmd.Flags().BoolVar(&skel, "print", false, "Print an example create project json skeleton")
 
-	CreateProjectSPDXCmd.Flags().StringVarP(&spdxVersion, "spdx-version", "", "2.1", "SPDX version 2.1 or 2.2 to import")
-	CreateProjectSPDXCmd.Flags().StringVarP(&teamID, "team-id", "t", "", "ID of the team for the project (required)")
-	CreateProjectSPDXCmd.MarkFlagRequired("team-id")
-	CreateProjectSPDXCmd.Flags().StringVarP(&rulesetID, "ruleset-id", "r", "", "ID of the ruleset for the project (required)")
-	CreateProjectSPDXCmd.MarkFlagRequired("ruleset-id")
-	CreateProjectSPDXCmd.Flags().StringVarP(&packageName, "package-name", "", "", "package name of the project to add (must be present in SPDX file)")
-	CreateProjectSPDXCmd.Flags().StringVarP(&pocEmail, "poc-email", "", "", "Point of Contact (PoC) email to be used for the project")
-	CreateProjectSPDXCmd.Flags().StringVarP(&pocName, "poc-name", "", "", "Point of Contact (PoC) name to be used for the project")
+	CreateProjectsSPDXCmd.Flags().StringVarP(&spdxVersion, "spdx-version", "", "2.1", "SPDX version 2.1 or 2.2 to import")
+	CreateProjectsSPDXCmd.Flags().StringVarP(&teamID, "team-id", "t", "", "ID of the team for the project (required)")
+	CreateProjectsSPDXCmd.MarkFlagRequired("team-id")
+	CreateProjectsSPDXCmd.Flags().StringVarP(&rulesetID, "ruleset-id", "r", "", "ID of the ruleset for the project (required)")
+	CreateProjectsSPDXCmd.MarkFlagRequired("ruleset-id")
+	CreateProjectsSPDXCmd.Flags().StringVarP(&packageName, "package-name", "", "", "package name of the project to add (must be present in SPDX file)")
+	CreateProjectsSPDXCmd.Flags().StringVarP(&pocEmail, "poc-email", "", "", "Point of Contact (PoC) email to be used for the project")
+	CreateProjectsSPDXCmd.Flags().StringVarP(&pocName, "poc-name", "", "", "Point of Contact (PoC) name to be used for the project")
 }
 
 // ProjectCmd - Container for holding project root and secondary commands
@@ -208,11 +208,11 @@ var CreateProjectCmd = &cobra.Command{
 	},
 }
 
-// CreateProjectSPDXCmd - Attempts to create a project from an SPDX V2.1 or V2.2 file
-var CreateProjectSPDXCmd = &cobra.Command{
-	Use:   "create-project-spdx [flags] PATHTOSPDX",
-	Short: "Create Project SPDX",
-	Long:  `Create project from an spdx file`,
+// CreateProjectsSPDXCmd - Attempts to create a project from an SPDX V2.1 or V2.2 file
+var CreateProjectsSPDXCmd = &cobra.Command{
+	Use:   "create-projects-spdx [flags] PATHTOSPDX",
+	Short: "Create Projects SPDX",
+	Long:  `Create projects from an spdx file`,
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		// open the SPDX file
@@ -230,91 +230,112 @@ var CreateProjectSPDXCmd = &cobra.Command{
 		}
 
 		// if we got here, the file is now loaded into memory.
-		fmt.Printf("Successfully loaded %s\n\n", spdxFile)
+		fmt.Printf("Read %s\n\n", spdxFile)
 
-		// project to create
-		var p projects.Project
+		// projects to create
+		projs := make([]projects.Project, 0)
 
 		// parse on SPDX 2.1, or 2.2. Default to 2.2 if not provided
 		if spdxVersion == "2.1" {
 			// try to load the SPDX file's contents as a tag-value file, version 2.1
 			doc, err := tvloader.Load2_1(r)
 			if err != nil {
-				fmt.Printf("Error while parsing %v: %v", spdxFile, err)
+				fmt.Printf("Could not load %v. Error from SPDX library: %v\n", spdxFile, err)
+				printSPDXErrorHelp(err)
 				return
 			}
 
-			if packageName != "" {
-				// if provided creates a project from a package name, (matching a PackageName field in the spdx file)
-				p, err = ionicspdx.ProjectPackageFromSPDX2_1(doc, packageName)
-				if err != nil {
-					fmt.Printf("Error while parsing %v: %v", spdxFile, err)
-					return
-				}
+			// All project packages
+			packageProjs, err := ionicspdx.ProjectPackageFromSPDX2_1(doc, packageName)
+			if err != nil {
+				fmt.Printf("Failed finding project packages %v: %v. Skipping project packages.", spdxFile, err)
 			} else {
-				// otherwise create from top level SPDX Document Creation Information (DocumentInfo)
-				p, err = ionicspdx.ProjectFromSPDX2_1(doc)
-				if err != nil {
-					fmt.Printf("Error while parsing %v: %v", spdxFile, err)
-					return
-				}
+				projs = append(projs, packageProjs...)
+			}
+
+			// Top level SPDX Document Creation Information (DocumentInfo)
+			p, err := ionicspdx.ProjectFromSPDX2_1(doc)
+			if err != nil {
+				fmt.Printf("Failed finding documentinfo %v: %v. Skipping creating project from documentinfo.", spdxFile, err)
+			} else {
+				projs = append(projs, p)
 			}
 
 		} else if spdxVersion == "2.2" || spdxVersion == "" {
 			// try to load the SPDX file's contents as a tag-value file, version 2.2
 			doc, err := tvloader.Load2_2(r)
 			if err != nil {
-				fmt.Printf("Error while parsing %v: %v", spdxFile, err)
+				fmt.Printf("Could not load %v. Error from SPDX library: %v\n", spdxFile, err)
+				printSPDXErrorHelp(err)
+				return
+			}
+			// All project packages
+			packageProjs, err := ionicspdx.ProjectPackageFromSPDX2_2(doc, packageName)
+			if err != nil {
+				fmt.Printf("Failed finding project packages %v: %v. Skipping project packages.", spdxFile, err)
+			} else {
+				projs = append(projs, packageProjs...)
+			}
+
+			// Top level SPDX Document Creation Information (DocumentInfo)
+			p, err := ionicspdx.ProjectFromSPDX2_2(doc)
+			if err != nil {
+				fmt.Printf("Failed finding documentinfo %v: %v. Skipping creating project from documentinfo.", spdxFile, err)
+			} else {
+				projs = append(projs, p)
+			}
+
+		}
+
+		if len(projs) == 0 {
+			printSPDXErrorHelp(fmt.Errorf("no packages found in SPDX file"))
+		}
+
+		for i := range projs {
+			projs[i].RulesetID = &rulesetID
+			projs[i].TeamID = &teamID
+
+			// add name and email if supplied
+			if pocName != "" {
+				projs[i].POCName = pocName
+			}
+
+			if pocEmail != "" {
+				projs[i].POCEmail = pocEmail
+			}
+
+			errs, err := projs[i].Validate(cc, uu, viper.GetString(secretKey))
+			if err != nil {
+				for name, e := range errs {
+					fmt.Printf("%v : %v\n", name, e)
+				}
+
+				fmt.Println(err.Error())
 				return
 			}
 
-			// if provided creates a project from a package name, (matching a PackageName field in the spdx file)
-			if packageName != "" {
-				p, err = ionicspdx.ProjectPackageFromSPDX2_2(doc, packageName)
-				if err != nil {
-					fmt.Printf("Error while parsing %v: %v", spdxFile, err)
-					return
-				}
-			} else {
-				// otherwise create from top level SPDX Document Creation Information (DocumentInfo) section
-				p, err = ionicspdx.ProjectFromSPDX2_2(doc)
-				if err != nil {
-					fmt.Printf("Error while parsing %v: %v", spdxFile, err)
-					return
-				}
-			}
-		}
+			projs[i].Active = true
 
-		p.RulesetID = &rulesetID
-		p.TeamID = &teamID
-
-		// add name and email if supplied
-		if pocName != "" {
-			p.POCName = pocName
-		}
-
-		if pocEmail != "" {
-			p.POCEmail = pocEmail
-		}
-
-		errs, err := p.Validate(cc, uu, viper.GetString(secretKey))
-		if err != nil {
-			for name, e := range errs {
-				fmt.Printf("%v : %v\n", name, e)
+			fmt.Printf("\nProject we're creating: %+v\n", projs[i])
+			res, err := ion.CreateProject(&projs[i], teamID, viper.GetString(secretKey))
+			if err != nil {
+				fmt.Printf("\nCouldn't create project: %v\n", err.Error())
+				fmt.Printf("Continuing on to create other projects.\n")
+				continue
 			}
 
-			fmt.Println(err.Error())
-			return
+			PPrint(res)
 		}
 
-		p.Active = true
-
-		res, err := ion.CreateProject(&p, teamID, viper.GetString(secretKey))
-		if err != nil {
-			fmt.Println(err.Error())
-			return
-		}
-
-		PPrint(res)
 	},
+}
+
+func printSPDXErrorHelp(e error) {
+	fmt.Printf("\n*******************************")
+	fmt.Printf("\nThe error '%v' prevented the SPDX file from being parsed.\n", e.Error())
+	fmt.Printf("\nPlease check the SPDX file contents follow SPDX 2.2 or 2.1 specifications:\n")
+	fmt.Printf("SPDX 2.2: https://spdx.github.io/spdx-spec/\n")
+	fmt.Printf("SPDX 2.1: https://spdx.dev/spdx-specification-21-web-version/\n")
+	fmt.Printf("\nThis online tool can help identify issues: https://tools.spdx.org/app/validate/\n")
+	fmt.Printf("*******************************\n")
 }
