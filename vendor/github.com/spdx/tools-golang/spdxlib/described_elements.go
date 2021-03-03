@@ -21,6 +21,9 @@ func GetDescribedPackageIDs2_1(doc *spdx.Document2_1) ([]spdx.ElementID, error) 
 	if doc.Packages == nil {
 		return nil, fmt.Errorf("Packages map is nil")
 	}
+
+	fmt.Printf("\ndoc packages is %+v\n", doc.Packages)
+
 	if len(doc.Packages) == 0 {
 		return nil, fmt.Errorf("no Packages in Document")
 	}
@@ -39,7 +42,19 @@ func GetDescribedPackageIDs2_1(doc *spdx.Document2_1) ([]spdx.ElementID, error) 
 	}
 	// collect IDs as strings so we can sort them easily
 	eIDStrs := []string{}
+	parent := ""
 	for _, rln := range doc.Relationships {
+
+		// are we missing CONTAINS relationship?
+		fmt.Printf("\nrelationship: %+v\n", rln)
+
+		// if the relationship is contains, verify it's "main package CONTAINS child package"
+		// and add it to elementIDs
+		if len(parent) > 0 && rln.Relationship == "CONTAINS" && rln.RefA == spdx.MakeDocElementID("", parent) {
+			// fmt.Printf("\nwhoo parent set, contains found, we should add %v\n", string(rln.RefB.ElementRefID))
+			eIDStrs = append(eIDStrs, string(rln.RefB.ElementRefID))
+		}
+
 		if rln.Relationship == "DESCRIBES" && rln.RefA == spdx.MakeDocElementID("", "DOCUMENT") {
 			// confirm RefB is actually a package in this document
 			if _, ok := doc.Packages[rln.RefB.ElementRefID]; !ok {
@@ -48,6 +63,8 @@ func GetDescribedPackageIDs2_1(doc *spdx.Document2_1) ([]spdx.ElementID, error) 
 					return nil, fmt.Errorf("Document DESCRIBES %s but no such Package or unpackaged File", string(rln.RefB.ElementRefID))
 				}
 			}
+			fmt.Printf("\nSetting parent to '%v'\n", string(rln.RefB.ElementRefID))
+			parent = string(rln.RefB.ElementRefID)
 			eIDStrs = append(eIDStrs, string(rln.RefB.ElementRefID))
 		}
 		if rln.Relationship == "DESCRIBED_BY" && rln.RefB == spdx.MakeDocElementID("", "DOCUMENT") {
@@ -71,6 +88,7 @@ func GetDescribedPackageIDs2_1(doc *spdx.Document2_1) ([]spdx.ElementID, error) 
 	for _, eIDStr := range eIDStrs {
 		eIDs = append(eIDs, spdx.ElementID(eIDStr))
 	}
+	fmt.Printf("\neids be all %+v\n", eIDs)
 	return eIDs, nil
 }
 

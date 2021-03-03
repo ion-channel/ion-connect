@@ -195,6 +195,9 @@ func ProjectPackageFromSPDX2_1(doc *spdx.Document2_1, packageName string) ([]pro
 		return projs, fmt.Errorf("unable to get describe packages from SPDX document: %v", err)
 	}
 
+	fmt.Printf("\npkgIDs: %+v\n", pkgIDs)
+	// panic("done")
+
 	// SPDX Document does contain packages, so we'll go through each one
 	for _, pkgID := range pkgIDs {
 		pkg, ok := doc.Packages[pkgID]
