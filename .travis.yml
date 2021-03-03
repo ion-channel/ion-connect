@@ -6,9 +6,6 @@ go:
 
 sudo: required
 
-env:
-  - GOFLAGS=-mod=vendor
-
 install:
   - make travis_setup
 
