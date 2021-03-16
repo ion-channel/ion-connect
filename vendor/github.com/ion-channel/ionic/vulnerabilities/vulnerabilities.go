@@ -47,15 +47,17 @@ type Vulnerability struct {
 	PublishedAt                 time.Time          `json:"published_at" xml:"published_at"`
 	CreatedAt                   time.Time          `json:"created_at" xml:"created_at"`
 	UpdatedAt                   time.Time          `json:"updated_at" xml:"updated_at"`
+	Mttr                        *int64             `json:"mttr_seconds" xml:"mttr_seconds"`
 }
 
 // VulnerabilityInput struct for adding a vulnerability
 type VulnerabilityInput struct {
 	Vulnerability
-	Dependencies []string   `json:"dependencies"`
-	Source       []string   `json:"source"`
-	UpdatedAt    *time.Time `json:"updated_at,omitempty"`
-	CreatedAt    *time.Time `json:"created_at,omitempty"`
+	Dependencies   []string   `json:"dependencies"`
+	Source         []string   `json:"source"`
+	UpdatedAt      *time.Time `json:"updated_at,omitempty"`
+	CreatedAt      *time.Time `json:"created_at,omitempty"`
+	TriggerRefresh bool       `json:"trigger_refresh,omitempty"`
 }
 
 // Source represents information about where the vulnerability data came from
