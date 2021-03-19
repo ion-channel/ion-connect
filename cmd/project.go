@@ -306,11 +306,11 @@ var CreateProjectsSPDXCmd = &cobra.Command{
 
 			errs, err := projs[i].Validate(cc, uu, viper.GetString(secretKey))
 			if err != nil {
+				fmt.Printf("\nProject %v doesn't meet Ion requirements: %v. Details: \n", projs[i].Name, err.Error())
 				for name, e := range errs {
 					fmt.Printf("%v : %v\n", name, e)
 				}
-
-				fmt.Println(err.Error())
+				fmt.Printf("\nStopping import.")
 				return
 			}
 
