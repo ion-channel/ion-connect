@@ -31,6 +31,16 @@ func init() {
 	ProjectCmd.AddCommand(CreateProjectsCSVCmd)
 	ProjectCmd.AddCommand(CreateProjectCmd)
 	ProjectCmd.AddCommand(CreateProjectsSPDXCmd)
+	ProjectCmd.AddCommand(SetSourceCmd)
+	ProjectCmd.AddCommand(SetTypeCmd)
+
+	SetSourceCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "ID of the project (required)")
+	SetSourceCmd.MarkFlagRequired("project-id")
+
+	SetTypeCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "ID of the project (required)")
+	SetTypeCmd.MarkFlagRequired("project-id")
+	SetTypeCmd.Flags().StringVarP(&source, "source-location", "s", "", "Source location of project (required except for source_unavailable type)")
+	SetTypeCmd.Flags().StringVarP(&branch, "source-branch-name", "b", "", "Source branch of project")
 
 	AddAliasCmd.Flags().StringVarP(&teamID, "team-id", "t", "", "ID of the team for the project (required)")
 	AddAliasCmd.MarkFlagRequired("team-id")
@@ -67,6 +77,68 @@ var ProjectCmd = &cobra.Command{
 	Use:   "project",
 	Short: "Project resource",
 	Long:  `Project resource - access data relating to projects and their associations`,
+}
+
+// SetSourceCmd - Set the source location of a project
+var SetSourceCmd = &cobra.Command{
+	Use:   "set-source LOCATION",
+	Short: "Set source",
+	Long:  "Set the source for the project",
+	Args:  cobra.MinimumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		Src := args[0]
+		p, e := ion.GetProject(projectID, teamID, viper.GetString(secretKey))
+		if e != nil {
+			fmt.Println(e.Error())
+			return
+		}
+
+		p.Source = &Src
+		p, e = ion.UpdateProject(p, viper.GetString(secretKey))
+		if e != nil {
+			fmt.Println(e.Error())
+		}
+		PPrint(p)
+	},
+}
+
+// SetTypeCmd - set project source type (git, http, etc...)
+var SetTypeCmd = &cobra.Command{
+	Use:   "set-type TYPE [SOURCE] [BRANCH]",
+	Short: "Set type",
+	Long:  "Set the type for the project",
+	Args:  cobra.MinimumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		Type := args[0]
+		if Type != "source_unavailable" && len(source) == 0 {
+			fmt.Println("Source location required")
+			return
+		}
+		p, e := ion.GetProject(projectID, teamID, viper.GetString(secretKey))
+		if e != nil {
+			fmt.Println(e.Error())
+			return
+		}
+
+		p.Type = &Type
+		if *p.Type == "source_unavailable" {
+			// source unavailable means the source needs to be blank
+			empty := ""
+			p.Source = &empty
+		} else if len(source) != 0 {
+			// other project types can set the source if present
+			p.Source = &source
+		}
+		if len(branch) != 0 {
+			p.Branch = &branch
+		}
+
+		p, e = ion.UpdateProject(p, viper.GetString(secretKey))
+		if e != nil {
+			fmt.Println(e.Error())
+		}
+		PPrint(p)
+	},
 }
 
 // AddAliasCmd - Container for holder add alias cmd
