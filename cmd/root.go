@@ -35,6 +35,7 @@ var (
 	limit     int
 	offset    int
 	tipe      string
+	source    string
 )
 
 // RootCmd represents the base command when called without any subcommands
