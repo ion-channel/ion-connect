@@ -40,6 +40,7 @@ func init() {
 	SetTypeCmd.Flags().StringVarP(&projectID, "project-id", "p", "", "ID of the project (required)")
 	SetTypeCmd.MarkFlagRequired("project-id")
 	SetTypeCmd.Flags().StringVarP(&source, "source-location", "s", "", "Source location of project (required except for source_unavailable type)")
+	SetTypeCmd.Flags().StringVarP(&branch, "source-branch-name", "b", "", "Source branch of project")
 
 	AddAliasCmd.Flags().StringVarP(&teamID, "team-id", "t", "", "ID of the team for the project (required)")
 	AddAliasCmd.MarkFlagRequired("team-id")
@@ -103,7 +104,7 @@ var SetSourceCmd = &cobra.Command{
 
 // SetTypeCmd - set project source type (git, http, etc...)
 var SetTypeCmd = &cobra.Command{
-	Use:   "set-type TYPE [SOURCE]",
+	Use:   "set-type TYPE [SOURCE] [BRANCH]",
 	Short: "Set type",
 	Long:  "Set the type for the project",
 	Args:  cobra.MinimumNArgs(1),
@@ -127,6 +128,9 @@ var SetTypeCmd = &cobra.Command{
 		} else if len(source) != 0 {
 			// other project types can set the source if present
 			p.Source = &source
+		}
+		if len(branch) != 0 {
+			p.Branch = &branch
 		}
 
 		p, e = ion.UpdateProject(p, viper.GetString(secretKey))
