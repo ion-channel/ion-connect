@@ -363,6 +363,8 @@ var CreateProjectsSPDXCmd = &cobra.Command{
 			printSPDXErrorHelp(fmt.Errorf("no packages found in SPDX file"))
 		}
 
+		projectsErrored := make(map[string]string)
+
 		for i := range projs {
 			projs[i].RulesetID = &rulesetID
 			projs[i].TeamID = &teamID
@@ -379,11 +381,13 @@ var CreateProjectsSPDXCmd = &cobra.Command{
 			errs, err := projs[i].Validate(cc, uu, viper.GetString(secretKey))
 			if err != nil {
 				fmt.Printf("\nProject %v doesn't meet Ion requirements: %v. Details: \n", *(projs[i].Name), err.Error())
+				errorStored := ""
 				for name, e := range errs {
 					fmt.Printf("%v : %v\n", name, e)
+					errorStored += fmt.Sprintf("%v : %v\n", name, e)
 				}
-				fmt.Printf("\nStopping import.")
-				return
+				projectsErrored[*(projs[i].Name)] = errorStored
+				continue
 			}
 
 			projs[i].Active = true
@@ -393,10 +397,18 @@ var CreateProjectsSPDXCmd = &cobra.Command{
 			if err != nil {
 				fmt.Printf("\nCouldn't create project: %v\n", err.Error())
 				fmt.Printf("Continuing on to create other projects.\n")
+				projectsErrored[*(projs[i].Name)] = err.Error()
 				continue
 			}
 
 			PPrint(res)
+		}
+
+		if len(projectsErrored) > 0 {
+			fmt.Printf("\nErrors found:")
+			for k, v := range projectsErrored {
+				fmt.Printf("\n%v: %v", k, v)
+			}
 		}
 
 	},
