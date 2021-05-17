@@ -1,6 +1,7 @@
 package ionic
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -24,6 +25,40 @@ func (ic *IonClient) GetRepo(repo, token string) (*community.Repo, error) {
 		return nil, fmt.Errorf("failed to unmarshal getRepo results: %v (%v)", err.Error(), string(b))
 	}
 	return &resultRepo, nil
+}
+
+// GetReposInCommonOptions encapsulates params for repos in common requests
+type GetReposInCommonOptions struct {
+	Subject    string   `json:"subject"`
+	Comparands []string `json:"comparands"`
+	ByActor    bool     `json:"by_actor"`
+}
+
+// GetReposInCommonOutput encapsulates params for repos in common requests
+type GetReposInCommonOutput struct {
+	community.Repo
+	CommonCommitters []string `json:"common_committers,omitempty" xml:"common_committers,omitempty"`
+	CommonActors     []string `json:"common_actors,omitempty" xml:"common_actors,omitempty"`
+}
+
+// GetReposInCommon takes in an subject repo, a slice of string camparands and bool option for actors
+//  and calls the Ion API to get matches with the count of committers shared
+func (ic *IonClient) GetReposInCommon(options GetReposInCommonOptions, token string) ([]GetReposInCommonOutput, error) {
+	body, err := json.Marshal(options)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal options for repos in common (%s) : %v", options.Subject, err.Error())
+	}
+
+	b, err := ic.Post(community.GetReposInCommonEndpoint, token, nil, *bytes.NewBuffer(body), nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get repos in common (%s) : %v", options.Subject, err.Error())
+	}
+	var resultRepos []GetReposInCommonOutput
+	err = json.Unmarshal(b, &resultRepos)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal repos in common results: %v (%v)", err.Error(), string(b))
+	}
+	return resultRepos, nil
 }
 
 // GetReposForActor takes in an user, committer or actor string and calls the Ion API to get
