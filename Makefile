@@ -35,6 +35,8 @@ travis_setup: ## Setup the travis environmnet
 	@mkdir -p $$HOME/.local/bin && tar xvf ionize.tar.gz -C $$HOME/.local/bin
 	@echo "Installing Go Linter"
 	@go get -u golang.org/x/lint/golint
+	# needed to avoid cnflicts of versions
+	@go mod vendor
 
 .PHONY: analyze
 analyze:  ## Perform an analysis of the project
