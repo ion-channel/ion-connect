@@ -122,6 +122,10 @@ github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NH
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
 github.com/ion-channel/ionic v0.20.1-0.20210517223623-31244506c078 h1:ekLTuINS4UTRfYw9y605kESJJrpxNYeOiLWjLrHngc4=
 github.com/ion-channel/ionic v0.20.1-0.20210517223623-31244506c078/go.mod h1:jv6vou0JwsVbY7CLhpylXEPIarHFeyQKZ1+JHHV+nSY=
+github.com/ion-channel/ionic v0.20.1-0.20210519175541-143f4a574e68 h1:4cEc/HjvD892nIo8xBgacWyfeJeCRq/3TiOLPIEb4Pw=
+github.com/ion-channel/ionic v0.20.1-0.20210519175541-143f4a574e68/go.mod h1:jv6vou0JwsVbY7CLhpylXEPIarHFeyQKZ1+JHHV+nSY=
+github.com/ion-channel/ionic v0.20.1-0.20210519183136-00bd60ac7d81 h1:qrSY9RGW240O7KBQND4bEQAzT0nm/pNb8KrJzUMaRXE=
+github.com/ion-channel/ionic v0.20.1-0.20210519183136-00bd60ac7d81/go.mod h1:jv6vou0JwsVbY7CLhpylXEPIarHFeyQKZ1+JHHV+nSY=
 github.com/ion-channel/tools-golang v0.0.0-20210315174624-e403235229f9 h1:8lp7kXgy9NtDgA0TXmRDWyW/GykGNmPWfjBA357CNXc=
 github.com/ion-channel/tools-golang v0.0.0-20210315174624-e403235229f9/go.mod h1:RO4Y3IFROJnz+43JKm1YOrbtgQNljW4gAPpA/sY2eqo=
 github.com/jonboulle/clockwork v0.1.0/go.mod h1:Ii8DK3G1RaLaWxj9trq07+26W01tbo22gdxWY5EU2bo=
