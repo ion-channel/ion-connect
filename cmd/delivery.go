@@ -42,7 +42,7 @@ var DeliveryCmd = &cobra.Command{
 var GetDestinationsCmd = &cobra.Command{
 	Use:   "get-destinations",
 	Short: "Get Delivery Destinations",
-	Long:  `Get the data for destintations in a team`,
+	Long:  `Get the data for destinations in a team`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ps, e := ion.GetDeliveryDestinations(teamID, viper.GetString(secretKey))
 		if e != nil {

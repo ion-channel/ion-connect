@@ -28,14 +28,14 @@ GIT_COMMIT_HASH ?= $(TRAVIS_COMMIT)
 all: test
 
 .PHONY: travis_setup
-travis_setup: ## Setup the travis environmnet
-	@if [[ -n "$$BUILD_ENV" ]] && [[ "$$BUILD_ENV" == "testing" ]]; then echo -e "$(INFO_COLOR)THIS IS EXECUTING AGAINST THE TESTING ENVIRONMEMNT$(NO_COLOR)"; fi
+travis_setup: ## Setup the travis environment
+	@if [[ -n "$$BUILD_ENV" ]] && [[ "$$BUILD_ENV" == "testing" ]]; then echo -e "$(INFO_COLOR)THIS IS EXECUTING AGAINST THE TESTING ENVIRONMENT$(NO_COLOR)"; fi
 	@echo "Downloading latest Ionize"
 	@wget --quiet http://github.com/ion-channel/ionize/releases/latest/download/ionize_linux_amd64.tar.gz -O ionize.tar.gz
 	@mkdir -p $$HOME/.local/bin && tar xvf ionize.tar.gz -C $$HOME/.local/bin
 	@echo "Installing Go Linter"
 	@go get -u golang.org/x/lint/golint
-	# needed to avoid cnflicts of versions
+	# needed to avoid conflicts of versions
 	@go mod vendor
 
 .PHONY: analyze

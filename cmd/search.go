@@ -39,12 +39,12 @@ func init() {
 	SearchCmd.MarkFlagRequired("query")
 }
 
-// SearchCmd For a queary string provide a resutl set
+// SearchCmd For a query string provide a result set
 // comprised of known data about a software artifact
 var SearchCmd = &cobra.Command{
 	Use:   "search",
 	Short: "For a query string provide a result set",
-	Long: `For a queary string provide a resutl set
+	Long: `For a query string provide a result set
 	comprised of known data about a software artifact`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if (*Resource)(&resource).Valid() {

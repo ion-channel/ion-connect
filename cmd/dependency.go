@@ -15,14 +15,14 @@ var (
 
 func init() {
 	RootCmd.AddCommand(DependencyCmd)
-	DependencyCmd.AddCommand(ResolveDependecyFileCmd)
+	DependencyCmd.AddCommand(ResolveDependencyFileCmd)
 	DependencyCmd.AddCommand(GetVersionsCmd)
 
-	ResolveDependecyFileCmd.Flags().StringVarP(&tipe, "type", "t", "", "Type of ecosystem or file for parsing (required)")
-	ResolveDependecyFileCmd.MarkFlagRequired("type")
+	ResolveDependencyFileCmd.Flags().StringVarP(&tipe, "type", "t", "", "Type of ecosystem or file for parsing (required)")
+	ResolveDependencyFileCmd.MarkFlagRequired("type")
 
-	ResolveDependecyFileCmd.Flags().BoolVarP(&flatten, "flatten", "f", false, "Return the list in a flattened array")
-	ResolveDependecyFileCmd.Flags().BoolVarP(&flag, "flag", "", false, "feature flag")
+	ResolveDependencyFileCmd.Flags().BoolVarP(&flatten, "flatten", "f", false, "Return the list in a flattened array")
+	ResolveDependencyFileCmd.Flags().BoolVarP(&flag, "flag", "", false, "feature flag")
 
 	GetVersionsCmd.Flags().StringVarP(&tipe, "type", "t", "", "Type of ecosystem or file for parsing (required)")
 	GetVersionsCmd.MarkFlagRequired("type")
@@ -35,8 +35,8 @@ var DependencyCmd = &cobra.Command{
 	Long:  `Dependency resource - access data relating to dependencies and their associations`,
 }
 
-// ResolveDependecyFileCmd - Resolves dependencies in a file
-var ResolveDependecyFileCmd = &cobra.Command{
+// ResolveDependencyFileCmd - Resolves dependencies in a file
+var ResolveDependencyFileCmd = &cobra.Command{
 	Use:   "resolve-dependencies-in-file [flags] PATHTODEPFILE",
 	Short: "Resolve Dependencies in a file",
 	Long:  `Get the data for a dependency file`,
