@@ -59,15 +59,15 @@ The default environment for Ion Connect is the Ion Channel public/production env
 export IONCHANNEL_ENDPOINT_URL=https://otherionurl
 ```
 
-## Available Comands
-Utilize the built in help to see what commands are available to Ion Connect.
+## Available Commands
+Use help (-h --help) for a list of available commands.
 
 ```
 ion-connect help
 ```
 
 # Versioning
-The project will be versioned in accordance with [Semver 2.0.0](http://semver.org).  See the [releases](https://github.com/ion-channel/ionic/releases) section for the latest version.  Until version 1.0.0 the project is considered to be unstable.
+The project is versioned in accordance with [Semver 2.0.0](http://semver.org).  See the [releases](https://github.com/ion-channel/ionic/releases) section for the latest version.  Versions prior to 1.0.0 are considered unstable.
 
 # License
 This project is distributed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).  See [LICENSE.md](./LICENSE.md) for more information.
