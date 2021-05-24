@@ -9,7 +9,7 @@ import (
 	"github.com/ion-channel/ionic"
 	"github.com/ion-channel/ionic/pagination"
 	"github.com/ion-channel/ionic/projects"
-	ionicspdx "github.com/ion-channel/ionic/spdx"
+	"github.com/ion-channel/ionic/spdx"
 	"github.com/spdx/tools-golang/tvloader"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -18,7 +18,6 @@ import (
 var (
 	spdxVersion string
 	rulesetID   string
-	packageName string
 	pocEmail    string
 	pocName     string
 )
@@ -67,7 +66,6 @@ func init() {
 	CreateProjectsSPDXCmd.MarkFlagRequired("team-id")
 	CreateProjectsSPDXCmd.Flags().StringVarP(&rulesetID, "ruleset-id", "r", "", "ID of the ruleset for the project (required)")
 	CreateProjectsSPDXCmd.MarkFlagRequired("ruleset-id")
-	CreateProjectsSPDXCmd.Flags().StringVarP(&packageName, "package-name", "", "", "package name of the project to add (must be present in SPDX file)")
 	CreateProjectsSPDXCmd.Flags().StringVarP(&pocEmail, "poc-email", "", "", "Point of Contact (PoC) email to be used for the project")
 	CreateProjectsSPDXCmd.Flags().StringVarP(&pocName, "poc-name", "", "", "Point of Contact (PoC) name to be used for the project")
 }
@@ -318,7 +316,7 @@ var CreateProjectsSPDXCmd = &cobra.Command{
 			}
 
 			// All project packages
-			packageProjs, err := ionicspdx.ProjectPackageFromSPDX2_1(doc, packageName)
+			packageProjs, err := spdx.ProjectPackageFromSPDX2_1(doc)
 			if err != nil {
 				fmt.Printf("Failed finding project packages %v: %v. Skipping project packages.", spdxFile, err)
 			} else {
@@ -326,7 +324,7 @@ var CreateProjectsSPDXCmd = &cobra.Command{
 			}
 
 			// Top level SPDX Document Creation Information (DocumentInfo)
-			p, err := ionicspdx.ProjectFromSPDX2_1(doc)
+			p, err := spdx.ProjectFromSPDX2_1(doc)
 			if err != nil {
 				fmt.Printf("Failed finding documentinfo %v: %v. Skipping creating project from documentinfo.", spdxFile, err)
 			} else {
@@ -342,7 +340,7 @@ var CreateProjectsSPDXCmd = &cobra.Command{
 				return
 			}
 			// All project packages
-			packageProjs, err := ionicspdx.ProjectPackageFromSPDX2_2(doc, packageName)
+			packageProjs, err := spdx.ProjectPackageFromSPDX2_2(doc)
 			if err != nil {
 				fmt.Printf("Failed finding project packages %v: %v. Skipping project packages.", spdxFile, err)
 			} else {
@@ -350,7 +348,7 @@ var CreateProjectsSPDXCmd = &cobra.Command{
 			}
 
 			// Top level SPDX Document Creation Information (DocumentInfo)
-			p, err := ionicspdx.ProjectFromSPDX2_2(doc)
+			p, err := spdx.ProjectFromSPDX2_2(doc)
 			if err != nil {
 				fmt.Printf("Failed finding documentinfo %v: %v. Skipping creating project from documentinfo.", spdxFile, err)
 			} else {
