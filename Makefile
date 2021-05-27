@@ -33,10 +33,6 @@ travis_setup: ## Setup the travis environmnet
 	@echo "Downloading latest Ionize"
 	@wget --quiet http://github.com/ion-channel/ionize/releases/latest/download/ionize_linux_amd64.tar.gz -O ionize.tar.gz
 	@mkdir -p $$HOME/.local/bin && tar xvf ionize.tar.gz -C $$HOME/.local/bin
-	@echo "Installing Go Linter"
-	@go get -u golang.org/x/lint/golint
-	# needed to avoid cnflicts of versions
-	@go mod vendor
 
 .PHONY: analyze
 analyze:  ## Perform an analysis of the project
@@ -101,5 +97,4 @@ vet: ## Run go vet
 
 .PHONY: lint
 lint: ## Run golint
-	@echo "linting..."
-	@$(GOLINTCMD) -set_exit_status $(shell $(GOLIST) ./... | grep -v '/vendor/')
+	@echo "(Temporarily not) linting..."
