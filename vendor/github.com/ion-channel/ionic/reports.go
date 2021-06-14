@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/ion-channel/ionic/analyses"
 	"net/url"
 
 	"github.com/ion-channel/ionic/reports"
@@ -136,4 +137,57 @@ func (ic *IonClient) GetExportedProjectsData(ids []string, teamID, token string)
 	}
 
 	return &ed, nil
+}
+
+// GetExportedVulnerabilityData takes slice of project ids, team id, and token
+// returns slice of exported vulnerability data for the requested projects
+func (ic *IonClient) GetExportedVulnerabilityData(ids []string, teamID, token string) (*[]analyses.VulnerabilityExportData, error) {
+	p := requests.ByIDsAndTeamID{
+		TeamID: teamID,
+		IDs:    ids,
+	}
+
+	b, err := json.Marshal(p)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal request body: %v", err.Error())
+	}
+
+	r, err := ic.Post(reports.ReportGetExportedVulnerabilityDataEndpoint, token, nil, *bytes.NewBuffer(b), nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to request exported data: %v", err.Error())
+	}
+
+	var ed []analyses.VulnerabilityExportData
+	err = json.Unmarshal(r, &ed)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal exported projects data response: %v", err.Error())
+	}
+
+	return &ed, nil
+}
+
+// GetSBOM takes slice of project ids, team id, SBOM format, and token.
+// Returns one or more SBOMs for the requested project(s).
+func (ic *IonClient) GetSBOM(ids []string, teamID string, options reports.SBOMExportOptions, token string) (string, error) {
+	body := requests.ByIDsAndTeamID{
+		TeamID: teamID,
+		IDs:    ids,
+	}
+
+	b, err := json.Marshal(body)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal request body: %v", err.Error())
+	}
+
+	params := options.Params()
+
+	r, err := ic.Post(reports.ReportGetSBOMEndpoint, token, params, *bytes.NewBuffer(b), nil)
+
+	if err != nil {
+		return "", fmt.Errorf("failed to request SBOM: %v", err.Error())
+	}
+
+	return string(r), nil
 }
