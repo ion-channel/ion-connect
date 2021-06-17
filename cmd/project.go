@@ -16,10 +16,11 @@ import (
 )
 
 var (
-	spdxVersion string
-	rulesetID   string
-	pocEmail    string
-	pocName     string
+	spdxVersion         string
+	rulesetID           string
+	pocEmail            string
+	pocName             string
+	includeDependencies bool
 )
 
 func init() {
@@ -61,13 +62,14 @@ func init() {
 
 	CreateProjectCmd.Flags().BoolVar(&skel, "print", false, "Print an example create project json skeleton")
 
-	CreateProjectsSPDXCmd.Flags().StringVarP(&spdxVersion, "spdx-version", "", "2.1", "SPDX version 2.1 or 2.2 to import")
+	CreateProjectsSPDXCmd.Flags().StringVarP(&spdxVersion, "spdx-version", "", "2.1", "SPDX version 2.1 or 2.2 to import (default: 2.1)")
 	CreateProjectsSPDXCmd.Flags().StringVarP(&teamID, "team-id", "t", "", "ID of the team for the project (required)")
 	CreateProjectsSPDXCmd.MarkFlagRequired("team-id")
 	CreateProjectsSPDXCmd.Flags().StringVarP(&rulesetID, "ruleset-id", "r", "", "ID of the ruleset for the project (required)")
 	CreateProjectsSPDXCmd.MarkFlagRequired("ruleset-id")
 	CreateProjectsSPDXCmd.Flags().StringVarP(&pocEmail, "poc-email", "", "", "Point of Contact (PoC) email to be used for the project")
 	CreateProjectsSPDXCmd.Flags().StringVarP(&pocName, "poc-name", "", "", "Point of Contact (PoC) name to be used for the project")
+	CreateProjectsSPDXCmd.Flags().BoolVarP(&includeDependencies, "include-dependencies", "d", true, "True if dependency packages should be imported as projects (default: false)")
 }
 
 // ProjectCmd - Container for holding project root and secondary commands
@@ -285,127 +287,133 @@ var CreateProjectsSPDXCmd = &cobra.Command{
 	Long:  `Create projects from an spdx file`,
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		// open the SPDX file
-		spdxFile := args[0]
-		r, err := os.Open(spdxFile)
+		var err error
+
+		spdxFilePath := args[0]
+		spdxFile, err := os.Open(spdxFilePath)
 		if err != nil {
-			fmt.Printf("Error while opening %v for reading: %v", spdxFile, err)
+			fmt.Printf("Error while opening %v for reading: %v\n", spdxFilePath, err)
 			return
 		}
-		defer r.Close()
+		defer spdxFile.Close()
 
 		// check the version of SPDX file
 		if len(args) > 1 {
 			spdxVersion = args[1]
 		}
 
-		// if we got here, the file is now loaded into memory.
-		fmt.Printf("Read %s\n\n", spdxFile)
-
-		// projects to create
-		projs := make([]projects.Project, 0)
-
-		// parse on SPDX 2.1, or 2.2. Default to 2.2 if not provided
-		if spdxVersion == "2.1" {
-			// try to load the SPDX file's contents as a tag-value file, version 2.1
-			doc, err := tvloader.Load2_1(r)
+		var spdxDoc interface{} // store doc as version-agnostic interface
+		switch spdxVersion {
+		case "2.1":
+			spdxDoc, err = tvloader.Load2_1(spdxFile)
 			if err != nil {
-				fmt.Printf("Could not load %v. Error from SPDX library: %v\n", spdxFile, err)
+				fmt.Printf("Could not load %s. Error from SPDX library: %s\n", spdxFilePath, err.Error())
 				printSPDXErrorHelp(err)
 				return
 			}
-
-			// All project packages
-			packageProjs, err := spdx.ProjectPackageFromSPDX2_1(doc)
-			if err != nil {
-				fmt.Printf("Failed finding project packages %v: %v. Skipping project packages.", spdxFile, err)
-			} else {
-				projs = append(projs, packageProjs...)
-			}
-
-			// Top level SPDX Document Creation Information (DocumentInfo)
-			p, err := spdx.ProjectFromSPDX2_1(doc)
-			if err != nil {
-				fmt.Printf("Failed finding documentinfo %v: %v. Skipping creating project from documentinfo.", spdxFile, err)
-			} else {
-				projs = append(projs, p)
-			}
-
-		} else if spdxVersion == "2.2" || spdxVersion == "" {
+		case "2.2":
 			// try to load the SPDX file's contents as a tag-value file, version 2.2
-			doc, err := tvloader.Load2_2(r)
+			spdxDoc, err = tvloader.Load2_2(spdxFile)
 			if err != nil {
-				fmt.Printf("Could not load %v. Error from SPDX library: %v\n", spdxFile, err)
+				fmt.Printf("Could not load %s. Error from SPDX library: %s\n", spdxFilePath, err.Error())
 				printSPDXErrorHelp(err)
 				return
 			}
-			// All project packages
-			packageProjs, err := spdx.ProjectPackageFromSPDX2_2(doc)
-			if err != nil {
-				fmt.Printf("Failed finding project packages %v: %v. Skipping project packages.", spdxFile, err)
-			} else {
-				projs = append(projs, packageProjs...)
-			}
-
-			// Top level SPDX Document Creation Information (DocumentInfo)
-			p, err := spdx.ProjectFromSPDX2_2(doc)
-			if err != nil {
-				fmt.Printf("Failed finding documentinfo %v: %v. Skipping creating project from documentinfo.", spdxFile, err)
-			} else {
-				projs = append(projs, p)
-			}
-
+		default:
+			fmt.Printf("Invalid SPDX specification version: %s\n", spdxVersion)
+			return
 		}
 
-		if len(projs) == 0 {
+		newProjects, err := spdx.ProjectsFromSPDX(spdxDoc, includeDependencies)
+		if err != nil {
+			fmt.Printf("Failed to convert SPDX packages to projects: %s\n", err.Error())
+		}
+
+		numProjects := len(newProjects)
+		if numProjects == 0 {
 			printSPDXErrorHelp(fmt.Errorf("no packages found in SPDX file"))
+			return
 		}
 
+		fmt.Printf("Found %d projects in SBOM.\n", numProjects)
+
+		// compare new projects to existing projects to exclude duplicates
+		var projectsToCreate []projects.Project
+		existingProjects, err := ion.GetProjects(teamID, viper.GetString(secretKey), pagination.AllItems, nil)
+		if err != nil {
+			fmt.Printf("Failed to retrieve team's existing projects to check for duplicates: %s\n", err.Error())
+			projectsToCreate = newProjects
+		} else {
+			existingProjectNames := make(map[string]bool)
+			for _, existingProject := range existingProjects {
+				if existingProject.Name != nil {
+					existingProjectNames[*existingProject.Name] = true
+				}
+			}
+
+			numDuplicates := 0
+			for _, newProject := range newProjects {
+				projectAlreadyExists := existingProjectNames[*newProject.Name]
+				if !projectAlreadyExists {
+					projectsToCreate = append(projectsToCreate, newProject)
+				} else {
+					numDuplicates += 1
+				}
+			}
+
+			if numDuplicates > 0 {
+				numProjects = numProjects - numDuplicates
+				fmt.Printf("Ignoring %d projects that already exist.\n", numDuplicates)
+			}
+		}
+
+		fmt.Printf("Importing %d projects...\n", numProjects)
+
+		// keep track of errors as we import projects
+		successes := 0
 		projectsErrored := make(map[string]string)
+		for ii := range projectsToCreate {
+			projectsToCreate[ii].RulesetID = &rulesetID
+			projectsToCreate[ii].TeamID = &teamID
 
-		for i := range projs {
-			projs[i].RulesetID = &rulesetID
-			projs[i].TeamID = &teamID
-
-			// add name and email if supplied
 			if pocName != "" {
-				projs[i].POCName = pocName
+				projectsToCreate[ii].POCName = pocName
 			}
 
 			if pocEmail != "" {
-				projs[i].POCEmail = pocEmail
+				projectsToCreate[ii].POCEmail = pocEmail
 			}
 
-			errs, err := projs[i].Validate(cc, uu, viper.GetString(secretKey))
+			errs, err := projectsToCreate[ii].Validate(cc, uu, viper.GetString(secretKey))
 			if err != nil {
-				fmt.Printf("\nProject %v doesn't meet Ion requirements: %v. Details: \n", *(projs[i].Name), err.Error())
+				fmt.Printf("[%d/%d]\tProject %s doesn't meet Ion requirements: %s. Details: \n", ii + 1, numProjects, *(projectsToCreate[ii].Name), err.Error())
 				errorStored := ""
 				for name, e := range errs {
-					fmt.Printf("%v : %v\n", name, e)
-					errorStored += fmt.Sprintf("%v : %v\n", name, e)
+					fmt.Printf("%s : %s\n", name, e)
+					errorStored += fmt.Sprintf("%s : %s\n", name, e)
 				}
-				projectsErrored[*(projs[i].Name)] = errorStored
+				projectsErrored[*(projectsToCreate[ii].Name)] = errorStored
 				continue
 			}
 
-			projs[i].Active = true
-
-			fmt.Printf("\nProject we're creating: %+v\n", projs[i])
-			res, err := ion.CreateProject(&projs[i], teamID, viper.GetString(secretKey))
+			fmt.Printf("[%d/%d]\tCreating project: %s\n", ii + 1, numProjects, *projectsToCreate[ii].Name)
+			_, err = ion.CreateProject(&projectsToCreate[ii], teamID, viper.GetString(secretKey))
 			if err != nil {
-				fmt.Printf("\nCouldn't create project: %v\n", err.Error())
-				fmt.Printf("Continuing on to create other projects.\n")
-				projectsErrored[*(projs[i].Name)] = err.Error()
+				fmt.Printf("\tError: %s\n", err.Error())
+				projectsErrored[*(projectsToCreate[ii].Name)] = err.Error()
 				continue
 			}
 
-			PPrint(res)
+			successes += 1
 		}
 
-		if len(projectsErrored) > 0 {
-			fmt.Printf("\nErrors found:")
+		fmt.Printf("Successfully created %d/%d projects.\n", successes, numProjects)
+
+		numErrors := len(projectsErrored)
+		if numErrors > 0 {
+			fmt.Printf("%d errors:\n", numErrors)
 			for k, v := range projectsErrored {
-				fmt.Printf("\n%v: %v", k, v)
+				fmt.Printf("%v: %v\n", k, v)
 			}
 		}
 

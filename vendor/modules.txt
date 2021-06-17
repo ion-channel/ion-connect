@@ -20,7 +20,7 @@ github.com/hashicorp/hcl/json/scanner
 github.com/hashicorp/hcl/json/token
 # github.com/inconshreveable/mousetrap v1.0.0
 github.com/inconshreveable/mousetrap
-# github.com/ion-channel/ionic v0.20.1-0.20210610163608-c8af1ccf665b
+# github.com/ion-channel/ionic v0.20.1-0.20210616235019-b8acbf66269d
 ## explicit
 github.com/ion-channel/ionic
 github.com/ion-channel/ionic/aliases
@@ -56,7 +56,7 @@ github.com/mitchellh/mapstructure
 # github.com/pelletier/go-toml v1.4.1-0.20190910035959-26fd12ff5458
 ## explicit
 github.com/pelletier/go-toml
-# github.com/spdx/tools-golang v0.0.0-20201122192914-a16d50ee1552 => github.com/ion-channel/tools-golang v0.0.0-20210315174624-e403235229f9
+# github.com/spdx/tools-golang v0.0.0-20201122192914-a16d50ee1552 => github.com/ion-channel/tools-golang v0.0.0-20210615220006-88b94127213b
 ## explicit
 github.com/spdx/tools-golang/spdx
 github.com/spdx/tools-golang/spdxlib
@@ -99,4 +99,4 @@ gopkg.in/ini.v1
 # gopkg.in/yaml.v2 v2.3.0
 ## explicit
 gopkg.in/yaml.v2
-# github.com/spdx/tools-golang => github.com/ion-channel/tools-golang v0.0.0-20210315174624-e403235229f9
+# github.com/spdx/tools-golang => github.com/ion-channel/tools-golang v0.0.0-20210615220006-88b94127213b

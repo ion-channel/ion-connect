@@ -134,8 +134,14 @@ github.com/ion-channel/ionic v0.20.1-0.20210604030222-8626d7c72275 h1:IHpvAl7nve
 github.com/ion-channel/ionic v0.20.1-0.20210604030222-8626d7c72275/go.mod h1:jv6vou0JwsVbY7CLhpylXEPIarHFeyQKZ1+JHHV+nSY=
 github.com/ion-channel/ionic v0.20.1-0.20210610163608-c8af1ccf665b h1:5NhZannl87QMc5zWzDjBuvdYnyfxlk60JQ9ByJbRasw=
 github.com/ion-channel/ionic v0.20.1-0.20210610163608-c8af1ccf665b/go.mod h1:jv6vou0JwsVbY7CLhpylXEPIarHFeyQKZ1+JHHV+nSY=
+github.com/ion-channel/ionic v0.20.1-0.20210616190210-c15c7277ae70 h1:T0cJUgSred2I861CzzzqCX+bwu1+HJYDaSgSSqSmy04=
+github.com/ion-channel/ionic v0.20.1-0.20210616190210-c15c7277ae70/go.mod h1:s5y2ohEO7wHFFO+8xDMVPhWFIAPLRnfFgAIbp1Fva5M=
+github.com/ion-channel/ionic v0.20.1-0.20210616235019-b8acbf66269d h1:4h8yAGVGaJTA7ySgfHXZqY8ouvbo3Imwy0d9QLjEpSE=
+github.com/ion-channel/ionic v0.20.1-0.20210616235019-b8acbf66269d/go.mod h1:s5y2ohEO7wHFFO+8xDMVPhWFIAPLRnfFgAIbp1Fva5M=
 github.com/ion-channel/tools-golang v0.0.0-20210315174624-e403235229f9 h1:8lp7kXgy9NtDgA0TXmRDWyW/GykGNmPWfjBA357CNXc=
 github.com/ion-channel/tools-golang v0.0.0-20210315174624-e403235229f9/go.mod h1:RO4Y3IFROJnz+43JKm1YOrbtgQNljW4gAPpA/sY2eqo=
+github.com/ion-channel/tools-golang v0.0.0-20210615220006-88b94127213b h1:M6Nk+qnBTLptmA6FyGWXUPtBp9swefBLmbUTeLhE6KU=
+github.com/ion-channel/tools-golang v0.0.0-20210615220006-88b94127213b/go.mod h1:RO4Y3IFROJnz+43JKm1YOrbtgQNljW4gAPpA/sY2eqo=
 github.com/jonboulle/clockwork v0.1.0/go.mod h1:Ii8DK3G1RaLaWxj9trq07+26W01tbo22gdxWY5EU2bo=
 github.com/json-iterator/go v1.1.6/go.mod h1:+SdeFBvtyEkXs7REEP0seUULqWtbJapLOCVDaaPEHmU=
 github.com/jstemmer/go-junit-report v0.0.0-20190106144839-af01ea7f8024/go.mod h1:6v2b51hI/fHJwM22ozAgKL4VKDeJcHhJFhtBdhmNjmU=
