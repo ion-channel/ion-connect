@@ -69,7 +69,7 @@ func init() {
 	CreateProjectsSPDXCmd.MarkFlagRequired("ruleset-id")
 	CreateProjectsSPDXCmd.Flags().StringVarP(&pocEmail, "poc-email", "", "", "Point of Contact (PoC) email to be used for the project")
 	CreateProjectsSPDXCmd.Flags().StringVarP(&pocName, "poc-name", "", "", "Point of Contact (PoC) name to be used for the project")
-	CreateProjectsSPDXCmd.Flags().BoolVarP(&includeDependencies, "include-dependencies", "d", true, "True if dependency packages should be imported as projects (default: false)")
+	CreateProjectsSPDXCmd.Flags().BoolVarP(&includeDependencies, "include-dependencies", "d", true, "True if dependency packages should be imported as projects (default: true)")
 }
 
 // ProjectCmd - Container for holding project root and secondary commands
