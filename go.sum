@@ -138,6 +138,8 @@ github.com/ion-channel/ionic v0.20.1-0.20210616190210-c15c7277ae70 h1:T0cJUgSred
 github.com/ion-channel/ionic v0.20.1-0.20210616190210-c15c7277ae70/go.mod h1:s5y2ohEO7wHFFO+8xDMVPhWFIAPLRnfFgAIbp1Fva5M=
 github.com/ion-channel/ionic v0.20.1-0.20210616235019-b8acbf66269d h1:4h8yAGVGaJTA7ySgfHXZqY8ouvbo3Imwy0d9QLjEpSE=
 github.com/ion-channel/ionic v0.20.1-0.20210616235019-b8acbf66269d/go.mod h1:s5y2ohEO7wHFFO+8xDMVPhWFIAPLRnfFgAIbp1Fva5M=
+github.com/ion-channel/ionic v0.20.1-0.20210617002534-71e1ffda40c5 h1:MUZv+Dn0wUCeIz7zztatp2bxYhnMsLleCuOURR1ldTo=
+github.com/ion-channel/ionic v0.20.1-0.20210617002534-71e1ffda40c5/go.mod h1:s5y2ohEO7wHFFO+8xDMVPhWFIAPLRnfFgAIbp1Fva5M=
 github.com/ion-channel/tools-golang v0.0.0-20210315174624-e403235229f9 h1:8lp7kXgy9NtDgA0TXmRDWyW/GykGNmPWfjBA357CNXc=
 github.com/ion-channel/tools-golang v0.0.0-20210315174624-e403235229f9/go.mod h1:RO4Y3IFROJnz+43JKm1YOrbtgQNljW4gAPpA/sY2eqo=
 github.com/ion-channel/tools-golang v0.0.0-20210615220006-88b94127213b h1:M6Nk+qnBTLptmA6FyGWXUPtBp9swefBLmbUTeLhE6KU=
