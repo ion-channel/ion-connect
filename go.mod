@@ -5,7 +5,7 @@ go 1.15
 require (
 	github.com/franela/goblin v0.0.0-20201006155558-6240afcb2eb7 // indirect
 	github.com/hashicorp/hcl v1.0.1-0.20190611123218-cf7d376da96d // indirect
-	github.com/ion-channel/ionic v0.20.1-0.20210617002534-71e1ffda40c5
+	github.com/ion-channel/ionic v0.20.1-0.20210618174307-19acb38732ed
 	github.com/onsi/gomega v1.10.4 // indirect
 	github.com/pelletier/go-toml v1.4.1-0.20190910035959-26fd12ff5458 // indirect
 	github.com/spdx/tools-golang v0.0.0-20201122192914-a16d50ee1552
